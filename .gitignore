@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Build / compiled kernels
+build/
+dist/
+*.egg-info/
+*.so
+*.o
+*.a
+*.ptx
+*.cubin
+*.fatbin
+
+# CUDA / Triton caches
+.triton/
+triton_cache/
+.nv/
+
+# Models and large checkpoints
+models/
+checkpoints/
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.pth
+
+# Vendor weight payloads; source remains tracked only if intentionally added
+vendor/DeepSeek-V4-Flash/*.safetensors
+vendor/DeepSeek-V4-Flash/model-*.safetensors
+
+# Generated results
+results/**
+!results/.gitkeep
+artifacts/env/environment-*.txt
+artifacts/env/python-environment-*.json
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Vendor source checkouts are pinned by SHA in docs/REPRODUCIBILITY.md, not tracked here
+vendor/

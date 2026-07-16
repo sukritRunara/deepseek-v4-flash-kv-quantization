@@ -1,0 +1,38 @@
+# requirements.txt — DeepSeek-V4-Flash cache quantization project
+#
+# DO NOT add torch here.
+# It is installed separately by scripts/setup_runtime.sh because it requires
+# a specific --index-url that pip -r cannot pass:
+#   torch → https://download.pytorch.org/whl/cu128  (CUDA version specific)
+
+# ── Model loading ────────────────────────────────────────────────────────────
+# transformers. Upper bound avoids 5.x breaking the custom modeling code.
+transformers>=4.57.1,<5.0.0
+
+# accelerate: required for device_map="auto" in AutoModelForCausalLM
+accelerate>=0.33.0
+
+# safetensors: model weights are stored in safetensors format
+safetensors>=0.4.0
+
+# huggingface_hub: model download and cache management
+huggingface_hub>=0.24.0
+
+# hf_transfer: C-based download accelerator; needed for
+# HF_HUB_ENABLE_HF_TRANSFER=1 (set in the venv activate by setup_runtime.sh)
+# to have any effect. Without this package the env var is silently ignored.
+hf_transfer>=0.1.4
+
+# ── Calibration data (src/calibration_data.py) ───────────────────────────────
+# datasets: streams C4 (and other HuggingFace datasets) for sensitivity
+# calibration without downloading the full corpus to disk.
+datasets>=2.19.0
+
+# ── Verification (verify_kv_relation.py, verify_quantized_kv.py) ─────────────
+numpy>=1.26.0
+tqdm>=4.66.0
+
+# nvidia-ml-py: Python bindings for NVML; reads live GPU memory and utilisation
+# during throughput tests in verify_kv_relation.py
+nvidia-ml-py>=12.560.30tiktoken
+tiktoken

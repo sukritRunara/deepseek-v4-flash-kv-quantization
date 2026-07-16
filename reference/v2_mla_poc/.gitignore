@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+models/
+*.safetensors
+*.bin
+*.pt
+.cache/
+*.egg-info/
+*.log
+results/
+scores/
+.ipynb_checkpoints/
+.DS_Store
