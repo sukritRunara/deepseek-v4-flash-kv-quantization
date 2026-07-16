@@ -232,6 +232,15 @@ flowchart TD
 7. **Dtype pinning**: `sinks`, `position_bias`, HC params, several norms fp32
    (`_keep_in_fp32_modules_strict`); compressor/indexer projections in the FP8 checkpoint ship
    BF16 (non-strict `_keep_in_fp32_modules`, `modular:1076`).
+8. **Indexer top-k selection is tie-unstable (measured)**: batched prefill and token-by-token
+   decode compute index scores that differ by ~1e-7 float noise; when candidate entries are
+   near-tied the selected top-k SET flips and downstream logits legitimately diverge (observed
+   up to ~1e-1 on the fp32 tiny random model; with a non-selective `index_topk` the same paths
+   agree to ~2e-7 — isolation experiment, 2026-07-16, MoE routing ruled out). Consequences:
+   (a) path-equality tests must use a non-selective indexer or compare selection sets;
+   (b) quantizing indexer states perturbs scores the same way, so indexer quantization quality
+   must be measured with **top-k overlap/recall metrics**, not logit closeness — matching the
+   calibration principles in CLAUDE.md.
 
 ## 7. Uncertainties requiring full-model validation (RunPod phase)
 
