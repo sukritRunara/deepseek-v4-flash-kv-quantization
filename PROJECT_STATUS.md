@@ -2,11 +2,26 @@
 
 ## Current phase
 
-Architecture discovery and tiny-model baseline on GX10 — **Task 01 complete** (2026-07-16).
+GX10 local development — **Task 01 and Task 02 complete** (2026-07-16).
 
 ## Active task
 
-Task 01 (`prompts/01_ARCHITECTURE_DISCOVERY.md`) — done. Awaiting Task 02 definition.
+Task 02 (`prompts/02_OFFICIAL_POLICY_QDQ_SIMULATION.md`) — done. Awaiting Task 03 definition
+(expected: calibration/sensitivity plumbing, DGX plan Phase 4).
+
+## Checklist (Task 02)
+
+- [x] QDQ primitives matching official kernels (`src/v4_kv_quant/qdq.py`): FP8 e4m3 g64
+      ue8m0 round-up scales (exact via frexp), software FP4 e2m1 RNE g32, orthonormal FWHT
+- [x] Versioned policy object + 5 named presets, JSON round trip (`src/v4_kv_quant/policy.py`)
+- [x] QDQ cache-layer subclasses + indexer-query scorer wrapper (`src/v4_kv_quant/qdq_cache.py`);
+      registry not hijacked (`_layer_type = None`, test-pinned)
+- [x] Metrics + teacher-forced harness (`src/v4_kv_quant/{metrics,harness}.py`)
+- [x] `tools/run_qdq_simulation.py` runs all policies; results labeled simulation/no savings
+- [x] Acceptance gates test-pinned (`tests/test_qdq_simulation.py`, 27 tests): identity
+      bit-exact, RoPE slice untouched, QDQ-once, chunked/decode==one-shot under QDQ,
+      Task-01 invariants preserved
+- [x] Full suite green: 54 passed
 
 ## Checklist (Task 01)
 
@@ -42,9 +57,10 @@ documented in `docs/REPRODUCIBILITY.md`.)
 
 ## Next task
 
-**Task 02 — official-policy QDQ simulation (Stage B):** implement policy-configurable
-cache-layer subclasses reproducing the official numerics (FP8 e4m3 g64 ue8m0 non-RoPE main KV;
-Hadamard+FP4 e2m1 g32 indexer KV + queries) on the tiny model. Identity test (policy off =
-bit-exact), precise-slice untouched test, QDQ-once test, chunked/incremental equivalence,
-tiny-model logit/NLL deltas + indexer top-k overlap. Simulation only — no memory-saving claims.
-Scope details: `docs/QUANTIZATION_INJECTION_PLAN.md`.
+**Task 03 — calibration and precision-policy plumbing (DGX plan Phase 4):** target taxonomy
+(layer, layer type, state, contiguous group of 32/64), activation-range + quantization-error
+collection, one-group empirical perturbation (ΔNLL, logit KL) using the Task-02 harness,
+indexer top-k overlap/recall as the indexer metric, versioned precision-map JSON produced by
+a tiny-model smoke calibration with separated calibration/held-out token sets. The Stage-C
+actual-storage prototype (packed FP8/FP4 + scales, real memory accounting) can follow or run
+in parallel — see `docs/QUANTIZATION_INJECTION_PLAN.md` and `docs/DGX_PHASE_PLAN.md`.

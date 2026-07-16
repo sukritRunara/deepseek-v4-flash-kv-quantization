@@ -82,3 +82,37 @@ prototype actually needs it, with explicit sign-off).
 **Evidence:** manual gcc reproduction; hardware_smoke UNSUPPORTED entries with root cause.
 **Consequences:** no fused-kernel prototyping on GX10 until resolved; none for Tasks 01–02.
 **Follow-up:** revisit before any Stage-D local prototyping.
+
+### D-006 — Indexer QDQ stores keys in the Hadamard-rotated basis; queries rotated via scorer wrapper
+
+**Date:** 2026-07-16
+**Status:** accepted
+**Context:** The official indexer path (model.py:368-370, 414-420) Hadamard-rotates both the
+compressed indexer keys and the queries before FP4 QDQ, and scores in the rotated space
+(orthonormal rotation preserves dot products; its purpose is outlier-spreading before FP4).
+The only HF module that sees post-RoPE queries is `DeepseekV4IndexerScorer`.
+**Decision:** `QDQCSACacheLayer` stores indexer entries rotated+FP4-QDQ'd (official-faithful);
+`indexer_query_qdq` context manager swaps the scorer for a wrapper that rotates+QDQs queries
+symmetrically. No edit to `DeepseekV4Indexer.forward`.
+**Alternatives considered:** rotate→QDQ→inverse-rotate before storing (keeps original basis
+but diverges from official numerics); editing the modular file (rejected, upstream-invasive).
+**Evidence:** `test_layer_indexer_write_rotated_fp4`, `test_hadamard_properties` (dot-product
+preservation), `test_indexer_policy_end_to_end` (scorer restored).
+**Consequences:** baseline and QDQ runs must not share a live scorer swap; the context
+manager guarantees restoration.
+**Follow-up:** compare pure-PyTorch FWHT vs `fast_hadamard_transform` numerics on RunPod.
+
+### D-007 — Software e2m1 rounding (RNE) instead of native FP4 cast
+
+**Date:** 2026-07-16
+**Status:** accepted
+**Context:** torch 2.13 cannot cast to `float4_e2m1fn_x2` ("copy_kernel not implemented" —
+probed); the official kernel's `T.Cast(FP4, …)` rounds to nearest-even on the e2m1 grid.
+**Decision:** implement the e2m1 grid in software with explicit ties-to-even midpoint table;
+verified idempotent, grid-exact, and tie-correct by unit tests.
+**Alternatives considered:** nearest-value without tie rule (reference PoC behavior —
+diverges from hardware on exact midpoints); waiting for native cast support.
+**Evidence:** `tests/test_qdq_simulation.py::test_fp4_tie_rounding_is_nearest_even`.
+**Consequences:** bit-exact parity with the official tilelang kernel on midpoints is expected
+but must be spot-checked on RunPod where tilelang runs.
+**Follow-up:** RunPod cross-check kernel-vs-software QDQ on identical inputs.

@@ -1,5 +1,70 @@
 # Worklog
 
+## 2026-07-16 (Task 02 — official-policy QDQ simulation, Stage B)
+
+### Goal
+
+Reproduce the official QAT-aligned QDQ numerics at the Transformers cache write boundary,
+selected purely by a serializable policy. Simulation only — no memory savings.
+
+### Commands run
+
+```bash
+.venv/bin/python -m pytest tests/test_qdq_simulation.py -q   # 27 passed
+.venv/bin/python -m pytest tests/ -q                         # 54 passed
+.venv/bin/python tools/run_qdq_simulation.py                 # results/qdq_simulation.json
+```
+
+### Files changed
+
+- `prompts/02_OFFICIAL_POLICY_QDQ_SIMULATION.md` (task spec + acceptance gates)
+- `src/v4_kv_quant/qdq.py` (FP8 e4m3 QDQ g64 + exact ue8m0 round-up scales via frexp;
+  software FP4 e2m1 RNE g32; orthonormal FWHT; effective_group_size with no silent fallback)
+- `src/v4_kv_quant/policy.py` (StatePolicy/KVQuantPolicy v1, JSON round trip, 5 presets)
+- `src/v4_kv_quant/qdq_cache.py` (QDQSlidingWindowLayer / QDQHCACacheLayer / QDQCSACacheLayer,
+  QDQCache container, indexer-query scorer wrapper context manager)
+- `src/v4_kv_quant/{metrics,harness}.py` (logit/KL/NLL/top-1 + indexer top-k overlap;
+  teacher-forced runner)
+- `tools/run_qdq_simulation.py`, `tests/test_qdq_simulation.py`
+
+### Tests and results
+
+54/54 pass. Tool output (tiny RANDOM-weight model, fp32 CPU, S=48, prefill 24 — machinery
+validation and relative ordering only):
+
+| policy | max abs dlogit | KL mean | top-1 agree | indexer overlap |
+|---|---|---|---|---|
+| baseline_bf16 | 0.0 (bit-exact) | 0.0 | 1.0000 | 1.0000 |
+| main_fp8_nonrope_rope_bf16 | 3.8e-2 | 7.9e-6 | 0.9688 | 0.9944 |
+| reference_official_qdq | 1.7e-1 | 5.3e-5 | 0.9479 | 0.9444 |
+| main_fp4_nonrope_rope_bf16 (exp) | 1.8e-1 | 1.4e-4 | 0.8958 | 0.9389 |
+| indexer_reference_qdq | 1.2e-1 | 4.7e-5 | 0.9583 | 0.9333 |
+
+Ordering is sensible: FP8 mildest; FP4-on-main worst; indexer FP4 shows up mainly as top-k
+overlap loss (0.93) — consistent with the Task-01 tie-instability finding.
+
+### Findings
+
+1. torch 2.13 cannot cast to `float4_e2m1fn_x2` (storage-only; "copy_kernel not implemented")
+   → software e2m1 grid with RNE ties (tie table 0.25→0, 0.75→1, 1.25→1, 1.75→2, 2.5→2,
+   3.5→4, 5→4), verified idempotent and grid-exact.
+2. `CacheLayerMixin.__init_subclass__` re-registers subclasses by inherited `_layer_type` —
+   QDQ subclasses MUST set `_layer_type = None` or they silently hijack every
+   `DynamicCache(config=…)` in the process (test-pinned).
+3. Indexer entries are stored in the Hadamard-ROTATED basis and queries rotated symmetrically
+   via a scorer wrapper — matches official model.py:414-420; FWHT dot-product preservation
+   verified to 1e-4.
+4. QDQ at the write boundary is chunking-invariant: chunked/one-shot/token-by-token agree to
+   Task-01 tolerances under FP8 policy (per-token row groups + per-entry emission).
+
+### Blockers / open questions
+
+None for local work. Real-checkpoint validation of all quality numbers is a RunPod gate.
+
+### Next step
+
+Task 03: calibration plumbing (Phase 4) — see PROJECT_STATUS.md.
+
 ## 2026-07-16
 
 ### Goal
