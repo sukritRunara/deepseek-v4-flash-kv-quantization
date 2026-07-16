@@ -2,12 +2,28 @@
 
 ## Current phase
 
-GX10 local development — **Task 01 and Task 02 complete** (2026-07-16).
+GX10 local development — **Tasks 01, 02, and 03 complete** (2026-07-16).
 
 ## Active task
 
-Task 02 (`prompts/02_OFFICIAL_POLICY_QDQ_SIMULATION.md`) — done. Awaiting Task 03 definition
-(expected: calibration/sensitivity plumbing, DGX plan Phase 4).
+Task 03 (`prompts/03_CALIBRATION_PLUMBING.md`) — done. Awaiting Task 04 definition
+(expected: Stage-C actual-storage prototype, DGX plan Phase 5).
+
+## Checklist (Task 03)
+
+- [x] Target taxonomy `(layer, layer_type, state, contiguous group)`; indexer as one
+      state-level target per CSA layer (`src/v4_kv_quant/targets.py`, decision D-008)
+- [x] Versioned per-group `PrecisionMap` + validation + JSON (`src/v4_kv_quant/precision_map.py`)
+- [x] `MappedQDQCache` map consumer; single-entry map = perturbation experiment; empty map
+      bit-exact; full-coverage map == Task-02 policy cache bitwise (`src/v4_kv_quant/mapped_cache.py`)
+- [x] Pass-through activation-stats collector, bit-exact, per-group amax + QDQ-error RMS
+      (`src/v4_kv_quant/stats.py`)
+- [x] One-target empirical perturbation sweep + ranking + map builder with explicit
+      fractions/thresholds (`src/v4_kv_quant/sensitivity.py`); gradient-weighted ranking
+      deferred (optional per CLAUDE.md)
+- [x] Smoke calibration end to end (`tools/run_calibration_smoke.py`): 16 targets, map
+      built + validated, held-out eval, token ids/seeds/provenance saved
+- [x] Full suite green: 67 passed
 
 ## Checklist (Task 02)
 
@@ -57,10 +73,10 @@ documented in `docs/REPRODUCIBILITY.md`.)
 
 ## Next task
 
-**Task 03 — calibration and precision-policy plumbing (DGX plan Phase 4):** target taxonomy
-(layer, layer type, state, contiguous group of 32/64), activation-range + quantization-error
-collection, one-group empirical perturbation (ΔNLL, logit KL) using the Task-02 harness,
-indexer top-k overlap/recall as the indexer metric, versioned precision-map JSON produced by
-a tiny-model smoke calibration with separated calibration/held-out token sets. The Stage-C
-actual-storage prototype (packed FP8/FP4 + scales, real memory accounting) can follow or run
-in parallel — see `docs/QUANTIZATION_INJECTION_PLAN.md` and `docs/DGX_PHASE_PLAN.md`.
+**Task 04 — Stage-C actual-storage prototype (DGX plan Phase 5):** custom cache layers that
+really store FP8 (`float8_e4m3fn`) and packed FP4 (nibbles in `uint8`/`float4_e2m1fn_x2`
+views) plus explicit e8m0/fp32 scale tensors, with pure-PyTorch dequantize-on-read;
+non-RoPE/precise-slice split storage; honest memory accounting (values + scales + padding +
+buffers + K=V aliasing + the sliding-layer V-duplication fix); correctness vs the Stage-B
+QDQ baseline on tiny-model semantic and quality tests. No speed claims on GX10.
+Then Task 05: benchmark harness + RunPod tooling (Phase 6).

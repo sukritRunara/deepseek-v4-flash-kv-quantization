@@ -116,3 +116,24 @@ diverges from hardware on exact midpoints); waiting for native cast support.
 **Consequences:** bit-exact parity with the official tilelang kernel on midpoints is expected
 but must be spot-checked on RunPod where tilelang runs.
 **Follow-up:** RunPod cross-check kernel-vs-software QDQ on identical inputs.
+
+### D-008 — Indexer calibrated as one state-level target, not per-group
+
+**Date:** 2026-07-16
+**Status:** accepted
+**Context:** Main-KV states quantize per contiguous channel group (official scale groups of
+64), so per-group sensitivity maps directly onto deployable storage decisions. The indexer
+path Hadamard-rotates the whole 128-dim vector before FP4 quantization; a channel group in
+the original basis has no independent meaning after rotation, and packed FP4 storage would
+quantize the whole rotated vector regardless.
+**Decision:** `enumerate_targets` emits exactly one whole-vector `indexer_kv` target per CSA
+layer; `PrecisionMap.validate` rejects partial indexer coverage. Indexer sensitivity is
+judged by top-k overlap/recall (D-004) plus ΔNLL/KL.
+**Alternatives considered:** per-group targets in the rotated basis (measurable but not
+independently deployable; rejected as misleading granularity).
+**Evidence:** `src/v4_kv_quant/targets.py` docstring; `test_precision_map_validation`
+(partial indexer coverage rejected); smoke run showing the indexer as the dominant
+sensitivity target.
+**Consequences:** indexer precision decisions are per-layer on/off; finer control would
+require changing the official rotation scheme itself.
+**Follow-up:** revisit only if RunPod results show per-layer on/off is too coarse.

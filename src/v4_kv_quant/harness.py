@@ -39,15 +39,22 @@ def run_teacher_forced(
     input_ids: torch.Tensor,
     prefill_len: int,
     policy: KVQuantPolicy | None = None,
+    precision_map=None,
     capture_indexer: bool = True,
 ) -> TeacherForcedResult:
     """One-shot prefill of `prefill_len` tokens, then ground-truth single-token decode.
 
-    `policy=None` runs the stock `DynamicCache` baseline; otherwise a `QDQCache` with the
-    policy plus the indexer-query QDQ wrapper (active only if the policy asks for it).
+    Cache selection (mutually exclusive):
+      * default            -> stock `DynamicCache` baseline;
+      * `policy=...`       -> `QDQCache` (Task-02 state-family policy);
+      * `precision_map=...`-> `MappedQDQCache` (per-group map, Task-03 calibration).
+    Either quantized mode also arms the symmetric indexer-query QDQ wrapper when the
+    policy/map quantizes indexer keys.
     """
     from transformers import DynamicCache  # local import keeps module import light
 
+    if policy is not None and precision_map is not None:
+        raise ValueError("pass either policy or precision_map, not both")
     seq_len = input_ids.shape[1]
     if not 0 < prefill_len <= seq_len:
         raise ValueError(f"prefill_len {prefill_len} out of range for seq_len {seq_len}")
@@ -62,8 +69,17 @@ def run_teacher_forced(
                 )
             )
 
-    cache = DynamicCache(config=model.config) if policy is None else build_qdq_cache(model.config, policy)
-    context = nullcontext(model) if policy is None else indexer_query_qdq(model, policy)
+    if policy is not None:
+        cache = build_qdq_cache(model.config, policy)
+        context = indexer_query_qdq(model, policy)
+    elif precision_map is not None:
+        from .mapped_cache import MappedQDQCache, indexer_query_context
+
+        cache = MappedQDQCache(model.config, precision_map)
+        context = indexer_query_context(model, precision_map)
+    else:
+        cache = DynamicCache(config=model.config)
+        context = nullcontext(model)
     chunks: list[torch.Tensor] = []
     try:
         with context:

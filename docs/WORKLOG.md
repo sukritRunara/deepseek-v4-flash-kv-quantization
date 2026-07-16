@@ -1,5 +1,65 @@
 # Worklog
 
+## 2026-07-16 (Task 03 — calibration and precision-policy plumbing, Phase 4)
+
+### Goal
+
+Target taxonomy, per-group precision map + consumer cache, activation stats, one-target
+empirical perturbation sweep, map builder, smoke calibration with held-out evaluation.
+
+### Commands run
+
+```bash
+.venv/bin/python -m pytest tests/test_calibration.py -q   # 13 passed (first run)
+.venv/bin/python -m pytest tests/ -q                      # 67 passed
+.venv/bin/python tools/run_calibration_smoke.py           # results/calibration_smoke/
+```
+
+### Files changed
+
+- `prompts/03_CALIBRATION_PLUMBING.md` (spec + gates)
+- `src/v4_kv_quant/targets.py` (QuantTarget, enumerate_targets; indexer = state-level target)
+- `src/v4_kv_quant/precision_map.py` (MapEntry/PrecisionMap v1, validation, JSON)
+- `src/v4_kv_quant/mapped_cache.py` (MappedQDQCache + per-group write-boundary QDQ +
+  indexer query context from map)
+- `src/v4_kv_quant/stats.py` (pass-through StatsCollectorCache: amax/mean|x|/RMS,
+  per-group amax, FP8/rotated-FP4 QDQ-error RMS)
+- `src/v4_kv_quant/sensitivity.py` (measure_target, run_sensitivity_sweep,
+  build_map_from_sweep with fp8/fp4 fractions + indexer overlap threshold)
+- `src/v4_kv_quant/harness.py` (accepts `precision_map=` alongside `policy=`)
+- `tools/run_calibration_smoke.py`, `tests/test_calibration.py`
+
+### Tests and results
+
+67/67 pass. Smoke run (tiny random model, 16 targets, group_size_main=8, S=48/prefill 24):
+
+- stats: indexer rotated-FP4 QDQ error RMS 1.1e-1 vs main-KV FP8 2.5–2.8e-2 (~4x) — expected;
+- sensitivity ranking: indexer target most sensitive (score 1.6e-3, ~4x above the top main
+  target); layer-0 window groups next (earliest layer, most downstream amplification);
+  compressed-KV groups least sensitive on this random model;
+- built map: 11x fp8_e4m3 + 1x indexer fp4_hadamard, 4 most-sensitive groups left BF16;
+- held-out eval: top-1 agreement 0.9375, KL 6.3e-5, dNLL -4.4e-4, no NaN/Inf.
+
+All numbers are random-weight machinery validation — not transferable to the checkpoint.
+
+### Findings
+
+1. Single-entry precision map == perturbation experiment; full map == deployable policy —
+   one consumer (`MappedQDQCache`) serves calibration and deployment, cross-validated
+   bitwise against the Task-02 policy cache on full coverage.
+2. Indexer calibrated as ONE state-level target: Hadamard rotation mixes all channels, so
+   per-group granularity in the original basis has no deployable meaning (D-008).
+3. Gradient-weighted ranking deferred (optional per CLAUDE.md); empirical perturbation is
+   the primary truth and the harness makes each target measurement ~1 s on the tiny model.
+
+### Blockers / open questions
+
+None. Real-corpus calibration data (C4 port) and real-weight sensitivity are RunPod work.
+
+### Next step
+
+Task 04: Stage-C actual-storage prototype (Phase 5) — see PROJECT_STATUS.md.
+
 ## 2026-07-16 (Task 02 — official-policy QDQ simulation, Stage B)
 
 ### Goal
