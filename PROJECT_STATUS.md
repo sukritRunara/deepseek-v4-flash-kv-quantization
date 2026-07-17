@@ -2,13 +2,18 @@
 
 ## Current phase
 
-GX10 local development — **Tasks 01–05 complete** (Tasks 01–03: 2026-07-16; Tasks 04–05: 2026-07-17).
+RunPod — **Phase A (1-GPU landing pod) complete** (2026-07-17): environment rebuilt for
+x86-64/SM120, hardware smoke all-PASS, landing test ALL CHECKS PASSED, suite 90 passed,
+tiny CUDA benchmark ran end to end. One incompatibility found and fixed (GX10-hardcoded
+host-identity tests). Details: WORKLOG 2026-07-17 "RunPod Phase A".
+(GX10 local development Tasks 01–05 completed 2026-07-16/17, tagged `dgx-phase-complete-v1`.)
 
 ## Active task
 
-**DGX/GX10 local phase CLOSED** (2026-07-17): completion gate walked, preflight checklist
-done, repository tagged `dgx-phase-complete-v1`. Next work happens on RunPod
-(`docs/RUNPOD_HANDOFF_CHECKLIST.md` → "Cheap one-GPU landing test" onward).
+Phase A wrap-up: freeze the pod image and stop the pod (operator actions), then Phase B
+(`RUNPOD_START_HERE.md` → four-GPU pod). Budget one hour for Phase B step 1 (baseline
+generation sanity — the definitive native-FP8/FP4-on-SM120 check) before committing to
+the full experiment plan.
 
 ## Completion gate evidence
 

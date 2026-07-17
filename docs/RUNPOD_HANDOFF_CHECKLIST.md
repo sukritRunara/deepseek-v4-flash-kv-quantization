@@ -53,16 +53,16 @@ temporary model caches
 
 Before paying for four GPUs:
 
-- [ ] Launch one RTX PRO 6000 Blackwell 96 GB pod.
-- [ ] Use the intended persistent/network volume.
-- [ ] Clone the tagged repository.
-- [ ] Rebuild the environment for x86-64 and SM120.
-- [ ] Capture environment metadata.
-- [ ] Run hardware smoke tests.
-- [ ] Run the complete tiny-model test suite.
-- [ ] Compile any Triton/CUDA extensions on the target.
-- [ ] Run tiny QDQ and storage smoke experiments.
-- [ ] Record all incompatibilities and fixes in Git.
+- [x] Launch one RTX PRO 6000 Blackwell 96 GB pod. (2026-07-17; CC 12.0, driver 580.126.09)
+- [x] Use the intended persistent/network volume. (network volume on /workspace)
+- [x] Clone the tagged repository. (checkout 4 doc-only commits after the tag)
+- [x] Rebuild the environment for x86-64 and SM120. (`scripts/runpod/setup_env.sh`, default cu130)
+- [x] Capture environment metadata. (`artifacts/env/*-20260717T075537Z.*`)
+- [x] Run hardware smoke tests. (all required + optional PASS, incl. triton/compile on CUDA)
+- [x] Run the complete tiny-model test suite. (90 passed; landing test ALL CHECKS PASSED)
+- [x] Compile any Triton/CUDA extensions on the target. (triton kernels JIT-compile; python3.12-dev present)
+- [x] Run tiny QDQ and storage smoke experiments. (`benchmark_cache.py --config configs/bench_tiny_local.json --device cuda`)
+- [x] Record all incompatibilities and fixes in Git. (one: GX10-hardcoded host-identity tests; see WORKLOG 2026-07-17 Phase A)
 - [ ] Freeze the resulting image/environment.
 - [ ] Stop the one-GPU pod.
 

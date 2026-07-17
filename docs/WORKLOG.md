@@ -1,5 +1,91 @@
 # Worklog
 
+## 2026-07-17 (RunPod Phase A — 1-GPU landing pod, environment + portability gate)
+
+### Goal
+
+Execute `RUNPOD_START_HERE.md` Phase A on the landing pod: rebuild the environment for
+x86-64/SM120, pass hardware smoke + landing test + full suite, confirm the benchmark
+measurement path on CUDA, record incompatibilities.
+
+### Environment
+
+- Pod: 1× NVIDIA RTX PRO 6000 Blackwell Server Edition 96 GB (compute capability 12.0 /
+  SM120), x86_64, 256 vCPU / 1.5 TB RAM, driver 580.126.09, network volume on /workspace.
+- Image ships CUDA toolkit 12.8 (nvcc) — irrelevant at runtime: the cu130 torch wheel
+  bundles the CUDA 13.0 runtime and triton bundles its own ptxas. Default
+  `TORCH_INDEX_URL` (cu130) worked; no override needed.
+- Python 3.12.3 **with python3.12-dev preinstalled** — the GX10 blocker (Triton-backed
+  `torch.bmm` needs `Python.h`) does not exist here; CUDA model execution works.
+- Installed: torch 2.13.0+cu130, triton 3.7.1, transformers 5.15.0.dev0 (editable at pin
+  `150eb7c9ed40`), model source at `60d8d70770c6` (13 MiB LFS pointers, no weights).
+  Capture: `artifacts/env/*-20260717T075537Z.*`.
+- Repo state: clean checkout 4 doc-only commits after `dgx-phase-complete-v1`.
+
+### Commands run
+
+```bash
+bash scripts/runpod/setup_env.sh   # venv+torch+pins+smoke+landing(+suite); first run: suite 2 failed, 88 passed
+.venv/bin/python -m pytest tests/test_benchmark.py -q   # after test fix: 8 passed
+.venv/bin/python tools/runpod_landing_test.py --expect configs/expectations_runpod.json --run-suite
+                                   # ALL CHECKS PASSED (exit 0), suite 90 passed
+.venv/bin/python tools/benchmark_cache.py --config configs/bench_tiny_local.json --device cuda   # exit 0
+```
+
+### Files changed
+
+- `tests/test_benchmark.py` — the only incompatibility found (see Findings 1)
+- `docs/RUNPOD_HANDOFF_CHECKLIST.md` (landing-test boxes ticked), `PROJECT_STATUS.md`,
+  this file
+
+### Tests and results
+
+- Hardware smoke: **all required + all optional capabilities PASS** — BF16/FP8
+  e4m3/e8m0/FP4-x2 dtypes and round-trips on SM120, `torch._scaled_mm` FP8 GEMM,
+  hand-written Triton kernel, `torch.compile` (inductor/triton) on CUDA.
+- Landing test: all 15 checks PASS (platform, GPU identity, CC ≥ 12.0, dtypes, vendor
+  pins, no weights materialized, python dev headers, tiny forward CPU+CUDA, Stage-C
+  bitwise gate). Report: `results/landing_test.json`.
+- Suite: first run **2 failed, 88 passed** (host-identity tests, below); after fix
+  **90 passed** under `--run-suite` → `ALL CHECKS PASSED`, exit 0.
+- Tiny-model CUDA benchmark (batch 2, prompts 64/256, 32 decode tokens, 5 trials,
+  medians; fp32, `reference_official_qdq` policy) — machinery validation only,
+  NON-TRANSFERABLE numbers: baseline/qdq/storage all ran end to end on CUDA; storage
+  cache bytes 9.8 vs 22.0 KiB (prompt 64) and 18.6 vs 46.0 KiB (prompt 256) with QDQ
+  == baseline bytes as designed; QDQ/storage decode ~10–20% slower than baseline
+  (expected pre-fusion). Micro-overheads recorded (fp8 encode window step ~74 µs,
+  fp4 indexer entry encode ~209 µs). Output: `results/benchmark_cache.json`.
+
+### Findings
+
+1. **Only incompatibility: the two landing-check identity tests hardcoded the GX10 as
+   "this machine"** (`test_landing_checks_pass_with_local_expectations` asserted the
+   GX10 expectations pass; `..._fail_cleanly_with_runpod_expectations` asserted the
+   RunPod expectations fail). On the pod both inverted. Fixed by selecting the
+   expectations file from `platform.machine()` — "this host's expectations PASS, the
+   other host's FAIL cleanly" — so the suite is green on both hosts with unchanged
+   intent. No product-code change was needed anywhere.
+2. Everything Phase A is allowed to prove about SM120 is proven: FP8/FP4 dtypes and
+   casts, FP8 GEMM, Triton compile path, full tiny V4 architecture execution on GPU
+   (eager attention, compressors, indexer, all three cache variants, Triton-backed
+   `torch.bmm`), Stage-C bitwise gate on this dtype stack. Real-checkpoint quantized
+   kernels remain unprovable on 96 GB (Phase B step 1 is the definitive check).
+3. cu130 wheel on a CUDA-12.8 image is fine (driver 580.x provides the 13.0 runtime
+   surface); worth knowing when picking Phase B images.
+4. Compute capability reports **12.0** here vs 12.1 on the GX10 GB10 — the
+   `min_compute_capability: [12, 0]` expectation is correct as written.
+
+### Blockers / open questions
+
+- None for Phase B. Remaining Phase A checklist items are operator actions:
+  freeze the pod image, stop the pod.
+
+### Next step
+
+Phase B (4× GPU pod): reuse frozen image; budget the first hour for step 1 baseline
+generation sanity — native FP8/FP4 inference on SM120 — before committing to the full
+experiment plan (fallback: BF16 dequant on 8×96 GB).
+
 ## 2026-07-17 (Local completion gate — DGX/GX10 phase closed)
 
 ### Goal
