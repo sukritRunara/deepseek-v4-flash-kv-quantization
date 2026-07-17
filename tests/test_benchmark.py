@@ -7,6 +7,7 @@ guarantees, byte accounting, and check logic are.
 from __future__ import annotations
 
 import json
+import platform
 from pathlib import Path
 
 import pytest
@@ -111,8 +112,26 @@ def test_quantization_overhead_microbench_structure():
 # ---------------------------------------------------------------------------
 
 
-def test_landing_checks_pass_with_local_expectations():
-    expect = json.loads((REPO_ROOT / "configs/expectations_gx10.json").read_text())
+# expectations file for the host the suite is running on, and for the "other" host —
+# the identity tests below must hold on both the GX10 (aarch64) and RunPod (x86_64)
+_EXPECTATIONS_BY_MACHINE = {
+    "aarch64": "configs/expectations_gx10.json",
+    "x86_64": "configs/expectations_runpod.json",
+}
+
+
+def _expectations_for(this_host: bool) -> dict:
+    machine = platform.machine()
+    if machine not in _EXPECTATIONS_BY_MACHINE:
+        pytest.skip(f"no expectations file for machine {machine!r}")
+    name = _EXPECTATIONS_BY_MACHINE[machine] if this_host else next(
+        p for m, p in _EXPECTATIONS_BY_MACHINE.items() if m != machine
+    )
+    return json.loads((REPO_ROOT / name).read_text())
+
+
+def test_landing_checks_pass_with_this_hosts_expectations():
+    expect = _expectations_for(this_host=True)
     if not torch.cuda.is_available():
         expect["require_cuda"] = False
     checks = run_landing_checks(expect, REPO_ROOT)
@@ -124,15 +143,15 @@ def test_landing_checks_pass_with_local_expectations():
             "no_weights_materialized", "stage_c_bitwise_gate"} <= names
 
 
-def test_landing_checks_fail_cleanly_with_runpod_expectations():
-    """On the GX10 the RunPod expectations must FAIL on platform/GPU identity — as
-    structured results, not exceptions — proving the same command works on both hosts."""
-    expect = json.loads((REPO_ROOT / "configs/expectations_runpod.json").read_text())
+def test_landing_checks_fail_cleanly_with_other_hosts_expectations():
+    """The other host's expectations must FAIL on platform identity — as structured
+    results, not exceptions — proving the same command works on both hosts."""
+    expect = _expectations_for(this_host=False)
     if not torch.cuda.is_available():
         expect["require_cuda"] = False
     checks = run_landing_checks(expect, REPO_ROOT, tiny_gate=False)
     by_name = {c["check"]: c for c in checks}
-    assert by_name["platform_machine"]["status"] == "FAIL"  # aarch64 != x86_64
+    assert by_name["platform_machine"]["status"] == "FAIL"  # aarch64 vs x86_64
     assert not checks_passed(checks)
     # environment-independent checks still pass
     assert by_name["vendor_model_pinned"]["status"] == "PASS"
