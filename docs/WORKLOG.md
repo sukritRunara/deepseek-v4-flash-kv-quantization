@@ -1,5 +1,38 @@
 # Worklog
 
+## 2026-07-17 (RunPod Phase B — B2: baseline benchmark bring-up)
+
+### Goal
+
+Plan step B2: baseline memory/timing on the full model (`configs/bench_runpod_4gpu.json`,
+`--variants baseline`).
+
+### Findings
+
+1. **One-shot 65536-token prefill OOMs a 96 GB card** under eager attention (CSA layers
+   score against ~16k compressed entries → ~20 GiB transients on GPU 0 on top of 34 GiB
+   weights). Fix: `prefill_chunk` in the bench engine (chunked prefill through the same
+   cache; semantics test-pinned since Task 01; TTFT = full chunked wall time) +
+   per-cell OOM resilience so a failed cell no longer discards the matrix. runpod config
+   uses `prefill_chunk: 2048`. New test: chunked == one-shot byte accounting. Suite 91.
+2. **`PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` is unusable on this stack**
+   (torch 2.13.0+cu130, SM120, 4-GPU device_map): it causes *spurious* device-side
+   asserts (`vectorized_gather_kernel: index out of bounds`) on provably in-bounds
+   embedding gathers — first forward, 1024 random-id prompt. Eliminated by A/B: same
+   command passes without the flag, crashes with it; token-id ladder (0..129279),
+   length ladder, and runtime table audits all clean. The flag had been added
+   speculatively during OOM debugging — one-variable-at-a-time relaunches would have
+   found this in one cycle instead of four model loads. Do not set it.
+3. Cell sanity numbers (1 trial, no warmup, cold autotune — NOT the report numbers):
+   prompt 1024 baseline TTFT 8.1 s, decode 0.62 tok/s (ITL p50 334 ms; includes
+   first-call Triton tuning and host-staged P2P handoffs). Real medians come from the
+   full warmed run.
+
+### Next step
+
+Full B2 matrix (baseline; 1024/8192/65536; medians of 5) — results appended below when
+complete → then B3 identity gate.
+
 ## 2026-07-17 (RunPod Phase B — B1: weights, generation gate, P2P fault investigation)
 
 ### Goal
