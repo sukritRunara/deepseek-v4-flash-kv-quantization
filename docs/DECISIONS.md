@@ -137,3 +137,25 @@ sensitivity target.
 **Consequences:** indexer precision decisions are per-layer on/off; finer control would
 require changing the official rotation scheme itself.
 **Follow-up:** revisit only if RunPod results show per-layer on/off is too coarse.
+
+### D-009 — Stage-C correctness gate: bitwise equivalence with the Stage-B QDQ cache
+
+**Date:** 2026-07-17
+**Status:** accepted
+**Context:** Stage C changes the storage representation (FP8 codes + e8m0 scales, packed
+FP4 nibbles) but must not change numerics: the values attention consumes should be exactly
+the values the validated Stage-B simulation produced, or Stage-B quality results would not
+transfer to real storage.
+**Decision:** The storage primitives carry a hard contract `load(store(x)) == qdq(x)`
+(bitwise), and the model-level gate asserts `QuantizedStorageCache(policy)` produces
+logits and indexer picks bitwise-identical to `QDQCache(policy)`. FP4 codes are stored as
+sign + 3-bit magnitude index, two per uint8 (layout-compatible with a future
+`float4_e2m1fn_x2` view); scales as `float8_e8m0fnu` when power-of-2, fp32 otherwise.
+**Alternatives considered:** tolerance-based equivalence (hides representation bugs);
+independent Stage-C numerics (would require re-running all quality experiments).
+**Evidence:** `tests/test_actual_storage.py` (`test_*_matches_qdq`,
+`test_storage_cache_bitwise_equals_qdq_cache`); `results/cache_memory.json` (0.438x
+logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
+**Consequences:** any future storage-format change must preserve the bitwise contract or
+explicitly re-run the Stage-B quality suite.
+**Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.

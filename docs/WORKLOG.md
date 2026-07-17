@@ -1,5 +1,69 @@
 # Worklog
 
+## 2026-07-17 (Task 04 — Stage-C actual-storage prototype, Phase 5)
+
+### Goal
+
+Real low-precision cache storage (FP8 codes + e8m0 scales; packed FP4 nibbles) with
+pure-PyTorch dequantize-on-read, bitwise-faithful to the Stage-B QDQ simulation, plus
+honest memory accounting demonstrating actual byte reduction.
+
+### Commands run
+
+```bash
+.venv/bin/python -m pytest tests/test_actual_storage.py -q   # 15 passed (first run)
+.venv/bin/python -m pytest tests/ -q                         # 82 passed
+.venv/bin/python tools/measure_cache_memory.py               # results/cache_memory.json
+```
+
+### Files changed
+
+- `prompts/04_ACTUAL_STORAGE_PROTOTYPE.md` (spec + gates)
+- `src/v4_kv_quant/storage.py` (fp8_store/fp4_store/load with bitwise QDQ parity;
+  e8m0 1-byte scales for power-of-2, fp32 fallback; sign+3-bit e2m1 codes, 2 per uint8)
+- `src/v4_kv_quant/storage_cache.py` (QuantStore append/trim/decode; storage layers for
+  sliding/HCA/CSA; QuantizedStorageCache; keys/values stay empty placeholders)
+- `src/v4_kv_quant/memory.py` (logical + allocator storage bytes; K=V alias once;
+  stock sliding V-duplication flagged; per-state itemization)
+- `src/v4_kv_quant/harness.py` (`storage=True` runs the Stage-C cache for a policy)
+- `tools/measure_cache_memory.py`, `tests/test_actual_storage.py`
+
+### Tests and results
+
+82/82 pass. Memory comparison (tiny fp32 model, reference_official_qdq, 112 tokens):
+
+| cache | logical bytes | vs baseline |
+|---|---|---|
+| baseline_bf16_stock | 24,576 | 1.000x |
+| stage_b_qdq_sim | 24,576 | 1.000x (simulation saves nothing — proven, not claimed) |
+| stage_c_storage | 10,758 | **0.438x** (per-layer 0.223 / 0.485 / 0.445) |
+
+Itemization confirms: fp8 codes 1 B, e8m0 scales 1 B/group, raw fp32 rope slices, packed
+uint8 indexer nibbles (2, 28, 8) for 16 logical channels, fp32 buffers/overlap intact.
+Sliding layer gains extra from removing the stock duplicated V copy.
+
+### Findings
+
+1. **Stage-C == Stage-B bitwise at model level** (logits and indexer picks) for both
+   fp8-main and full official policies — every Stage-B quality result transfers to real
+   storage unchanged. This is the load-bearing Stage-C correctness gate (D-009).
+2. e8m0/fp8 tensor dtypes support cat/slice/contiguous on CPU in torch 2.13 — no uint8
+   view workarounds needed for storage bookkeeping.
+3. Window trim must re-contiguate: the stock dynamic layers keep views into concatenated
+   history (storage_bytes > logical_bytes, visible in the report as 35,840 vs 24,576);
+   Stage-C stores are trimmed contiguous, so allocator bytes track logical bytes.
+4. fp32 tiny-model ratios overstate real savings (fp8 vs fp32 = 4x on quantized slices);
+   BF16 checkpoint gives 2x there. Accounting validated; final ratios come from RunPod.
+
+### Blockers / open questions
+
+None. Decode-path latency is expectedly worse than baseline (pure-PyTorch dequant per
+forward); not measured on GX10 by design — Stage-D fusion is target-hardware work.
+
+### Next step
+
+Task 05: benchmark harness + RunPod tooling (Phase 6), then the local completion gate.
+
 ## 2026-07-16 (Task 03 — calibration and precision-policy plumbing, Phase 4)
 
 ### Goal

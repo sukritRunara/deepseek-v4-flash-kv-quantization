@@ -2,12 +2,31 @@
 
 ## Current phase
 
-GX10 local development — **Tasks 01, 02, and 03 complete** (2026-07-16).
+GX10 local development — **Tasks 01–04 complete** (Tasks 01–03: 2026-07-16; Task 04: 2026-07-17).
 
 ## Active task
 
-Task 03 (`prompts/03_CALIBRATION_PLUMBING.md`) — done. Awaiting Task 04 definition
-(expected: Stage-C actual-storage prototype, DGX plan Phase 5).
+Task 04 (`prompts/04_ACTUAL_STORAGE_PROTOTYPE.md`) — done. Awaiting Task 05 definition
+(expected: benchmark harness + RunPod tooling, DGX plan Phase 6).
+
+## Checklist (Task 04)
+
+- [x] Storage primitives with bitwise contract `load(store(x)) == qdq(x)`
+      (`src/v4_kv_quant/storage.py`): FP8 e4m3 codes + e8m0/fp32 scales; packed e2m1
+      nibbles (sign + 3-bit index, two per uint8) + e8m0 scales
+- [x] `QuantizedStorageCache` (`src/v4_kv_quant/storage_cache.py`): quantized tensors are
+      the only persistent KV storage (keys/values stay empty placeholders); window
+      append+trim re-contiguated (no hidden history); append-only compressed/indexer
+      stores; entry_count/cumulative_length bookkeeping intact; buffers/overlap stock BF16;
+      sliding-layer V duplication removed
+- [x] **Model-level bitwise equivalence: storage cache == Stage-B QDQ cache** for
+      `main_fp8_nonrope_rope_bf16` and `reference_official_qdq` (logits and indexer picks)
+- [x] Honest memory accounting (`src/v4_kv_quant/memory.py`): logical + allocator storage
+      bytes, K=V alias counted once, stock V-duplication flagged, scales itemized
+- [x] `tools/measure_cache_memory.py`: Stage-B == 1.000x baseline (simulation saves
+      nothing, proven); Stage-C == 0.438x on the fp32 tiny model (real reduction);
+      per-layer/per-state itemization; labeled no-speed-claims
+- [x] Full suite green: 82 passed
 
 ## Checklist (Task 03)
 
@@ -73,10 +92,9 @@ documented in `docs/REPRODUCIBILITY.md`.)
 
 ## Next task
 
-**Task 04 — Stage-C actual-storage prototype (DGX plan Phase 5):** custom cache layers that
-really store FP8 (`float8_e4m3fn`) and packed FP4 (nibbles in `uint8`/`float4_e2m1fn_x2`
-views) plus explicit e8m0/fp32 scale tensors, with pure-PyTorch dequantize-on-read;
-non-RoPE/precise-slice split storage; honest memory accounting (values + scales + padding +
-buffers + K=V aliasing + the sliding-layer V-duplication fix); correctness vs the Stage-B
-QDQ baseline on tiny-model semantic and quality tests. No speed claims on GX10.
-Then Task 05: benchmark harness + RunPod tooling (Phase 6).
+**Task 05 — benchmark harness + RunPod tooling (DGX plan Phase 6):** baseline/QDQ/storage
+benchmark CLIs with warmup and CUDA synchronization, per-trial + median results, peak
+allocated/reserved memory capture, configurable prompt/context fixtures, a source-only
+one-GPU RunPod landing test, four-GPU full-model launch templates, and configuration-driven
+paths/hardware assumptions. Then the local completion gate (`docs/DGX_PHASE_PLAN.md`):
+freeze revisions, results manifest, tag `dgx-phase-complete-v1`, RunPod handoff checklist.

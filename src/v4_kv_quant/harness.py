@@ -41,12 +41,14 @@ def run_teacher_forced(
     policy: KVQuantPolicy | None = None,
     precision_map=None,
     capture_indexer: bool = True,
+    storage: bool = False,
 ) -> TeacherForcedResult:
     """One-shot prefill of `prefill_len` tokens, then ground-truth single-token decode.
 
     Cache selection (mutually exclusive):
       * default            -> stock `DynamicCache` baseline;
-      * `policy=...`       -> `QDQCache` (Task-02 state-family policy);
+      * `policy=...`       -> `QDQCache` (Task-02 QDQ simulation), or the Stage-C
+                              `QuantizedStorageCache` (actual storage) when `storage=True`;
       * `precision_map=...`-> `MappedQDQCache` (per-group map, Task-03 calibration).
     Either quantized mode also arms the symmetric indexer-query QDQ wrapper when the
     policy/map quantizes indexer keys.
@@ -70,7 +72,12 @@ def run_teacher_forced(
             )
 
     if policy is not None:
-        cache = build_qdq_cache(model.config, policy)
+        if storage:
+            from .storage_cache import QuantizedStorageCache
+
+            cache = QuantizedStorageCache(model.config, policy)
+        else:
+            cache = build_qdq_cache(model.config, policy)
         context = indexer_query_qdq(model, policy)
     elif precision_map is not None:
         from .mapped_cache import MappedQDQCache, indexer_query_context
