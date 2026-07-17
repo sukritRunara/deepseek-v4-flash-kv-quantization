@@ -47,6 +47,24 @@ Output: `results/benchmark_cache.json`.
 
 B3 gates (identity + D-009 CUDA re-check) — see next entry.
 
+## 2026-07-17 (RunPod Phase B — B3 gates, in progress)
+
+Driver: scratchpad `b3_identity_gates.py` (gate A: QDQCache(baseline_bf16) ==
+baseline bitwise; gate B: storage == qdq under reference_official_qdq; on a natural and
+a random-id prompt, prefill ~512 + 8 teacher-forced steps).
+
+**Gate A (natural prompt): PASS — logits AND indexer picks bitwise identical** on the
+real 4-GPU model. First hard evidence the injection machinery is numerically invisible
+on the real checkpoint.
+
+**Crash before gate B**: `cudaErrorIllegalAddress` (async, surfaced at cache
+`lazy_initialization .to(device)`) during the FIRST `reference_official_qdq` QDQ run —
+the first time the QDQ cache subclasses + indexer-query wrapper run on a MULTI-DEVICE
+model (Phase A validated single-GPU only). No module-level device-pinned constants in
+`qdq.py`/`qdq_cache.py` (checked). Next action: rerun failing leg alone under
+`CUDA_LAUNCH_BLOCKING=1` to get the true faulting op; audit QDQ cache-layer code for
+tensors created on a fixed device instead of the incoming tensor's device.
+
 ## 2026-07-17 (RunPod Phase B — B1: weights, generation gate, P2P fault investigation)
 
 ### Goal
