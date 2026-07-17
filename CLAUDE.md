@@ -1,5 +1,11 @@
 # CLAUDE.md — DeepSeek-V4-Flash KV-Cache Quantization
 
+> **Current state lives in `PROJECT_STATUS.md` — read it first.** Sections below that
+> describe "the current phase" (GX10 local development) are historical: that phase is
+> complete (tag `dgx-phase-complete-v1`), RunPod Phase A/B0–B3 are done, and work
+> continues per `docs/GCP_TRANSITION.md`. All hard constraints and engineering rules in
+> this file still apply.
+
 ## Mission
 
 Build a **DeepSeek-V4-native KV-cache quantization experiment**. Reuse the attached DeepSeek-V2/V3 MLA repository only as reference for quantization functions, calibration concepts, teacher-forced evaluation, and reporting. Do not attempt to plug its cache class or attention patch directly into DeepSeek-V4.
