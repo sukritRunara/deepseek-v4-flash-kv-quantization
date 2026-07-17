@@ -47,6 +47,31 @@ for the image's Python, then rerun).
 # 5. record any incompatibilities + fixes as commits, freeze the image, stop the pod
 ```
 
+**Driving this with Claude Code:** install/launch `claude` on the pod from the repo root
+(it auto-loads `CLAUDE.md`) and tell it: *"Read RUNPOD_START_HERE.md and execute Phase A;
+record outcomes in docs/WORKLOG.md."* The guards and the landing test make this safe to
+run hands-off; anything it may not do (weight download) is gated behind an env var it
+won't set on its own.
+
+### What Phase A proves about SM120 — and what it deliberately can't
+
+Proven on the 1-GPU pod (all from the steps above):
+- FP8 e4m3 / e8m0 / FP4 dtype support and cast round-trips on SM120 silicon;
+- `torch._scaled_mm` FP8 GEMM, a hand-written Triton kernel, and `torch.compile`
+  (this also implicitly verifies the pod has python dev headers);
+- full V4 *architecture* execution on GPU — the tiny-model suite and CUDA benchmark
+  exercise eager attention, compressors, indexer, all three cache variants, and the
+  Triton-backed `torch.bmm` path end to end;
+- the Stage-C bitwise gate (storage == QDQ simulation) on this hardware/dtype stack.
+
+NOT provable here: the **quantized-weight kernels of the real checkpoint** (FP4 expert
+grouped-GEMM / DeepGEMM / fp8_linear dispatch). Those need the actual weights, and
+~160 GB does not fit one 96 GB card — this is why the checklist calls the landing pod an
+architecture-portability test only. The definitive native-format check is **Phase B
+step 1** (baseline generation on the 4-GPU pod): budget one hour for it before committing
+to the full experiment plan — if native FP8/FP4 inference misbehaves on SM120 there, the
+fallback is BF16 dequantization (~600 GB), which needs an 8×96 GB pod instead of 4.
+
 ---
 
 ## Phase B — four-GPU pod (full model)
