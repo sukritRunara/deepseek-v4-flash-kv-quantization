@@ -160,6 +160,37 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-011 — Phase-B pod P2P is faulty; all multi-GPU runs disable CUDA peer access
+
+**Date:** 2026-07-17
+**Status:** accepted
+**Context:** B1 baseline generation on the 4-GPU pod produced degenerate output
+(all-BOS tokens / NaN logits / 1e36 activations, different on every run). A long
+elimination (see WORKLOG "Phase B — B1 investigation") cleared the FP8/FP4 Triton
+kernels (bit-accurate vs dequant reference across the full autotune config space, all
+V4 shapes, NaN-poisoned allocator), the checkpoint bytes, the loader (GPU buffers
+byte-match shards), and the mask/mHC/model code. A direct stress test then showed the
+platform fault: **direct GPU-to-GPU copies silently corrupt** — 15-30/30 failures at
+64-256 MiB, and 20/20 on every ordered pair when a copy overlaps compute on either
+device (exactly the `device_map="auto"` pipeline regime). D2H/H2D are clean. This is a
+host PCIe ACS/IOMMU misconfiguration, invisible to `nvidia-smi`.
+**Decision:** `v4_kv_quant.p2p_workaround.ensure_host_staged_p2p()` (trigger torch's
+lazy peer enablement, then `cudaDeviceDisablePeerAccess` on every pair, forcing host
+staging) is called at the start of every multi-GPU run. Pod health is checked with
+`tools/p2p_stress_check.py` (0/240 corrupt with the workaround vs ~100% without under
+concurrent compute).
+**Alternatives considered:** requesting a replacement pod (right long-term answer for
+the final benchmark matrix — host-staged copies change inter-GPU latency — but
+correctness work proceeds now; re-run the stress check on any new pod first);
+single-GPU-per-process tensor parallelism (larger rework, defers the whole plan).
+**Evidence:** scratchpad stress logs 2026-07-17; `tools/p2p_stress_check.py`;
+mitigation-validated rerun of B1 generation.
+**Consequences:** all Phase-B numbers carry a "host-staged D2D" caveat; benchmark
+comparisons remain valid (same node, same handicap on all variants) but absolute
+inter-GPU transfer costs are not representative of a healthy node. Report the fault to
+RunPod; prefer a validated-healthy node for the final benchmark matrix (B7).
+**Follow-up:** run `tools/p2p_stress_check.py` on every future pod before use.
+
 ### D-010 — CPU-only local execution; expectation-driven landing severity for CUDA readiness
 
 **Date:** 2026-07-17

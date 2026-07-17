@@ -38,6 +38,9 @@ python3 -m venv "$VENV"
 "$VENV/bin/pip" install -U pip
 "$VENV/bin/pip" install torch --index-url "$TORCH_INDEX_URL"
 "$VENV/bin/pip" install numpy safetensors pytest accelerate sentencepiece
+# kernels: required at first forward of the native-FP8 checkpoint (finegrained-fp8 hub
+# kernel); version pin from transformers' own compatibility check (WORKLOG 2026-07-17 B1).
+"$VENV/bin/pip" install "kernels==0.15.2"
 "$VENV/bin/pip" install -e vendor/transformers
 "$VENV/bin/pip" install -e .
 

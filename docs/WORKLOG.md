@@ -1,5 +1,63 @@
 # Worklog
 
+## 2026-07-17 (RunPod Phase B — B1: weights, generation gate, P2P fault investigation)
+
+### Goal
+
+Plan steps B1 (`docs/RUNPOD_PHASE_B_PLAN.md`): download weights, run the untouched-model
+generation sanity gate (the definitive native-FP8/FP4-on-SM120 check).
+
+### Commands run (essentials)
+
+```bash
+.venv/bin/pip install -U "huggingface_hub"          # hf CLI (pre-flight deviation 2)
+HF_HUB_ENABLE_HF_TRANSFER=0 RUNPOD_ALLOW_WEIGHTS=1 bash scripts/runpod/download_model.sh
+# hub 1.x dropped hf_transfer; xet backend used instead. 149 GB / 46 shards @ 60d8d70.
+.venv/bin/pip install "kernels==0.15.2"             # required by native FP8 path (new dep)
+# generation + a chain of diagnostic forwards (scratchpad scripts, logs preserved)
+.venv/bin/python tools/p2p_stress_check.py          # NEW pod-health tool -> CORRUPT
+.venv/bin/python tools/p2p_stress_check.py --workaround   # -> 0 corrupt
+```
+
+### Findings
+
+1. **Weight loading off the MooseFS volume needs cache pre-warming.** safetensors mmap
+   page-faults over FUSE: load ETA was 4.5 h; after `cat`-warming all shards into page
+   cache (45 s at ~3.3 GB/s, 8 parallel readers; volume does 520 MB/s cold / 7 GB/s
+   warm), the 4-GPU load takes ~12 min. Use parallel pre-read before any full-model run.
+2. **`kernels==0.15.2` is a required dependency** for native-FP8 inference
+   (transformers' finegrained-fp8 integration loads `kernels-community/finegrained-fp8`
+   at first forward). Not caught by Phase A (tiny model has no FP8 weights). Added to
+   `scripts/runpod/setup_env.sh`.
+3. **First generation produced garbage** (32× `<|begin_of_sentence|>`), then a chain of
+   diagnostics with mutually contradictory symptoms across identical runs: NaN logits;
+   1e36-magnitude (finite) q/kv at layer 0 overflowing bf16 scores into NaN; a fully
+   clean run. Eliminated by direct test: FP8/FP4 Triton kernels (both `matmul_2d` and
+   `matmul_grouped` bit-consistent with a dequant reference at all V4 shapes, ue8m0 and
+   fp32 scales, all 12 autotune configs, incl. with a NaN-poisoned allocator pool);
+   checkpoint bytes (sane scales/weights); loader (GPU buffers byte-match shards);
+   masks/sinks (sign-safe by construction, no missing keys).
+4. **Root cause: the pod's PCIe P2P silently corrupts GPU-to-GPU copies** — 15-30/30
+   failures at 64-256 MiB idle, 20/20 on all 12 ordered pairs when copies overlap
+   compute (the `device_map="auto"` regime). D2H/H2D clean, so every single-GPU test
+   passed. Host ACS/IOMMU class fault; invisible to nvidia-smi. See D-011.
+5. **Mitigation validated:** disabling CUDA peer access (host-staged D2D) →
+   0/240 corrupt in the worst-case stress. Implemented as
+   `src/v4_kv_quant/p2p_workaround.ensure_host_staged_p2p()` + health check
+   `tools/p2p_stress_check.py`; generation gate rerun with workaround (result below).
+6. Upstream cross-check: transformers pin is 10 commits behind HEAD with zero changes
+   to deepseek_v4 / finegrained_fp8 / masking — nothing to borrow; the V4 generation
+   integration test is manual (`RUN_SLOW`), so this path has little upstream mileage.
+
+### B1 gate result
+
+(see following entry / PROJECT_STATUS for the generation output with the workaround)
+
+### Next step
+
+B1 verdict + tick, then B2 baseline benchmark (with `ensure_host_staged_p2p()` wired
+into the benchmark path), and report the faulty node to RunPod (D-011 follow-up).
+
 ## 2026-07-17 (RunPod Phase B — B0 environment rebuild, 4-GPU pod)
 
 ### Goal
