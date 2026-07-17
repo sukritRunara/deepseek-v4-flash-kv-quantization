@@ -1,0 +1,123 @@
+{
+  "generated_utc": "2026-07-17T00:58:47Z",
+  "repo_head": "5e8e555efb80e42a2f48bc219fac0e6226637aac",
+  "note": "results/ is gitignored; regenerate outputs with the tools listed in docs/WORKLOG.md and verify against these hashes. artifacts/ is tracked.",
+  "file_count": 23,
+  "files": [
+    {
+      "path": "results/benchmark_cache.json",
+      "bytes": 46217,
+      "sha256": "f7766028604a4938d05ace234fc0f2264294ff6aa838abf102520fa234cad08d"
+    },
+    {
+      "path": "results/cache_memory.json",
+      "bytes": 19507,
+      "sha256": "0507ec335edfdf22531b7f4bcea758442c948edbbf84fde0c4cb0822b5a20aed"
+    },
+    {
+      "path": "results/calibration_smoke/activation_stats.json",
+      "bytes": 1897,
+      "sha256": "d860ae1a267ad568139c8bbbce957b5d60408319f937211122923e47042bb11a"
+    },
+    {
+      "path": "results/calibration_smoke/heldout_eval.json",
+      "bytes": 382,
+      "sha256": "145c624d1224daeb5d3f81f44bf43049c1a9ad4803f06eeed761b20e0313319e"
+    },
+    {
+      "path": "results/calibration_smoke/precision_map.json",
+      "bytes": 2820,
+      "sha256": "fde19dfbb74fe70849a897120b6872dc68e19aeb0e8edc0c8420df61f11c652d"
+    },
+    {
+      "path": "results/calibration_smoke/report.json",
+      "bytes": 1093,
+      "sha256": "077e60132d4883b1dbcc572cfe06268b1a2fe31e5495a7da20228bcf9ccb7f81"
+    },
+    {
+      "path": "results/calibration_smoke/sensitivity.json",
+      "bytes": 8445,
+      "sha256": "d3041aebd39b8f0ab7bf0e640e51e2fb73d35d3dfb4e09a09e3038037e04ee76"
+    },
+    {
+      "path": "results/calibration_smoke/token_ids.json",
+      "bytes": 2507,
+      "sha256": "dfb1e2b23ec9cdd1b6ea6f1753581dabff928d1e9013685d891d35927e1aa5c2"
+    },
+    {
+      "path": "results/hardware_smoke.json",
+      "bytes": 4781,
+      "sha256": "836c23ac0d4b99502ce995fbea7e3d20438ee13bd4fe4556cefc3c8d82044624"
+    },
+    {
+      "path": "results/inspect_v4_cache.json",
+      "bytes": 11197,
+      "sha256": "25e44df9bb3109f04e305a32ebc5cc2e42452fee0ab91a524b0660dcd6ce8ef0"
+    },
+    {
+      "path": "results/landing_runpod_expect.json",
+      "bytes": 2323,
+      "sha256": "44ac2ec7dbcfe6282eae1d9e7b9c275cf8c42b4304c0b321e814935e43f29ca9"
+    },
+    {
+      "path": "results/landing_test.json",
+      "bytes": 2313,
+      "sha256": "d6b37501cf935d70cef1d1453872987f6d59ec22110aa105135f1c0c01441415"
+    },
+    {
+      "path": "results/qdq_simulation.json",
+      "bytes": 6529,
+      "sha256": "b4bb4b728b29fba69db6cde31dd5fc0abf0640bcc4115048284b703dfc4e1b4b"
+    },
+    {
+      "path": "artifacts/calibration_smoke/activation_stats.json",
+      "bytes": 1897,
+      "sha256": "d860ae1a267ad568139c8bbbce957b5d60408319f937211122923e47042bb11a"
+    },
+    {
+      "path": "artifacts/calibration_smoke/heldout_eval.json",
+      "bytes": 382,
+      "sha256": "145c624d1224daeb5d3f81f44bf43049c1a9ad4803f06eeed761b20e0313319e"
+    },
+    {
+      "path": "artifacts/calibration_smoke/precision_map.json",
+      "bytes": 2820,
+      "sha256": "fde19dfbb74fe70849a897120b6872dc68e19aeb0e8edc0c8420df61f11c652d"
+    },
+    {
+      "path": "artifacts/calibration_smoke/report.json",
+      "bytes": 1093,
+      "sha256": "077e60132d4883b1dbcc572cfe06268b1a2fe31e5495a7da20228bcf9ccb7f81"
+    },
+    {
+      "path": "artifacts/calibration_smoke/sensitivity.json",
+      "bytes": 8445,
+      "sha256": "d3041aebd39b8f0ab7bf0e640e51e2fb73d35d3dfb4e09a09e3038037e04ee76"
+    },
+    {
+      "path": "artifacts/calibration_smoke/token_ids.json",
+      "bytes": 2507,
+      "sha256": "dfb1e2b23ec9cdd1b6ea6f1753581dabff928d1e9013685d891d35927e1aa5c2"
+    },
+    {
+      "path": "artifacts/env/environment-20260716T222305Z.txt",
+      "bytes": 6641,
+      "sha256": "66891a0f47799cdd7a12e8b35110ce360ceedf6a8f9d0d4315d6915007f86ddc"
+    },
+    {
+      "path": "artifacts/env/environment-20260716T222905Z.txt",
+      "bytes": 6779,
+      "sha256": "ea91d3c54658ab22d1f9557ab270e886e616c12990411e4cd8a8be7b23306c80"
+    },
+    {
+      "path": "artifacts/env/python-environment-20260716T222305Z.json",
+      "bytes": 645,
+      "sha256": "2f4bbc94e17b610970283861b1f471692c69047327f6282c96d05b3a594f64f4"
+    },
+    {
+      "path": "artifacts/env/python-environment-20260716T222905Z.json",
+      "bytes": 713,
+      "sha256": "0bc23b3d1a9a1f2b280510c02d74d1720bc7c43beba1006f89b0fd0aa03ffe93"
+    }
+  ]
+}

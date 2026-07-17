@@ -1,5 +1,49 @@
 # Worklog
 
+## 2026-07-17 (Local completion gate — DGX/GX10 phase closed)
+
+### Goal
+
+Walk the completion gate in docs/DGX_PHASE_PLAN.md and the handoff preflight, then tag.
+
+### Commands run
+
+```bash
+.venv/bin/pip freeze > docs/PIP_FREEZE_GX10.txt
+cp results/calibration_smoke/*.json artifacts/calibration_smoke/
+.venv/bin/python tools/generate_results_manifest.py        # 23 files -> docs/results_manifest.json
+.venv/bin/python -m pytest tests/ -q                       # 90 passed
+# fresh-worktree validation (catches dependence on uncommitted files):
+git worktree add /tmp/dgx-gate-check HEAD
+PYTHONPATH=/tmp/dgx-gate-check/src .venv/bin/python -m pytest /tmp/dgx-gate-check/tests -q
+git worktree remove /tmp/dgx-gate-check
+git tag -a dgx-phase-complete-v1
+```
+
+### Files changed
+
+- `docs/PIP_FREEZE_GX10.txt` (frozen GX10 versions; reference only)
+- `docs/results_manifest.json` + `tools/generate_results_manifest.py`
+- `artifacts/calibration_smoke/` (committed calibration fixtures: token ids, precision
+  map, sensitivity records, held-out metrics, stats)
+- `docs/DGX_PHASE_PLAN.md` (all boxes checked; gradient-weighted ranking left open as
+  explicitly optional/deferred), `docs/RUNPOD_HANDOFF_CHECKLIST.md` (preflight complete),
+  `PROJECT_STATUS.md`
+
+### Tests and results
+
+Full suite 90 passed on the working tree AND from a clean git worktree of the final
+commit. No weights (vendor model tree 14 MB pointers). Working tree clean at tag time.
+
+### Findings
+
+Gate closed with one explicitly-deferred optional item (gradient-weighted ranking) and one
+documented environment limitation (GX10 CUDA blocked pending python3.12-dev — D-010).
+
+### Next step
+
+RunPod one-GPU landing pod per docs/RUNPOD_HANDOFF_CHECKLIST.md.
+
 ## 2026-07-17 (Task 05 — benchmark harness + RunPod tooling, Phase 6)
 
 ### Goal

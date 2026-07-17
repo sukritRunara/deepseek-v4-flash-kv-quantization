@@ -6,23 +6,23 @@ Leave the GX10 with a tested, documented, reproducible experiment framework that
 
 ## Phase 0 — Preserve and inspect
 
-- [ ] Unpack the attached repository to `reference/v2_mla_poc/`.
-- [ ] Mark it read-only or enforce a no-edit policy.
-- [ ] Capture the GX10 environment.
-- [ ] Initialize Git and create the initial commit.
-- [ ] Clone official model and Transformers source without LFS weights.
-- [ ] Record exact revisions.
+- [x] Unpack the attached repository to `reference/v2_mla_poc/`.
+- [x] Mark it read-only or enforce a no-edit policy.
+- [x] Capture the GX10 environment.
+- [x] Initialize Git and create the initial commit.
+- [x] Clone official model and Transformers source without LFS weights.
+- [x] Record exact revisions.
 
 **Exit condition:** source and machine state are reproducible.
 
 ## Phase 1 — Architecture discovery
 
-- [ ] Trace sliding, CSA, HCA, compressor, indexer, and cache-state ownership.
-- [ ] Verify cache dimension order and RoPE slice at runtime.
-- [ ] Document write/read call paths and state lifetimes.
-- [ ] Compare official reference inference with Transformers behavior.
-- [ ] Identify generated versus canonical Transformers source.
-- [ ] Complete the reference port map.
+- [x] Trace sliding, CSA, HCA, compressor, indexer, and cache-state ownership.
+- [x] Verify cache dimension order and RoPE slice at runtime.
+- [x] Document write/read call paths and state lifetimes.
+- [x] Compare official reference inference with Transformers behavior.
+- [x] Identify generated versus canonical Transformers source.
+- [x] Complete the reference port map.
 
 **Exit condition:** every proposed quantization target has an exact source-level insertion point.
 
@@ -32,15 +32,15 @@ Build a randomly initialized, reduced V4 configuration that exercises all releva
 
 Required tests:
 
-- [ ] full forward versus cached decode;
-- [ ] one-shot versus chunked prefill;
-- [ ] prefill/decode/prefill sequence;
-- [ ] cache reset and reuse;
-- [ ] compressor boundary behavior;
-- [ ] sliding-window rollover;
-- [ ] exact state shape and entry-count assertions;
-- [ ] deterministic repeated runs;
-- [ ] no-cache behavior.
+- [x] full forward versus cached decode;
+- [x] one-shot versus chunked prefill;
+- [x] prefill/decode/prefill sequence;
+- [x] cache reset and reuse;
+- [x] compressor boundary behavior;
+- [x] sliding-window rollover;
+- [x] exact state shape and entry-count assertions;
+- [x] deterministic repeated runs;
+- [x] no-cache behavior.
 
 **Exit condition:** baseline cache behavior is understood and protected by tests.
 
@@ -59,27 +59,27 @@ mixed_group_policy
 indexer_reference_qdq
 ```
 
-- [ ] Confirm identity when policy is disabled.
-- [ ] Confirm precise slice remains untouched.
-- [ ] Confirm QDQ occurs once at the intended write boundary.
-- [ ] Confirm chunked and incremental operation.
-- [ ] Measure tiny-model logit and loss differences.
-- [ ] Label all results as simulation/no memory saving.
+- [x] Confirm identity when policy is disabled.
+- [x] Confirm precise slice remains untouched.
+- [x] Confirm QDQ occurs once at the intended write boundary.
+- [x] Confirm chunked and incremental operation.
+- [x] Measure tiny-model logit and loss differences.
+- [x] Label all results as simulation/no memory saving.
 
 **Exit condition:** numerical experiments can be selected entirely through configuration.
 
 ## Phase 4 — Calibration and precision policy plumbing
 
-- [ ] Define target taxonomy: layer type, layer index, cache state, group index.
-- [ ] Support contiguous groups of 32 and 64.
-- [ ] Collect activation ranges and quantization error.
-- [ ] Implement one-group empirical perturbation.
-- [ ] Implement logit KL and NLL delta.
-- [ ] Implement indexer top-k overlap/recall metrics.
-- [ ] Optionally add gradient-weighted error ranking.
-- [ ] Save/load a versioned precision-policy JSON.
-- [ ] Separate calibration and held-out inputs.
-- [ ] Save exact token IDs and seeds.
+- [x] Define target taxonomy: layer type, layer index, cache state, group index.
+- [x] Support contiguous groups of 32 and 64.
+- [x] Collect activation ranges and quantization error.
+- [x] Implement one-group empirical perturbation.
+- [x] Implement logit KL and NLL delta.
+- [x] Implement indexer top-k overlap/recall metrics.
+- [ ] Optionally add gradient-weighted error ranking. *(deferred — optional; empirical perturbation is the primary truth, D-004)*
+- [x] Save/load a versioned precision-policy JSON.
+- [x] Separate calibration and held-out inputs.
+- [x] Save exact token IDs and seeds.
 
 **Exit condition:** a tiny-model smoke calibration produces a valid precision map and held-out evaluation.
 
@@ -87,26 +87,26 @@ indexer_reference_qdq
 
 Correctness prototype only; final performance remains deferred.
 
-- [ ] Separate non-RoPE and precise slices.
-- [ ] Store actual FP8 where supported, with explicit scales.
-- [ ] Prototype packed FP4 or byte-packed nibbles plus scales.
-- [ ] Dequantize on read in pure PyTorch.
-- [ ] Account for values, scales, padding, metadata, and temporary buffers.
-- [ ] Compare actual tensor bytes against the baseline.
-- [ ] Pass tiny-model semantic and quality tests.
+- [x] Separate non-RoPE and precise slices.
+- [x] Store actual FP8 where supported, with explicit scales.
+- [x] Prototype packed FP4 or byte-packed nibbles plus scales.
+- [x] Dequantize on read in pure PyTorch.
+- [x] Account for values, scales, padding, metadata, and temporary buffers.
+- [x] Compare actual tensor bytes against the baseline.
+- [x] Pass tiny-model semantic and quality tests.
 
 **Exit condition:** at least one representation demonstrates real storage reduction in a tiny test without unsupported speed claims.
 
 ## Phase 6 — Benchmark and RunPod tooling
 
-- [ ] Create baseline/QDQ/storage benchmark CLIs.
-- [ ] Add warmup and CUDA synchronization.
-- [ ] Save per-trial and median results.
-- [ ] Capture peak allocated and reserved memory.
-- [ ] Support configurable prompt/token fixtures and context lengths.
-- [ ] Create source-only one-GPU RunPod landing test.
-- [ ] Create four-GPU full-model launch templates.
-- [ ] Ensure paths and hardware assumptions are configuration-driven.
+- [x] Create baseline/QDQ/storage benchmark CLIs.
+- [x] Add warmup and CUDA synchronization.
+- [x] Save per-trial and median results.
+- [x] Capture peak allocated and reserved memory.
+- [x] Support configurable prompt/token fixtures and context lengths.
+- [x] Create source-only one-GPU RunPod landing test.
+- [x] Create four-GPU full-model launch templates.
+- [x] Ensure paths and hardware assumptions are configuration-driven.
 
 **Exit condition:** the same command structure works locally with a tiny model and is ready for the full model.
 
@@ -114,18 +114,18 @@ Correctness prototype only; final performance remains deferred.
 
 All of the following must be true before renting four GPUs:
 
-- [ ] Architecture documentation complete.
-- [ ] Baseline semantic tests pass.
-- [ ] QDQ simulation tests pass.
-- [ ] Calibration smoke run completes.
-- [ ] Held-out tiny-model evaluation completes.
-- [ ] Actual-storage prototype is tested, or clearly deferred with a bounded implementation task.
-- [ ] Benchmark harness runs end to end.
-- [ ] No full checkpoint is present locally.
-- [ ] No uncommitted changes.
-- [ ] Source and dependency revisions frozen.
-- [ ] `docs/RUNPOD_HANDOFF_CHECKLIST.md` completed through the preflight section.
-- [ ] Git tag `dgx-phase-complete-v1` created.
+- [x] Architecture documentation complete.
+- [x] Baseline semantic tests pass.
+- [x] QDQ simulation tests pass.
+- [x] Calibration smoke run completes.
+- [x] Held-out tiny-model evaluation completes.
+- [x] Actual-storage prototype is tested, or clearly deferred with a bounded implementation task.
+- [x] Benchmark harness runs end to end.
+- [x] No full checkpoint is present locally.
+- [x] No uncommitted changes.
+- [x] Source and dependency revisions frozen.
+- [x] `docs/RUNPOD_HANDOFF_CHECKLIST.md` completed through the preflight section.
+- [x] Git tag `dgx-phase-complete-v1` created.
 
 ## What not to optimize locally
 

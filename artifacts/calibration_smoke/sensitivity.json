@@ -1,0 +1,314 @@
+{
+  "baseline_nll": 4.859814167022705,
+  "records": [
+    {
+      "target": {
+        "layer_idx": 0,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 8
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -0.0003948211669921875,
+      "kl_mean": 5.95002393311006e-06,
+      "max_abs_logit_err": 0.06183245778083801,
+      "top1_agreement": 1.0,
+      "score": 0.00040077119092529756,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 0,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 1,
+        "start": 8,
+        "end": 16
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 9.72747802734375e-05,
+      "kl_mean": 7.164568614825839e-06,
+      "max_abs_logit_err": 0.06378181278705597,
+      "top1_agreement": 1.0,
+      "score": 0.00010443934888826334,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 0,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 2,
+        "start": 16,
+        "end": 24
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 5.1975250244140625e-05,
+      "kl_mean": 2.2534211439051433e-06,
+      "max_abs_logit_err": 0.03461311757564545,
+      "top1_agreement": 1.0,
+      "score": 5.422867138804577e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 8
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -7.867813110351562e-05,
+      "kl_mean": 2.541164292324538e-07,
+      "max_abs_logit_err": 0.004339307546615601,
+      "top1_agreement": 1.0,
+      "score": 7.893224753274808e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 1,
+        "start": 8,
+        "end": 16
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 2.7179718017578125e-05,
+      "kl_mean": 2.4270488552247116e-07,
+      "max_abs_logit_err": 0.003944240510463715,
+      "top1_agreement": 0.9895833134651184,
+      "score": 2.7422422903100596e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 2,
+        "start": 16,
+        "end": 24
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -3.1948089599609375e-05,
+      "kl_mean": 4.3728752530114434e-07,
+      "max_abs_logit_err": 0.00504215806722641,
+      "top1_agreement": 0.9895833134651184,
+      "score": 3.238537712491052e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 8
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 6.67572021484375e-06,
+      "kl_mean": 6.385997153302014e-08,
+      "max_abs_logit_err": 0.0022910144180059433,
+      "top1_agreement": 1.0,
+      "score": 6.73958018637677e-06,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 1,
+        "start": 8,
+        "end": 16
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -5.7220458984375e-06,
+      "kl_mean": 6.296389187809837e-08,
+      "max_abs_logit_err": 0.0025273486971855164,
+      "top1_agreement": 0.9895833134651184,
+      "score": 5.785009790315598e-06,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 2,
+        "start": 16,
+        "end": 24
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 1.8596649169921875e-05,
+      "kl_mean": 8.715230848110878e-08,
+      "max_abs_logit_err": 0.0023480914533138275,
+      "top1_agreement": 1.0,
+      "score": 1.8683801478402984e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 16
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0015835762023925781,
+      "kl_mean": 4.779688606504351e-05,
+      "max_abs_logit_err": 0.179968923330307,
+      "top1_agreement": 0.96875,
+      "score": 0.0016313730884576216,
+      "indexer_overlap": {
+        "positions": 90,
+        "mean_overlap": 0.9166666666666666,
+        "min_overlap": 0.5,
+        "exact_match_rate": 0.8333333333333334
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 8
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -4.1484832763671875e-05,
+      "kl_mean": 1.793889623513678e-07,
+      "max_abs_logit_err": 0.005013585090637207,
+      "top1_agreement": 1.0,
+      "score": 4.166422172602324e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 1,
+        "start": 8,
+        "end": 16
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 3.0994415283203125e-05,
+      "kl_mean": 2.864391319690185e-07,
+      "max_abs_logit_err": 0.0049552395939826965,
+      "top1_agreement": 1.0,
+      "score": 3.1280854415172143e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 2,
+        "start": 16,
+        "end": 24
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -2.86102294921875e-05,
+      "kl_mean": 3.0647001381112204e-07,
+      "max_abs_logit_err": 0.004584096372127533,
+      "top1_agreement": 1.0,
+      "score": 2.8916699505998622e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 8
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -4.7206878662109375e-05,
+      "kl_mean": 6.755553982884521e-08,
+      "max_abs_logit_err": 0.0032607978209853172,
+      "top1_agreement": 1.0,
+      "score": 4.727443420193822e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 1,
+        "start": 8,
+        "end": 16
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -5.7220458984375e-05,
+      "kl_mean": 1.8868858475684647e-08,
+      "max_abs_logit_err": 0.0022635534405708313,
+      "top1_agreement": 1.0,
+      "score": 5.7239327842850685e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 2,
+        "start": 16,
+        "end": 24
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -2.384185791015625e-05,
+      "kl_mean": 7.24450970324142e-08,
+      "max_abs_logit_err": 0.0034309029579162598,
+      "top1_agreement": 0.9895833134651184,
+      "score": 2.3914303007188664e-05,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    }
+  ]
+}

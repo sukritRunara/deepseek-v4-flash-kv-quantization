@@ -2,16 +2,26 @@
 
 The intended transition is one-way: GX10 development first, then RunPod becomes the authoritative execution environment for the full model.
 
-## Preflight on the GX10
+## Preflight on the GX10 — completed 2026-07-17
 
-- [ ] Repository is clean and tagged `dgx-phase-complete-v1`.
-- [ ] `docs/REPRODUCIBILITY.md` contains all source revisions.
-- [ ] Tiny-model test suite passes from a fresh checkout.
-- [ ] Source-only smoke commands are documented.
-- [ ] Full-model commands accept paths/configuration rather than hardcoded local values.
-- [ ] Calibration inputs or manifests are committed or stored in a reproducible location.
-- [ ] No virtual environment, Triton cache, compiled `.so`, or architecture-specific build artifact is included.
-- [ ] No full model weights are included in Git.
+- [x] Repository is clean and tagged `dgx-phase-complete-v1`.
+- [x] `docs/REPRODUCIBILITY.md` contains all source revisions (machine-readable copy:
+      `configs/source_pins.json`, cross-checked by `tests/test_benchmark.py`; GX10 package
+      versions frozen in `docs/PIP_FREEZE_GX10.txt` — reference only, RunPod rebuilds).
+- [x] Tiny-model test suite passes from a fresh checkout (90 passed; verified against a
+      clean `git worktree` of the tagged commit — no dependence on uncommitted files).
+- [x] Source-only smoke commands are documented (`docs/REPRODUCIBILITY.md`,
+      `docs/WORKLOG.md`; single entry point: `tools/runpod_landing_test.py --run-suite`).
+- [x] Full-model commands accept paths/configuration rather than hardcoded local values
+      (`configs/bench_runpod_4gpu.json`, env-overridable `scripts/runpod/*.sh`).
+- [x] Calibration inputs or manifests are committed or stored in a reproducible location
+      (`artifacts/calibration_smoke/` incl. exact token ids + seeds; regeneration:
+      `tools/run_calibration_smoke.py`; hashes in `docs/results_manifest.json`).
+- [x] No virtual environment, Triton cache, compiled `.so`, or architecture-specific build
+      artifact is included (`.gitignore` covers `.venv/`, caches, `*.so`; verified with
+      `git ls-files`).
+- [x] No full model weights are included in Git (`vendor/` untracked; model tree is 14 MB
+      of LFS pointers; enforced by the landing test's `no_weights_materialized` check).
 
 ## Artifacts to transfer
 

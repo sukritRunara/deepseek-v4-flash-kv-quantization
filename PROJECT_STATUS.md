@@ -6,9 +6,19 @@ GX10 local development — **Tasks 01–05 complete** (Tasks 01–03: 2026-07-16
 
 ## Active task
 
-Task 05 (`prompts/05_BENCHMARK_RUNPOD_TOOLING.md`) — done. Remaining: the local completion
-gate itself (freeze revisions, results manifest, commit/tag `dgx-phase-complete-v1`,
-handoff checklist preflight).
+**DGX/GX10 local phase CLOSED** (2026-07-17): completion gate walked, preflight checklist
+done, repository tagged `dgx-phase-complete-v1`. Next work happens on RunPod
+(`docs/RUNPOD_HANDOFF_CHECKLIST.md` → "Cheap one-GPU landing test" onward).
+
+## Completion gate evidence
+
+- Dependencies frozen: `docs/PIP_FREEZE_GX10.txt` (reference; RunPod rebuilds x86-64)
+- Results manifest: `docs/results_manifest.json` (sha256 of all results/ + artifacts/)
+- Calibration fixtures committed: `artifacts/calibration_smoke/` (token ids, map, metrics)
+- Full suite: 90 passed, incl. from a clean worktree of the tagged commit
+- No weights: vendor model tree 14 MB LFS pointers (landing-test enforced)
+- DGX plan: every box checked except the explicitly optional gradient-weighted ranking
+  (deferred, D-004)
 
 ## Checklist (Task 05)
 
@@ -119,8 +129,8 @@ documented in `docs/REPRODUCIBILITY.md`.)
 
 ## Next task
 
-**Local completion gate (`docs/DGX_PHASE_PLAN.md`):** walk the gate checklist — freeze
-dependency/source revisions (pip freeze into docs), generate a local results manifest,
-confirm no uncommitted changes / no weights, complete the handoff checklist preflight
-section, tag `dgx-phase-complete-v1`. After that, work moves to RunPod
-(`docs/RUNPOD_HANDOFF_CHECKLIST.md` execution order).
+**RunPod phase** (`docs/RUNPOD_HANDOFF_CHECKLIST.md`): rent one RTX PRO 6000 pod, clone the
+tag, `bash scripts/runpod/setup_env.sh` (runs the landing test + full suite), record any
+incompatibilities, freeze the image — then the four-GPU pod and the full-model execution
+order (baseline → instrumentation → real calibration → precision map → QDQ quality →
+actual storage → final benchmark matrix).

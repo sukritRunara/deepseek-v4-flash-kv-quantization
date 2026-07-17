@@ -1,0 +1,38 @@
+{
+  "label": "Stage B CALIBRATION SMOKE - QDQ simulation only; NO memory savings; random-weight machinery validation",
+  "created_utc": "2026-07-16T23:37:52Z",
+  "config": {
+    "seq_len": 48,
+    "prefill": 24,
+    "batch": 2,
+    "model_seed": 0,
+    "calib_seed": 11,
+    "heldout_seed": 12,
+    "group_size_main": 8,
+    "fp8_fraction": 0.75,
+    "fp4_fraction": 0.0,
+    "indexer_min_overlap": 0.9,
+    "device": "cpu",
+    "out_dir": "results/calibration_smoke"
+  },
+  "n_targets": 16,
+  "baseline_nll_calib": 4.859814167022705,
+  "map_file": "results/calibration_smoke/precision_map.json",
+  "map_composition": {
+    "fp8_e4m3": 11,
+    "fp4_e2m1_hadamard": 1
+  },
+  "heldout": {
+    "max_abs_logit_err": 0.1172594502568245,
+    "mean_abs_logit_err": 0.005753857549279928,
+    "rms_logit_err": 0.011325319297611713,
+    "kl_mean": 6.344955181702971e-05,
+    "kl_max": 0.000976925017312169,
+    "top1_agreement": 0.9375,
+    "nan_count": 0,
+    "inf_count": 0,
+    "nll_baseline": 4.870062828063965,
+    "nll_quantized": 4.869621276855469,
+    "nll_delta": -0.00044155120849609375
+  }
+}

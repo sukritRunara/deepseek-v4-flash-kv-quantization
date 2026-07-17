@@ -1,0 +1,134 @@
+{
+  "default": "bf16",
+  "entries": [
+    {
+      "end": 16,
+      "group_index": 1,
+      "kind": "fp8_e4m3",
+      "layer_idx": 1,
+      "scale_group_size": 0,
+      "start": 8,
+      "state": "compressed_kv"
+    },
+    {
+      "end": 8,
+      "group_index": 0,
+      "kind": "fp8_e4m3",
+      "layer_idx": 1,
+      "scale_group_size": 0,
+      "start": 0,
+      "state": "compressed_kv"
+    },
+    {
+      "end": 24,
+      "group_index": 2,
+      "kind": "fp8_e4m3",
+      "layer_idx": 1,
+      "scale_group_size": 0,
+      "start": 16,
+      "state": "compressed_kv"
+    },
+    {
+      "end": 24,
+      "group_index": 2,
+      "kind": "fp8_e4m3",
+      "layer_idx": 2,
+      "scale_group_size": 0,
+      "start": 16,
+      "state": "compressed_kv"
+    },
+    {
+      "end": 16,
+      "group_index": 1,
+      "kind": "fp8_e4m3",
+      "layer_idx": 1,
+      "scale_group_size": 0,
+      "start": 8,
+      "state": "window_kv"
+    },
+    {
+      "end": 24,
+      "group_index": 2,
+      "kind": "fp8_e4m3",
+      "layer_idx": 2,
+      "scale_group_size": 0,
+      "start": 16,
+      "state": "window_kv"
+    },
+    {
+      "end": 16,
+      "group_index": 1,
+      "kind": "fp8_e4m3",
+      "layer_idx": 2,
+      "scale_group_size": 0,
+      "start": 8,
+      "state": "window_kv"
+    },
+    {
+      "end": 24,
+      "group_index": 2,
+      "kind": "fp8_e4m3",
+      "layer_idx": 1,
+      "scale_group_size": 0,
+      "start": 16,
+      "state": "window_kv"
+    },
+    {
+      "end": 8,
+      "group_index": 0,
+      "kind": "fp8_e4m3",
+      "layer_idx": 2,
+      "scale_group_size": 0,
+      "start": 0,
+      "state": "window_kv"
+    },
+    {
+      "end": 8,
+      "group_index": 0,
+      "kind": "fp8_e4m3",
+      "layer_idx": 2,
+      "scale_group_size": 0,
+      "start": 0,
+      "state": "compressed_kv"
+    },
+    {
+      "end": 24,
+      "group_index": 2,
+      "kind": "fp8_e4m3",
+      "layer_idx": 0,
+      "scale_group_size": 0,
+      "start": 16,
+      "state": "window_kv"
+    },
+    {
+      "end": 16,
+      "group_index": 0,
+      "kind": "fp4_e2m1_hadamard",
+      "layer_idx": 1,
+      "scale_group_size": 32,
+      "start": 0,
+      "state": "indexer_kv"
+    }
+  ],
+  "name": "tiny-smoke-2026-07-16T23:37:52Z",
+  "provenance": {
+    "batch": 2,
+    "calib_seed": 11,
+    "created_utc": "2026-07-16T23:37:52Z",
+    "fp4_fraction": 0.0,
+    "fp8_fraction": 0.75,
+    "group_size_main": 8,
+    "heldout_seed": 12,
+    "indexer_min_overlap": 0.9,
+    "method": "one-target empirical perturbation (teacher-forced)",
+    "model_seed": 0,
+    "n_main_targets": 15,
+    "note": "random-weight tiny model; machinery validation only",
+    "prefill": 24,
+    "ranking_score": "kl_mean + |nll_delta|",
+    "seq_len": 48,
+    "token_ids_file": "token_ids.json",
+    "torch": "2.13.0+cu130"
+  },
+  "version": 1
+}
