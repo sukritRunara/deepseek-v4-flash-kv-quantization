@@ -63,7 +63,11 @@ or `artifacts/`, and a commit on `runpod-phase-b`.
       kernels run on SM120.
       *Fail:* stop; fallback decision (BF16 dequant ≈ 600 GB → 8×96 GB pod) goes to
       `docs/DECISIONS.md` before any further spend.
-- [ ] **B2 — baseline memory/timing.**
+- [x] **B2 — baseline memory/timing.** *(2026-07-17: medians over 5 warmed trials —
+      TTFT 0.55/5.7/88.4 s, prefill 1874/1444/742 tok/s, decode ~3 tok/s (ITL ~300 ms;
+      host-staged-P2P + Triton-fallback caveats per D-011), cache 13.4/60.5/437 MiB,
+      peak alloc 41/47/68 GiB per hottest GPU at 1k/8k/65k. Bring-up findings (chunked
+      prefill, expandable_segments) in WORKLOG. `results/benchmark_cache.json`.)*
       `tools/benchmark_cache.py --config configs/bench_runpod_4gpu.json --variants baseline`
       (or `scripts/runpod/launch_4gpu_bench.sh`). Prompt lens 1024/8192/65536, 128 decode
       tokens, 5 trials, medians; per-GPU peaks and cache bytes captured.

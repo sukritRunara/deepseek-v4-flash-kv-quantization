@@ -28,10 +28,24 @@ Plan step B2: baseline memory/timing on the full model (`configs/bench_runpod_4g
    first-call Triton tuning and host-staged P2P handoffs). Real medians come from the
    full warmed run.
 
+### Results (medians of 5, warmup 2, prefill_chunk 2048, P2P workaround active)
+
+| prompt | TTFT | prefill tok/s | decode tok/s | ITL p50 | cache bytes | peak alloc (hottest GPU) |
+|---|---|---|---|---|---|---|
+| 1024 | 546 ms | 1874 | 3.3 | 296 ms | 13.4 MiB | 41.1 GiB |
+| 8192 | 5.67 s | 1444 | 3.2 | 299 ms | 60.5 MiB | 46.6 GiB |
+| 65536 | 88.4 s | 742 | 2.6 | 381 ms | 437 MiB | 67.8 GiB |
+
+Micro-overheads at 65k-context shapes: fp8 window-step encode 146 µs; fp8 full window /
+compressed decode 35 / 57 µs; fp4 indexer entry encode 370 µs, full decode 124 µs.
+Caveats: decode dominated by host-staged D2D (D-011) + Triton fallback (DeepGEMM off in
+multi-device); allocator OOM-retry warnings at 65k (peak near ceiling) — completed, but
+65k is close to this pipeline's memory limit. Same-node comparisons only.
+Output: `results/benchmark_cache.json`.
+
 ### Next step
 
-Full B2 matrix (baseline; 1024/8192/65536; medians of 5) — results appended below when
-complete → then B3 identity gate.
+B3 gates (identity + D-009 CUDA re-check) — see next entry.
 
 ## 2026-07-17 (RunPod Phase B — B1: weights, generation gate, P2P fault investigation)
 
