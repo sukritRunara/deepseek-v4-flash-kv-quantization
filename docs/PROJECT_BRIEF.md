@@ -75,7 +75,9 @@ repros.
 B4 (real-model calibration + precision map) → B5 (quality on held-out data) → B6
 (storage runs) → B7 (final benchmark matrix). Executing on GCP `g4-standard-48` (same
 GPU silicon; migration checklist in `docs/GCP_TRANSITION.md`). Estimated remaining
-compute: roughly one to two pod-days, mostly unattended.
+compute: about one day, mostly unattended (contingency only if a new
+environment surprise appears — the known ones all have baked-in fixes and health
+checks now).
 
 ---
 
@@ -91,7 +93,7 @@ compute: roughly one to two pod-days, mostly unattended.
 > (~7 GiB at 1M); real packed storage roughly halves it — 50–100+ GiB across a
 > long-context serving batch. Next: calibration + quality evaluation on held-out data
 > and the final benchmark matrix, running on GCP G4 (same GPUs, we have credits),
-> ~1–2 compute-days remaining. Bonus finds along the way: a PyTorch `ldexp` multi-GPU
+> ~1 compute-day remaining. Bonus finds along the way: a PyTorch `ldexp` multi-GPU
 > bug (fixed locally, reportable upstream) and a cloud host with silently-corrupting
 > PCIe P2P (detection tool now in the repo). Details: `docs/PROJECT_BRIEF.md` and
 > `docs/ENGINEERING_REPORT.md` in the project repo.
