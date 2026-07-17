@@ -38,7 +38,12 @@ def ceil_pow2(x: torch.Tensor) -> torch.Tensor:
     """
     mantissa, exponent = torch.frexp(x.float())
     ceil_log2 = torch.where(mantissa == 0.5, exponent - 1, exponent)
-    return torch.ldexp(torch.ones_like(x, dtype=torch.float32), ceil_log2)
+    # 2**ceil_log2 built by IEEE-754 bit layout instead of torch.ldexp: bit-exact for the
+    # normal range (amax floors keep exponents well inside [-126, 127]), and — unlike
+    # ldexp in torch 2.13.0+cu130 — device-safe when the tensor lives on a CUDA device
+    # that is not the current one (ldexp there returns garbage/NaN or IMAs: missing
+    # device guard, found on the Phase-B 4-GPU pod; WORKLOG 2026-07-17 B3).
+    return ((ceil_log2.to(torch.int32) + 127) << 23).view(torch.float32)
 
 
 def _group_scales(
