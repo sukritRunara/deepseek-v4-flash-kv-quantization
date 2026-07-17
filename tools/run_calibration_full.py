@@ -156,10 +156,18 @@ def main() -> int:
     print(BANNER)
     print(f"stages={stages} out={out}")
 
-    tok, model = load_model(args.model_path)
+    # Corpus first: it needs only the tokenizer, and streaming failures must not cost
+    # a 13-minute model load (learned in run 1 — gated dataset, WORKLOG B4).
+    from transformers import AutoTokenizer
+
+    tok = AutoTokenizer.from_pretrained(args.model_path)
+    data = corpus_stage(args, tok, out)
+    if set(stages) == {"corpus"}:
+        return 0
+
+    _, model = load_model(args.model_path)
     config = model.config
     print("[loaded]", flush=True)
-    data = corpus_stage(args, tok, out)  # cheap when reusing; other stages need it
 
     if "stats" in stages:
         stats_stage(model, tensors(data, "calib_2k") + tensors(data, "calib_8k"), out)

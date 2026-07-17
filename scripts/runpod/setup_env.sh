@@ -41,6 +41,8 @@ python3 -m venv "$VENV"
 # kernels: required at first forward of the native-FP8 checkpoint (finegrained-fp8 hub
 # kernel); version pin from transformers' own compatibility check (WORKLOG 2026-07-17 B1).
 "$VENV/bin/pip" install "kernels==0.15.2"
+# datasets: calibration corpus streaming (D-012)
+"$VENV/bin/pip" install datasets
 "$VENV/bin/pip" install -e vendor/transformers
 "$VENV/bin/pip" install -e .
 

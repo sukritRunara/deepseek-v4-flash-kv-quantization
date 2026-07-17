@@ -43,9 +43,12 @@ class CorpusSource:
             yield doc[self.text_column]
 
 
+# Code slice: codeparrot-clean (ungated, inline content, streams on datasets>=5).
+# Rejected: the-stack-smol (gated), smollm-corpus/python-edu (blob pointers only, no
+# text). Found the hard way — WORKLOG B4.
 DEFAULT_SOURCES = (
     CorpusSource("allenai/c4", "en", "train", "text", 0.8),
-    CorpusSource("bigcode/the-stack-smol", None, "train", "content", 0.2),
+    CorpusSource("codeparrot/codeparrot-clean", None, "train", "content", 0.2),
 )
 
 
