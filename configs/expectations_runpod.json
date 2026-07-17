@@ -1,0 +1,13 @@
+{
+  "machine": "x86_64",
+  "require_cuda": true,
+  "gpu_name_contains": "RTX PRO 6000",
+  "min_compute_capability": [
+    12,
+    0
+  ],
+  "source_pins": "configs/source_pins.json",
+  "max_vendor_model_mb": 100,
+  "require_cuda_model_forward": true,
+  "require_python_dev": true
+}

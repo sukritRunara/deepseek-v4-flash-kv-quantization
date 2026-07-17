@@ -2,12 +2,39 @@
 
 ## Current phase
 
-GX10 local development — **Tasks 01–04 complete** (Tasks 01–03: 2026-07-16; Task 04: 2026-07-17).
+GX10 local development — **Tasks 01–05 complete** (Tasks 01–03: 2026-07-16; Tasks 04–05: 2026-07-17).
 
 ## Active task
 
-Task 04 (`prompts/04_ACTUAL_STORAGE_PROTOTYPE.md`) — done. Awaiting Task 05 definition
-(expected: benchmark harness + RunPod tooling, DGX plan Phase 6).
+Task 05 (`prompts/05_BENCHMARK_RUNPOD_TOOLING.md`) — done. Remaining: the local completion
+gate itself (freeze revisions, results manifest, commit/tag `dgx-phase-complete-v1`,
+handoff checklist preflight).
+
+## Checklist (Task 05)
+
+- [x] Benchmark engine (`src/v4_kv_quant/bench.py`): identical token streams across
+      variants, warmup + N trials, CUDA sync, per-trial + median TTFT / prefill / decode /
+      ITL, peak alloc/reserved per GPU, actual cache bytes, QDQ overhead micro-bench
+- [x] `tools/benchmark_cache.py` — config-driven; SAME command for tiny local
+      (`configs/bench_tiny_local.json`, runs end to end) and full model
+      (`configs/bench_runpod_4gpu.json`, schema-validated); non-transferability labeled
+- [x] Landing test (`src/v4_kv_quant/landing.py` + `tools/runpod_landing_test.py`):
+      expectation-driven checks (platform, GPU/CC, dtypes, pinned vendor SHAs, no weights,
+      python-dev, tiny forward, Stage-C bitwise gate, optional pytest suite);
+      GX10 expectations PASS (exit 0), RunPod expectations FAIL correctly here (exit 1)
+- [x] `configs/source_pins.json` + expectations files; pins cross-checked against
+      REPRODUCIBILITY.md by test
+- [x] `scripts/runpod/{setup_env,download_model,launch_4gpu_bench}.sh` — all refuse on
+      non-x86_64; weight download additionally gated on RUNPOD_ALLOW_WEIGHTS=1 + disk check
+- [x] Full suite green: 90 passed
+
+## New finding (2026-07-17)
+
+**GX10 CUDA model execution is blocked**: this torch build routes `torch.bmm` (used by V4's
+grouped output projection) through a Triton kernel, and Triton cannot compile its launcher
+stubs without `python3.12-dev`. All local work runs on CPU (unaffected); the landing test
+records this as WARN locally and would FAIL a RunPod pod missing dev headers.
+Details: `docs/REPRODUCIBILITY.md` limitation 1.
 
 ## Checklist (Task 04)
 
@@ -92,9 +119,8 @@ documented in `docs/REPRODUCIBILITY.md`.)
 
 ## Next task
 
-**Task 05 — benchmark harness + RunPod tooling (DGX plan Phase 6):** baseline/QDQ/storage
-benchmark CLIs with warmup and CUDA synchronization, per-trial + median results, peak
-allocated/reserved memory capture, configurable prompt/context fixtures, a source-only
-one-GPU RunPod landing test, four-GPU full-model launch templates, and configuration-driven
-paths/hardware assumptions. Then the local completion gate (`docs/DGX_PHASE_PLAN.md`):
-freeze revisions, results manifest, tag `dgx-phase-complete-v1`, RunPod handoff checklist.
+**Local completion gate (`docs/DGX_PHASE_PLAN.md`):** walk the gate checklist — freeze
+dependency/source revisions (pip freeze into docs), generate a local results manifest,
+confirm no uncommitted changes / no weights, complete the handoff checklist preflight
+section, tag `dgx-phase-complete-v1`. After that, work moves to RunPod
+(`docs/RUNPOD_HANDOFF_CHECKLIST.md` execution order).

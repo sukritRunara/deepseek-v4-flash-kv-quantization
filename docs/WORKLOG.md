@@ -1,5 +1,64 @@
 # Worklog
 
+## 2026-07-17 (Task 05 — benchmark harness + RunPod tooling, Phase 6)
+
+### Goal
+
+Config-driven benchmark CLIs (baseline/QDQ/storage), source-only landing test, guarded
+RunPod launch scripts — one command structure for tiny-local and full-model-RunPod.
+
+### Commands run
+
+```bash
+.venv/bin/python -m pytest tests/test_benchmark.py -q                      # 8 passed
+.venv/bin/python -m pytest tests/ -q                                       # 90 passed
+.venv/bin/python tools/benchmark_cache.py --config configs/bench_tiny_local.json
+.venv/bin/python tools/runpod_landing_test.py --expect configs/expectations_gx10.json    # exit 0
+.venv/bin/python tools/runpod_landing_test.py --expect configs/expectations_runpod.json  # exit 1 here (correct)
+bash scripts/runpod/setup_env.sh                    # REFUSING (aarch64 guard) - correct
+RUNPOD_ALLOW_WEIGHTS=1 bash scripts/runpod/download_model.sh   # REFUSING - correct
+```
+
+### Files changed
+
+- `prompts/05_BENCHMARK_RUNPOD_TOOLING.md`
+- `src/v4_kv_quant/bench.py` (BenchSettings from JSON; identical token streams across
+  variants; warmup+trials; TTFT/prefill/decode/ITL; per-GPU peaks; cache bytes; QDQ
+  overhead micro-bench), `src/v4_kv_quant/landing.py` (expectation-driven checks)
+- `tools/benchmark_cache.py`, `tools/runpod_landing_test.py`
+- `configs/{bench_tiny_local,bench_runpod_4gpu,expectations_gx10,expectations_runpod,source_pins}.json`
+- `scripts/runpod/{setup_env,download_model,launch_4gpu_bench}.sh` (x86_64-guarded;
+  weights additionally behind RUNPOD_ALLOW_WEIGHTS=1 + free-disk check + pinned revision)
+- `tests/test_benchmark.py`; `docs/REPRODUCIBILITY.md` limitation 1 upgraded
+
+### Tests and results
+
+90/90 pass. Local tiny benchmark (CPU, fp32, non-transferable): storage cache 9.8/18.6 KiB
+vs baseline 22/46 KiB at prompt 64/256; QDQ==baseline bytes; quantized variants slower as
+expected for pure-PyTorch (no claims). Landing test: GX10 expectations all PASS
+(2 truthful WARNs), RunPod expectations fail on platform/GPU/dev-headers here — proving
+the expectation mechanism.
+
+### Findings
+
+1. **GX10 CUDA model execution is blocked by the missing python3.12-dev**: torch 2.13
+   routes CUDA `torch.bmm` through a Triton-backed `torch._native` kernel, and V4's
+   grouped output projection is bmm-based — first CUDA forward of the tiny model
+   surfaced it. CPU unaffected. Landing test now carries an expectation-driven
+   `cuda_model_forward` check (WARN on GX10, FAIL on RunPod); local bench config pins CPU.
+2. CUDA peak-stats APIs error if the CUDA context is uninitialized — benchmark guards all
+   `torch.cuda` calls on the *benchmark device*, not on `is_available()`.
+
+### Blockers / open questions
+
+- `python3.12-dev` install (system package) needed before ANY GPU-side validation on the
+  GX10; decision deferred to the owner (D-005/D-010). Not required for handoff — RunPod
+  images ship dev headers and the landing test enforces it there.
+
+### Next step
+
+Local completion gate: freeze, manifest, tag `dgx-phase-complete-v1`, handoff preflight.
+
 ## 2026-07-17 (Task 04 — Stage-C actual-storage prototype, Phase 5)
 
 ### Goal

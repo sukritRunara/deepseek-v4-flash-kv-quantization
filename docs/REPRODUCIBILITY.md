@@ -70,11 +70,18 @@ PATH="$PWD/.venv/bin:$PATH" bash scripts/capture_environment.sh
 
 ## Environment limitations (explicit)
 
-1. **Triton kernels and `torch.compile` are unavailable**: both fail at the gcc step because
-   `/usr/include/python3.12/Python.h` is missing (`python3.12-dev` system package not
-   installed). Installing it is a system-wide change — deliberately not done during discovery
-   (CLAUDE.md constraint 4). Remedy when authorized: `sudo apt install python3.12-dev`.
-   Impact: none for Task 01–02 (pure PyTorch by design); revisit before any Triton prototype.
+1. **Triton is unavailable, and this now blocks ALL CUDA model execution on the GX10**
+   (upgraded 2026-07-17): `/usr/include/python3.12/Python.h` is missing (`python3.12-dev`
+   system package not installed), so Triton's launcher-stub gcc step fails. Beyond
+   `torch.compile`, this torch 2.13 build routes **`torch.bmm` on CUDA through a
+   Triton-backed kernel** (`torch._native/ops/bmm_outer_product`), and V4's grouped output
+   projection uses `bmm` — so any CUDA forward of the model fails on this machine
+   (root-caused via `tools/runpod_landing_test.py`, check `cuda_model_forward`). CPU
+   execution is unaffected; all local tests/benchmarks run on CPU. Installing the header
+   package is a system-wide change — deliberately not done (CLAUDE.md constraint 4).
+   Remedy when authorized: `sudo apt install python3.12-dev`. RunPod pods must have dev
+   headers (`expectations_runpod.json` sets `require_python_dev: true`, enforced by the
+   landing test).
 2. **`fast_hadamard_transform` and `tilelang` not installed**: the official `inference/` code
    imports them; we read it as reference only and never execute it. The FP4 indexer QDQ will
    use an exact pure-PyTorch H₁₂₈ Hadamard instead (128 = 2⁷).

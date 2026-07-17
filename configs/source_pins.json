@@ -1,0 +1,6 @@
+{
+  "model_repo": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
+  "model_sha": "60d8d70770c6776ff598c94bb586a859a38244f1",
+  "transformers_repo": "https://github.com/huggingface/transformers.git",
+  "transformers_sha": "150eb7c9ed4091294c829fa0e9466b090cb0f87f"
+}

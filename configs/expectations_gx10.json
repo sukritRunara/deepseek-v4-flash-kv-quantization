@@ -1,0 +1,13 @@
+{
+  "machine": "aarch64",
+  "require_cuda": true,
+  "gpu_name_contains": "GB10",
+  "min_compute_capability": [
+    12,
+    1
+  ],
+  "source_pins": "configs/source_pins.json",
+  "max_vendor_model_mb": 100,
+  "require_cuda_model_forward": false,
+  "require_python_dev": false
+}

@@ -159,3 +159,26 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 **Consequences:** any future storage-format change must preserve the bitwise contract or
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
+
+### D-010 — CPU-only local execution; expectation-driven landing severity for CUDA readiness
+
+**Date:** 2026-07-17
+**Status:** accepted
+**Context:** First CUDA forward of the tiny model revealed that this torch 2.13 build
+dispatches CUDA `torch.bmm` (used by V4's grouped output projection) to a Triton-backed
+`torch._native` kernel, whose launcher stubs compile against Python.h — absent without the
+`python3.12-dev` system package. Installing system packages remains off-limits without
+explicit owner sign-off (D-005).
+**Decision:** All local development runs on CPU (`bench_tiny_local.json` pins `device:
+"cpu"`). The landing test gains a `cuda_model_forward` check whose severity comes from the
+expectations file: WARN on the GX10 (`require_cuda_model_forward: false`), FAIL on RunPod
+(`true`, plus `require_python_dev: true`), so a mis-provisioned pod is caught before four
+GPUs are rented.
+**Alternatives considered:** installing python3.12-dev now (prohibited without sign-off);
+forcing a non-Triton bmm path (no supported switch in this torch build).
+**Evidence:** traceback through `torch/_native/ops/bmm_outer_product/triton_impl.py`;
+`tests/test_benchmark.py::test_landing_checks_*`; REPRODUCIBILITY.md limitation 1.
+**Consequences:** no GPU-side numbers from the GX10 at all (they were non-transferable
+anyway); CPU covers every correctness gate in the suite.
+**Follow-up:** if GX10 GPU validation is ever wanted, install python3.12-dev with owner
+sign-off and re-run tools/hardware_smoke.py + the landing test.

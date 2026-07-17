@@ -1,0 +1,20 @@
+{
+  "model": "tiny",
+  "device": "cpu",
+  "variants": [
+    "baseline",
+    "qdq",
+    "storage"
+  ],
+  "policy": "reference_official_qdq",
+  "batch": 2,
+  "prompt_lens": [
+    64,
+    256
+  ],
+  "decode_tokens": 32,
+  "trials": 5,
+  "warmup": 2,
+  "seed": 0,
+  "note": "local tiny-model run on CPU; GX10 CUDA execution is blocked until python3.12-dev is installed (torch._native Triton bmm needs Python.h - see docs/REPRODUCIBILITY.md); numbers are non-transferable machinery validation"
+}
