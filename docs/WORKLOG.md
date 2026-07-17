@@ -65,6 +65,18 @@ model (Phase A validated single-GPU only). No module-level device-pinned constan
 `CUDA_LAUNCH_BLOCKING=1` to get the true faulting op; audit QDQ cache-layer code for
 tensors created on a fixed device instead of the incoming tensor's device.
 
+Blocking rerun: IMA surfaces at `qdq.py ceil_pow2 (torch.ldexp)` in the FIRST fp8 cache
+write — but ldexp/QDQ ran clean on CUDA in Phase A (single GPU), and Triton launches
+bypass LAUNCH_BLOCKING, so working theory: a preceding Triton finegrained-fp8 kernel
+reads/writes out of bounds, and visibility depends on allocator layout (this may ALSO
+explain the earlier expandable_segments "spurious" gather asserts — garbage ids from an
+OOB write, same underlying bug, different victim). Gate A passing bitwise twice says
+baseline paths are clean; the trigger is specific to the QDQ leg's allocation pattern
+or its aten/Triton interleaving. Bisect plan (one process per leg, ~15 min each):
+(1) policy `main_fp8_nonrope_rope_bf16` (fp8 main KV only, no indexer wrapper);
+(2) policy `indexer_reference_qdq` (indexer only). Then compute-sanitizer on the
+guilty component if needed.
+
 ## 2026-07-17 (RunPod Phase B — B1: weights, generation gate, P2P fault investigation)
 
 ### Goal
