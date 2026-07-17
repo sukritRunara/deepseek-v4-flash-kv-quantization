@@ -42,7 +42,8 @@ Commands/results go to `docs/WORKLOG.md` as steps complete; decisions to
 Each step ends with: results recorded in `docs/WORKLOG.md`, artifacts under `results/`
 or `artifacts/`, and a commit on `runpod-phase-b`.
 
-- [ ] **B0 — environment rebuild + landing gate.**
+- [x] **B0 — environment rebuild + landing gate.** *(2026-07-17: smoke all PASS, landing
+      ALL CHECKS PASSED, suite 90 passed — see WORKLOG "Phase B — B0".)*
       `bash scripts/runpod/setup_env.sh` (full run: venv + torch cu130 + vendor clones at
       `configs/source_pins.json` pins + editable installs + env capture + hardware smoke +
       landing test + 90-test suite).

@@ -1,5 +1,42 @@
 # Worklog
 
+## 2026-07-17 (RunPod Phase B — B0 environment rebuild, 4-GPU pod)
+
+### Goal
+
+Execute plan step B0 (`docs/RUNPOD_PHASE_B_PLAN.md`): full environment rebuild on the
+Phase-B pod — this pod is NOT the frozen Phase-A image (`.venv/`, `vendor/`, weights all
+absent; only the repo was on this volume).
+
+### Environment
+
+- Pod: 4× RTX PRO 6000 Blackwell Server Edition 96 GB (CC 12.0/SM120), x86_64,
+  2× Xeon 6952P (384 threads), 1.5 TiB RAM, driver 580.126.20, no NVLink (GPU0 on NUMA0,
+  GPUs 1–3 on NUMA3), /workspace = MooseFS network volume (~94 TB free).
+- Installed by bootstrap: torch 2.13.0+cu130, triton 3.7.1, transformers 5.15.0.dev0
+  (editable at pin `150eb7c9ed40`), model source at `60d8d70770c6` (13 MiB LFS pointers).
+  Capture: `artifacts/env/*-20260717T163605Z.*`.
+
+### Commands run
+
+```bash
+bash scripts/runpod/setup_env.sh   # full run: venv+torch+vendor pins+capture+smoke+landing+suite
+```
+
+### Tests and results
+
+- Hardware smoke: all required + all optional PASS (BF16/FP8/FP4 dtypes CPU+CUDA,
+  torch.compile, hand-written Triton kernel, `torch._scaled_mm` FP8 GEMM).
+- Landing test vs `configs/expectations_runpod.json`: **all 15 checks PASS**, suite
+  **90 passed** (99.6 s) → `ALL CHECKS PASSED`, exit 0. Report: `results/landing_test.json`.
+- No incompatibilities; no code changes needed.
+
+### Next step
+
+B1: install `hf` CLI (absent on this pod — pre-flight deviation 2), guarded weight
+download (~160 GB, pinned revision), then baseline generation sanity = the GO/NO-GO
+gate for native FP8/FP4 on SM120.
+
 ## 2026-07-17 (RunPod Phase A — 1-GPU landing pod, environment + portability gate)
 
 ### Goal
