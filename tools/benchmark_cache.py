@@ -36,6 +36,12 @@ def load_model(settings: BenchSettings):
     if settings.model_path:
         from transformers import AutoModelForCausalLM
 
+        if torch.cuda.device_count() > 1:
+            # Mandatory on multi-GPU pods until P2P health is proven (D-011): direct
+            # GPU-to-GPU copies silently corrupt on the Phase-B pod; stage through host.
+            from v4_kv_quant.p2p_workaround import ensure_host_staged_p2p
+
+            ensure_host_staged_p2p()
         print(f"loading full checkpoint from {settings.model_path} "
               f"(device_map={settings.device_map}, dtype={settings.dtype})")
         model = AutoModelForCausalLM.from_pretrained(
