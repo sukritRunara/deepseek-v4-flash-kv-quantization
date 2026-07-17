@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-07-17T00:58:47Z",
-  "repo_head": "5e8e555efb80e42a2f48bc219fac0e6226637aac",
+  "generated_utc": "2026-07-17T00:59:31Z",
+  "repo_head": "b0c0e7b2cb709fed175e04c34032c7871fc7302d",
   "note": "results/ is gitignored; regenerate outputs with the tools listed in docs/WORKLOG.md and verify against these hashes. artifacts/ is tracked.",
   "file_count": 23,
   "files": [
