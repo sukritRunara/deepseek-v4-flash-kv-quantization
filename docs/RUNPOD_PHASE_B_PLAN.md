@@ -49,7 +49,10 @@ or `artifacts/`, and a commit on `runpod-phase-b`.
       landing test + 90-test suite).
       *Pass:* smoke all required PASS; landing `ALL CHECKS PASSED` (exit 0) against
       `configs/expectations_runpod.json`; suite 90 passed.
-- [ ] **B1 — weights + baseline generation sanity (GO/NO-GO, ~1 h budget).**
+- [x] **B1 — weights + baseline generation sanity (GO/NO-GO).** *(2026-07-17: **GO** —
+      but only after root-causing faulty pod P2P (D-011, workaround required for ALL
+      multi-GPU runs) and adding `kernels==0.15.2`. Weights 149 GB @ pin; coherent
+      native-FP8 generation; ~55 GiB headroom/GPU. See WORKLOG "Phase B — B1".)*
       Install `hf` CLI, then
       `RUNPOD_ALLOW_WEIGHTS=1 MODEL_DIR=/workspace/models/DeepSeek-V4-Flash bash
       scripts/runpod/download_model.sh` (~160 GB at the pinned revision), then the

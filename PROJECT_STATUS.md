@@ -10,13 +10,15 @@ host-identity tests). Details: WORKLOG 2026-07-17 "RunPod Phase A".
 
 ## Active task
 
-RunPod **Phase B** on the 4-GPU pod (2026-07-17, branch `runpod-phase-b`): pod survey and
-step-by-step checklist in `docs/RUNPOD_PHASE_B_PLAN.md`. Next action is step B0
-(full environment rebuild — this pod is not the frozen Phase-A image; `.venv/`, `vendor/`
-and weights absent), then B1 weights + baseline generation sanity (GO/NO-GO, ~1 h budget —
-the definitive native-FP8/FP4-on-SM120 check) before committing to the full experiment
-plan. Step B4 (real-model calibration) starts with an owner discussion of the calibration
-design, per agreement.
+RunPod **Phase B** on the 4-GPU pod (2026-07-17, branch `runpod-phase-b`): checklist in
+`docs/RUNPOD_PHASE_B_PLAN.md`. **B0 done** (rebuild green: landing 15/15, suite 90).
+**B1 done — GO**: native FP8/FP4 generation works on SM120 across 4 GPUs, after
+root-causing silently-corrupting pod P2P (D-011 — `ensure_host_staged_p2p()` is now
+mandatory in every multi-GPU run; pod health gate: `tools/p2p_stress_check.py`) and
+adding `kernels==0.15.2`. Next: B2 baseline benchmark (wire the P2P workaround into the
+benchmark path first). Step B4 (real-model calibration) still starts with an owner
+discussion of the calibration design, per agreement. Operator items: report the faulty
+node to RunPod; prefer a stress-checked healthy node for the final B7 matrix.
 
 ## Completion gate evidence
 

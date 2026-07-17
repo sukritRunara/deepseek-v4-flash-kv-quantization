@@ -51,7 +51,19 @@ HF_HUB_ENABLE_HF_TRANSFER=0 RUNPOD_ALLOW_WEIGHTS=1 bash scripts/runpod/download_
 
 ### B1 gate result
 
-(see following entry / PROJECT_STATUS for the generation output with the workaround)
+**GO.** With the P2P workaround, untouched-model greedy generation (native FP8/FP4,
+`device_map="auto"`, eager, 32 tokens) produces a coherent continuation:
+
+> "Pipeline parallelism in ai is  a technique that splits a model across multiple
+> devices, with each device responsible for a subset of layers. This is different from
+> data parallelism, where each device has a"
+
+Semantically matches the upstream integration-test snapshot (which uses *dequantized
+BF16*; exact-string drift expected and upstream marks its own test `@is_flaky`).
+Load 868 s (warm cache), generate 26 s / 32 tokens (includes first-call kernel
+autotune; not a performance number). Per-GPU allocated: 34.3/40.0/40.0/31.0 GiB —
+native FP8/FP4 checkpoint fits with ~55 GiB headroom per card. Weights remain in
+native dtypes on GPU (e4m3 + e8m0 scales + packed-FP4 int8).
 
 ### Next step
 
