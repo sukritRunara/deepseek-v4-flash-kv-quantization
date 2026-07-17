@@ -1,0 +1,90 @@
+{
+  "expectations": "configs/expectations_runpod.json",
+  "checks": [
+    {
+      "check": "platform_machine",
+      "status": "PASS",
+      "detail": "expected x86_64, got x86_64"
+    },
+    {
+      "check": "cuda_available",
+      "status": "PASS",
+      "detail": "torch.cuda.is_available()=True"
+    },
+    {
+      "check": "gpu_name",
+      "status": "PASS",
+      "detail": "expected name containing 'RTX PRO 6000', got 'NVIDIA RTX PRO 6000 Blackwell Server Edition'"
+    },
+    {
+      "check": "compute_capability",
+      "status": "PASS",
+      "detail": "expected >= (12, 0), got (12, 0)"
+    },
+    {
+      "check": "dtype_float8_e4m3fn",
+      "status": "PASS",
+      "detail": "torch attribute presence"
+    },
+    {
+      "check": "dtype_float8_e8m0fnu",
+      "status": "PASS",
+      "detail": "torch attribute presence"
+    },
+    {
+      "check": "dtype_float4_e2m1fn_x2",
+      "status": "PASS",
+      "detail": "torch attribute presence"
+    },
+    {
+      "check": "fp8_roundtrip",
+      "status": "PASS",
+      "detail": "max cast error 15.875"
+    },
+    {
+      "check": "vendor_model_pinned",
+      "status": "PASS",
+      "detail": "expected 60d8d70770c6, got 60d8d70770c6"
+    },
+    {
+      "check": "vendor_transformers_pinned",
+      "status": "PASS",
+      "detail": "expected 150eb7c9ed40, got 150eb7c9ed40"
+    },
+    {
+      "check": "no_weights_materialized",
+      "status": "PASS",
+      "detail": "vendor model tree 13 MiB (limit 100 MiB; LFS pointers only)"
+    },
+    {
+      "check": "python_dev_headers",
+      "status": "PASS",
+      "detail": "/usr/include/python3.12/Python.h (triton/torch.compile AND torch._native CUDA bmm need it)"
+    },
+    {
+      "check": "tiny_forward",
+      "status": "PASS",
+      "detail": "tiny model forward on cpu"
+    },
+    {
+      "check": "stage_c_bitwise_gate",
+      "status": "PASS",
+      "detail": "storage cache == QDQ cache on cpu"
+    },
+    {
+      "check": "cuda_model_forward",
+      "status": "PASS",
+      "detail": "tiny model forward on cuda"
+    },
+    {
+      "check": "pytest_suite",
+      "status": "PASS",
+      "detail": "90 passed in 99.56s (0:01:39)"
+    }
+  ],
+  "suite": {
+    "returncode": 0,
+    "summary": "90 passed in 99.56s (0:01:39)"
+  },
+  "passed": true
+}

@@ -17,8 +17,10 @@ root-causing silently-corrupting pod P2P (D-011 — `ensure_host_staged_p2p()` i
 mandatory in every multi-GPU run; pod health gate: `tools/p2p_stress_check.py`) and
 adding `kernels==0.15.2`. B2 done (baseline matrix in WORKLOG/results). B3 done — ALL bitwise gates PASS on
 the real model (identity + D-009 storage==qdq), after fixing an upstream torch.ldexp
-multi-GPU bug (qdq.py, WORKLOG). **Next: B4 — blocked on the agreed owner discussion
-of calibration design** (corpus, lengths, sweep breadth, thresholds). Operator items: report the faulty
+multi-GPU bug (qdq.py, WORKLOG). B4 design approved (D-012); loader + staged CLI committed
+(no sweep outputs yet). **TRANSITION IN PROGRESS: Phase B resumes on GCP G4
+(D-013, `docs/GCP_TRANSITION.md`) — this pod is sealed; next action happens on the
+GCP instance (bring-up checklist, then B4 run 1).** Operator items: report the faulty
 node to RunPod; prefer a stress-checked healthy node for the final B7 matrix.
 
 ## Completion gate evidence

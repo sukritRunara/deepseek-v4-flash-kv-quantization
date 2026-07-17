@@ -1,0 +1,11 @@
+[p2p_workaround] peer access disabled on 12 device pairs (D2D now staged through host)
+[transformers] This FP8 model spans multiple CUDA devices in one process; routing its FP8 linear and experts layers through Triton/grouped_mm instead of DeepGEMM (DeepGEMM's cached kernels are bound to a single CUDA context and corrupt across devices). Run tensor/expert parallel (one device per process) to use the faster DeepGEMM path.
+[loaded]
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files: 100%|██████████| 12/12 [00:00<00:00, 562.87it/s]
+[PASS] gateA identity (natural): logits and indexer picks bitwise identical
+[PASS] gateB storage==qdq (natural): logits and indexer picks bitwise identical
+[info] official-QDQ vs baseline max|dlogit| (natural): 7.500e+00
+[PASS] gateA identity (random-512): logits and indexer picks bitwise identical
+[PASS] gateB storage==qdq (random-512): logits and indexer picks bitwise identical
+[info] official-QDQ vs baseline max|dlogit| (random-512): 4.844e+00
+ALL GATES PASSED

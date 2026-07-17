@@ -160,6 +160,22 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-013 — Migrate Phase B from RunPod to GCP G4 (same GPU) — owner-approved
+
+**Date:** 2026-07-17
+**Status:** accepted (owner-approved)
+**Context:** Owner has GCP credits; GCP G4 VMs ship the exact same GPU as the RunPod
+pod (RTX PRO 6000 Blackwell Server Edition, SM120); the RunPod host has faulty PCIe
+P2P (D-011).
+**Decision:** Seal the RunPod pod after B3 (evidence in `artifacts/phase_b_runpod/`),
+resume from B4 run 1 on a `g4-standard-48`. Bring-up checklist: `docs/GCP_TRANSITION.md`.
+P2P workaround becomes conditional on `tools/p2p_stress_check.py` results on the new
+host. All timing numbers regenerate on the GCP node (B7 covers baseline); bitwise
+gates, calibration design, and code transfer unchanged.
+**Consequences:** B2's RunPod numbers are historical record only; CLAUDE.md's "final
+hardware is one RunPod node" is superseded by same-silicon GCP equivalence.
+**Follow-up:** run the stress check before any multi-GPU work on the new instance.
+
 ### D-012 — B4 calibration design (owner-approved 2026-07-17)
 
 **Date:** 2026-07-17

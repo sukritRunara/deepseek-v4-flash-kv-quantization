@@ -1,0 +1,93 @@
+[p2p_workaround] peer access disabled on 12 device pairs (D2D now staged through host)
+[transformers] This FP8 model spans multiple CUDA devices in one process; routing its FP8 linear and experts layers through Triton/grouped_mm instead of DeepGEMM (DeepGEMM's cached kernels are bound to a single CUDA context and corrupt across devices). Run tensor/expert parallel (one device per process) to use the faster DeepGEMM path.
+[loaded]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files: 100%|██████████| 12/12 [00:00<00:00, 557.10it/s]
+Traceback (most recent call last):
+  File "/tmp/claude-0/-workspace/8f7860c6-02bb-41f9-8200-a4cf8bb389ec/scratchpad/b3_qdq_blocking.py", line 23, in <module>
+    res = run_teacher_forced(model, ids, ids.shape[1] - 8,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/src/v4_kv_quant/harness.py", line 93, in run_teacher_forced
+    out = model(input_ids[:, :prefill_len], past_key_values=cache, use_cache=True)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/accelerate/hooks.py", line 192, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/utils/generic.py", line 911, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/models/deepseek_v4/modeling_deepseek_v4.py", line 1483, in forward
+    outputs: MoeModelOutputWithPast = self.model(
+                                      ^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/utils/generic.py", line 1040, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/utils/output_capturing.py", line 262, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/models/deepseek_v4/modeling_deepseek_v4.py", line 1326, in forward
+    hidden_states = layer(
+                    ^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/accelerate/hooks.py", line 192, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/models/deepseek_v4/modeling_deepseek_v4.py", line 1144, in forward
+    attn_output, _ = self.self_attn(self.input_layernorm(collapsed), **kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/.venv/lib/python3.12/site-packages/accelerate/hooks.py", line 192, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/models/deepseek_v4/modeling_deepseek_v4.py", line 825, in forward
+    kv = past_key_values.update(kv, kv, self.layer_idx)[0]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/vendor/transformers/src/transformers/cache_utils.py", line 1304, in update
+    keys, values = self.layers[layer_idx].update(key_states, value_states, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/src/v4_kv_quant/qdq_cache.py", line 77, in update
+    quantized = apply_main_kv_policy(key_states, self._policy.window_kv, self._rope_dim)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/src/v4_kv_quant/qdq_cache.py", line 44, in apply_main_kv_policy
+    quantized = fp8_e4m3_qdq(nope, group_size=group, pow2_scale=policy.pow2_scale)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/src/v4_kv_quant/qdq.py", line 71, in fp8_e4m3_qdq
+    scales = _group_scales(x32, FP8_MAX, FP8_AMAX_FLOOR, pow2_scale)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/src/v4_kv_quant/qdq.py", line 49, in _group_scales
+    return ceil_pow2(amax / qmax)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/deepseek-v4-flash-kv-quantization/src/v4_kv_quant/qdq.py", line 41, in ceil_pow2
+    return torch.ldexp(torch.ones_like(x, dtype=torch.float32), ceil_log2)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+

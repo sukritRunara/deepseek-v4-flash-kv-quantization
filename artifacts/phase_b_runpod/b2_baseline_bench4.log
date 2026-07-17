@@ -1,0 +1,71 @@
+==============================================================================================================
+CACHE BENCHMARK - same-node variant comparison only; tiny/GX10 timings are NON-TRANSFERABLE to target hardware
+==============================================================================================================
+[p2p_workaround] peer access disabled on 12 device pairs (D2D now staged through host)
+loading full checkpoint from /workspace/models/DeepSeek-V4-Flash (device_map=auto, dtype=auto)
+[transformers] This FP8 model spans multiple CUDA devices in one process; routing its FP8 linear and experts layers through Triton/grouped_mm instead of DeepGEMM (DeepGEMM's cached kernels are bound to a single CUDA context and corrupt across devices). Run tensor/expert parallel (one device per process) to use the faster DeepGEMM path.
+config=/workspace/deepseek-v4-flash-kv-quantization/configs/bench_runpod_4gpu.json | device=cuda dtype=torch.bfloat16 | policy=reference_official_qdq
+batch=1 prompt_lens=[1024, 8192, 65536] decode=128 trials=5 warmup=2 seed=0
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files: 100%|██████████| 12/12 [00:00<00:00, 475.67it/s]
+[W717 20:19:28.106389695 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 4093640704 bytes (free: 2572943360, total: 101973950464).
+[W717 20:19:28.540270282 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 4093640704 bytes (free: 1121714176, total: 101973950464).
+[W717 20:19:29.237706644 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 4093640704 bytes (free: 2396782592, total: 101973950464).
+[W717 20:19:32.229388820 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 4362076160 bytes (free: 3881566208, total: 101973950464).
+[W717 20:19:38.306426139 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 5167382528 bytes (free: 2451308544, total: 101973950464).
+[W717 20:19:39.094182879 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 5167382528 bytes (free: 1379663872, total: 101973950464).
+[W717 20:19:41.608301123 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 5435817984 bytes (free: 756809728, total: 101973950464).
+[W717 20:19:45.411388601 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 5704253440 bytes (free: 2522611712, total: 101973950464).
+[W717 20:19:47.726731996 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 5972688896 bytes (free: 1578893312, total: 101973950464).
+[W717 20:19:48.599784885 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 5972688896 bytes (free: 505151488, total: 101973950464).
+[W717 20:19:49.289843108 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 6241124352 bytes (free: 2501640192, total: 101973950464).
+[W717 20:19:53.855762671 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 6509559808 bytes (free: 6142296064, total: 101973950464).
+[W717 20:19:54.784887522 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 6509559808 bytes (free: 5068554240, total: 101973950464).
+[W717 20:19:55.713261663 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 6509559808 bytes (free: 4804313088, total: 101973950464).
+[W717 20:19:59.831731026 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 7046430720 bytes (free: 555483136, total: 101973950464).
+[W717 20:19:59.413347228 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 7046430720 bytes (free: 2115764224, total: 101973950464).
+[W717 20:20:00.381299297 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 7046430720 bytes (free: 1042022400, total: 101973950464).
+[W717 20:20:05.707195218 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 7314866176 bytes (free: 3126591488, total: 101973950464).
+[W717 20:20:06.757837793 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 7583301632 bytes (free: 1291583488, total: 101973950464).
+[W717 20:20:06.351195570 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 7583301632 bytes (free: 5672534016, total: 101973950464).
+[W717 20:20:07.415036883 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 7583301632 bytes (free: 4598792192, total: 101973950464).
+[W717 20:20:12.010275003 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 7851737088 bytes (free: 4131127296, total: 101973950464).
+[W717 20:20:13.060772080 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 8120172544 bytes (free: 5385224192, total: 101973950464).
+[W717 20:20:14.704881428 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 8120172544 bytes (free: 2182873088, total: 101973950464).
+[W717 20:20:15.806578870 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 8120172544 bytes (free: 1109131264, total: 101973950464).
+[W717 20:20:17.537980220 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 8388608000 bytes (free: 4665901056, total: 101973950464).
+[W717 20:20:19.640139855 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 8388608000 bytes (free: 3592159232, total: 101973950464).
+[W717 20:20:20.768607549 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 8388608000 bytes (free: 104595456, total: 101973950464).
+[W717 20:20:21.890423785 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 8657043456 bytes (free: 1895563264, total: 101973950464).
+[W717 20:20:22.573660805 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 8657043456 bytes (free: 3189506048, total: 101973950464).
+[W717 20:20:23.747033951 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 8657043456 bytes (free: 2113667072, total: 101973950464).
+[W717 20:20:25.981204939 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 8925478912 bytes (free: 4647026688, total: 101973950464).
+[W717 20:20:26.647623014 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 8925478912 bytes (free: 1713111040, total: 101973950464).
+[W717 20:20:27.841329358 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 8925478912 bytes (free: 637272064, total: 101973950464).
+[W717 20:20:28.016665882 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 8925478912 bytes (free: 5003542528, total: 101973950464).
+[W717 20:20:29.204847313 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 9193914368 bytes (free: 3170631680, total: 101973950464).
+[W717 20:20:30.878864580 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 9193914368 bytes (free: 236716032, total: 101973950464).
+[W717 20:20:31.081429571 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 9193914368 bytes (free: 8354791424, total: 101973950464).
+[W717 20:20:33.430475020 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 9462349824 bytes (free: 1694236672, total: 101973950464).
+[W717 20:20:34.140507437 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 9462349824 bytes (free: 8220573696, total: 101973950464).
+[W717 20:20:35.393843643 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 9462349824 bytes (free: 7148929024, total: 101973950464).
+[W717 20:20:37.623917874 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 9462349824 bytes (free: 1513881600, total: 101973950464).
+[W717 20:20:38.878093934 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 9730785280 bytes (free: 217841664, total: 101973950464).
+[W717 20:20:39.584738090 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 9730785280 bytes (free: 7012614144, total: 101973950464).
+[W717 20:20:40.851659029 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 2 while trying to allocate 9730785280 bytes (free: 5940969472, total: 101973950464).
+[W717 20:20:41.109954871 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 3 while trying to allocate 9730785280 bytes (free: 4533780480, total: 101973950464).
+
+ prompt variant       TTFT ms  prefill tok/s  decode tok/s  ITL p50 ms  cache KiB  peak alloc MiB
+-------------------------------------------------------------------------------------------------
+   1024 baseline       546.44         1874.0           3.3     295.882    13770.0         42132.4
+   8192 baseline      5673.68         1443.9           3.2     299.173    61930.0         47725.2
+  65536 baseline     88364.74          741.7           2.6     381.159   447210.0         69469.8
+
+quantize/dequantize micro-overhead (median):
+  fp8_encode_window_step                145.7 us   shape=(1, 1, 1, 448)
+  fp8_decode_window_full                 34.9 us   shape=(1, 1, 127, 448)
+  fp8_decode_compressed_full             57.1 us   shape=(1, 16416, 448)
+  fp4_encode_indexer_entry              369.5 us   shape=(1, 1, 128)
+  fp4_decode_indexer_full               123.6 us   shape=(1, 16416, 128)
+
+JSON (per-trial + medians) written to /workspace/deepseek-v4-flash-kv-quantization/results/benchmark_cache.json
+CACHE BENCHMARK - same-node variant comparison only; tiny/GX10 timings are NON-TRANSFERABLE to target hardware
