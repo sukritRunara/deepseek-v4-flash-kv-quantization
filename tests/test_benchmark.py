@@ -51,6 +51,31 @@ def test_settings_validation():
         BenchSettings(policy="nope")
     with pytest.raises(ValueError, match="trials"):
         BenchSettings(trials=0)
+    with pytest.raises(ValueError, match="prefill_chunk"):
+        BenchSettings(prefill_chunk=0)
+
+
+def test_chunked_prefill_equivalent_accounting(model):
+    """prefill_chunk changes memory shape, not semantics: same tokens through the same
+    cache => identical cache byte accounting as one-shot, and the runpod config's chunk
+    setting parses through the schema."""
+    base = BenchSettings(
+        device="cpu", batch=1, prompt_lens=[12], decode_tokens=2, trials=1, warmup=0, seed=0
+    )
+    chunked = BenchSettings(
+        device="cpu", batch=1, prompt_lens=[12], decode_tokens=2, trials=1, warmup=0, seed=0,
+        prefill_chunk=5,  # deliberately not a divisor of 12 or the compress rates
+    )
+    rows_base = {r["variant"]: r for r in run_benchmark(model, base)["results"]}
+    rows_chunked = {r["variant"]: r for r in run_benchmark(model, chunked)["results"]}
+    for variant in rows_base:
+        assert "error" not in rows_chunked[variant]
+        assert (rows_chunked[variant]["median"]["cache_logical_bytes"]
+                == rows_base[variant]["median"]["cache_logical_bytes"])
+        assert (rows_chunked[variant]["median"]["cache_storage_bytes"]
+                == rows_base[variant]["median"]["cache_storage_bytes"])
+    settings = BenchSettings.from_file(REPO_ROOT / "configs/bench_runpod_4gpu.json")
+    assert settings.prefill_chunk == 2048
 
 
 def test_runpod_config_parses_with_same_schema():

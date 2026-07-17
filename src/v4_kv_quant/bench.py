@@ -50,6 +50,12 @@ class BenchSettings:
     warmup: int = 2
     seed: int = 0
     note: str = ""
+    # Prefill in chunks of this many tokens (None = one-shot). Needed for long contexts
+    # under eager attention, whose scores materialize (heads x chunk x kv_len) per layer:
+    # one-shot 65536 OOMs a 96 GB card (WORKLOG 2026-07-17 B2). Chunking is semantics-
+    # preserving: chunked==one-shot prefill is test-pinned since Task 01, and TTFT is
+    # reported as the full chunked-prefill wall time.
+    prefill_chunk: int | None = None
 
     def __post_init__(self):
         unknown = [v for v in self.variants if v not in VARIANTS]
@@ -59,6 +65,8 @@ class BenchSettings:
             raise ValueError(f"unknown policy {self.policy!r}; valid: {list(NAMED_POLICIES)}")
         if self.trials < 1 or self.warmup < 0:
             raise ValueError("trials must be >= 1 and warmup >= 0")
+        if self.prefill_chunk is not None and self.prefill_chunk < 1:
+            raise ValueError("prefill_chunk must be >= 1 when set")
 
     @classmethod
     def from_file(cls, path: str | Path, **overrides) -> "BenchSettings":
@@ -101,16 +109,30 @@ def _peak_memory(device: str) -> dict[str, Any] | None:
 
 
 @torch.no_grad()
-def _one_trial(model, variant: str, policy: KVQuantPolicy, prompt_ids, decode_ids, device: str) -> dict:
+def _one_trial(
+    model,
+    variant: str,
+    policy: KVQuantPolicy,
+    prompt_ids,
+    decode_ids,
+    device: str,
+    prefill_chunk: int | None = None,
+) -> dict:
     cache = _cache_for(variant, model.config, policy)
     if device.startswith("cuda"):
         for i in range(torch.cuda.device_count()):
             torch.cuda.reset_peak_memory_stats(i)
 
-    # TTFT: prompt prefill forward + first-token selection
+    # TTFT: prompt prefill forward + first-token selection. With prefill_chunk set the
+    # prompt is fed in slices through the same cache (positions derive from cache state);
+    # TTFT is the full chunked-prefill wall time.
     _sync(device)
     t0 = time.perf_counter()
-    out = model(prompt_ids, past_key_values=cache, use_cache=True)
+    if prefill_chunk is not None and prompt_ids.shape[1] > prefill_chunk:
+        for start in range(0, prompt_ids.shape[1], prefill_chunk):
+            out = model(prompt_ids[:, start : start + prefill_chunk], past_key_values=cache, use_cache=True)
+    else:
+        out = model(prompt_ids, past_key_values=cache, use_cache=True)
     first_token = out.logits[:, -1].argmax(-1)
     _sync(device)
     ttft_s = time.perf_counter() - t0
@@ -199,11 +221,26 @@ def run_benchmark(model, settings: BenchSettings) -> dict:
         for variant in settings.variants:
             context = indexer_query_qdq(model, policy) if variant in ("qdq", "storage") else None
             trials = []
-            with context if context is not None else torch.no_grad():
-                for _ in range(settings.warmup):
-                    _one_trial(model, variant, policy, prompt_ids, decode_ids, device)
-                for _ in range(settings.trials):
-                    trials.append(_one_trial(model, variant, policy, prompt_ids, decode_ids, device))
+            try:
+                with context if context is not None else torch.no_grad():
+                    for _ in range(settings.warmup):
+                        _one_trial(model, variant, policy, prompt_ids, decode_ids, device,
+                                   prefill_chunk=settings.prefill_chunk)
+                    for _ in range(settings.trials):
+                        trials.append(_one_trial(model, variant, policy, prompt_ids, decode_ids, device,
+                                                 prefill_chunk=settings.prefill_chunk))
+            except torch.OutOfMemoryError as exc:
+                # Record the failed cell and keep the rest of the matrix: a long-context
+                # OOM must not discard completed prompt lengths (WORKLOG 2026-07-17 B2).
+                if device.startswith("cuda"):
+                    torch.cuda.empty_cache()
+                results.append({
+                    "prompt_len": prompt_len,
+                    "variant": variant,
+                    "error": f"OutOfMemoryError: {exc}",
+                    "trials": trials,
+                })
+                continue
             all_itl = [t for trial in trials for t in trial["itl_s"]]
             median = {
                 "ttft_s": statistics.median(t["ttft_s"] for t in trials),

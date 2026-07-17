@@ -11,5 +11,6 @@
   "trials": 5,
   "warmup": 2,
   "seed": 0,
-  "note": "4x RTX PRO 6000 full-model benchmark; single process, device_map=auto; adjust model_path to the persistent volume"
+  "prefill_chunk": 2048,
+  "note": "4x RTX PRO 6000 full-model benchmark; single process, device_map=auto; adjust model_path to the persistent volume. prefill_chunk bounds eager-attention score memory at long context (one-shot 65536 OOMs 96 GB; see WORKLOG 2026-07-17 B2)."
 }
