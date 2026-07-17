@@ -47,7 +47,28 @@ Output: `results/benchmark_cache.json`.
 
 B3 gates (identity + D-009 CUDA re-check) — see next entry.
 
-## 2026-07-17 (RunPod Phase B — B3 gates, in progress)
+## 2026-07-17 (RunPod Phase B — B3 gates: PASSED after ldexp fix)
+
+**Final result (post-fix rerun): ALL GATES PASSED.** On both a natural and a
+random-id prompt (prefill ~512, 8 teacher-forced steps): gate A —
+QDQCache(baseline_bf16) bitwise-identical logits AND indexer picks vs stock cache;
+gate B (D-009 CUDA/BF16 re-check on the real model) — QuantizedStorageCache ==
+QDQCache bitwise under `reference_official_qdq`. Stage-B/Stage-C machinery is fully
+validated on the real 4-GPU checkpoint.
+
+**Root cause of the earlier IMA: upstream PyTorch bug.** `torch.ldexp`
+(2.13.0+cu130) lacks a CUDA device guard — on tensors whose device ≠ current device
+it returns NaN/garbage or IMAs (standalone 10-line repro, no model). Hit via
+`ceil_pow2` the moment QDQ ran on layers mapped to cuda:1-3; invisible on single-GPU
+Phase A and CPU. Fixed in `qdq.py` by IEEE-754 bit-construction (bit-exact vs ldexp
+on CPU; multi-device stress clean; suite 91 passed). TODO operator: report upstream.
+
+Informative (not a gate): official-QDQ vs baseline max|Δlogit| ≈ 7.5 (natural) /
+4.8 (random) — dominated by indexer top-k flips at near-ties, the exact failure mode
+D-004 predicts; per D-004 quality is judged by top-k overlap + KL/NLL on held-out
+data (B5), not max-logit.
+
+## 2026-07-17 (RunPod Phase B — B3 gates, earlier notes)
 
 Driver: scratchpad `b3_identity_gates.py` (gate A: QDQCache(baseline_bf16) ==
 baseline bitwise; gate B: storage == qdq under reference_official_qdq; on a natural and

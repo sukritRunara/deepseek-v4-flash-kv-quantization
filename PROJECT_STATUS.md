@@ -15,9 +15,10 @@ RunPod **Phase B** on the 4-GPU pod (2026-07-17, branch `runpod-phase-b`): check
 **B1 done — GO**: native FP8/FP4 generation works on SM120 across 4 GPUs, after
 root-causing silently-corrupting pod P2P (D-011 — `ensure_host_staged_p2p()` is now
 mandatory in every multi-GPU run; pod health gate: `tools/p2p_stress_check.py`) and
-adding `kernels==0.15.2`. Next: B2 baseline benchmark (wire the P2P workaround into the
-benchmark path first). Step B4 (real-model calibration) still starts with an owner
-discussion of the calibration design, per agreement. Operator items: report the faulty
+adding `kernels==0.15.2`. B2 done (baseline matrix in WORKLOG/results). B3 done — ALL bitwise gates PASS on
+the real model (identity + D-009 storage==qdq), after fixing an upstream torch.ldexp
+multi-GPU bug (qdq.py, WORKLOG). **Next: B4 — blocked on the agreed owner discussion
+of calibration design** (corpus, lengths, sweep breadth, thresholds). Operator items: report the faulty
 node to RunPod; prefer a stress-checked healthy node for the final B7 matrix.
 
 ## Completion gate evidence

@@ -71,7 +71,10 @@ or `artifacts/`, and a commit on `runpod-phase-b`.
       `tools/benchmark_cache.py --config configs/bench_runpod_4gpu.json --variants baseline`
       (or `scripts/runpod/launch_4gpu_bench.sh`). Prompt lens 1024/8192/65536, 128 decode
       tokens, 5 trials, medians; per-GPU peaks and cache bytes captured.
-- [ ] **B3 — instrumentation identity gate on the real model.**
+- [x] **B3 — instrumentation identity gate on the real model.** *(2026-07-17: ALL
+      GATES PASSED bitwise (identity + D-009 storage==qdq) on natural + random prompts,
+      after fixing an upstream torch.ldexp missing-device-guard bug found via this gate
+      (see WORKLOG). Official-QDQ divergence signal consistent with D-004.)*
       Same CLI, `--variants qdq --policy baseline_bf16`.
       *Pass:* bit-identical logits/picks vs baseline (the Stage-B identity gate holds on
       the real checkpoint). Also re-verify the Stage-C bitwise gate on CUDA/BF16 here
