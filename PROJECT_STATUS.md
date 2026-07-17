@@ -10,10 +10,13 @@ host-identity tests). Details: WORKLOG 2026-07-17 "RunPod Phase A".
 
 ## Active task
 
-Phase A wrap-up: freeze the pod image and stop the pod (operator actions), then Phase B
-(`RUNPOD_START_HERE.md` → four-GPU pod). Budget one hour for Phase B step 1 (baseline
-generation sanity — the definitive native-FP8/FP4-on-SM120 check) before committing to
-the full experiment plan.
+RunPod **Phase B** on the 4-GPU pod (2026-07-17, branch `runpod-phase-b`): pod survey and
+step-by-step checklist in `docs/RUNPOD_PHASE_B_PLAN.md`. Next action is step B0
+(full environment rebuild — this pod is not the frozen Phase-A image; `.venv/`, `vendor/`
+and weights absent), then B1 weights + baseline generation sanity (GO/NO-GO, ~1 h budget —
+the definitive native-FP8/FP4-on-SM120 check) before committing to the full experiment
+plan. Step B4 (real-model calibration) starts with an owner discussion of the calibration
+design, per agreement.
 
 ## Completion gate evidence
 
