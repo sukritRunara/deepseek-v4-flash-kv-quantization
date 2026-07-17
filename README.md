@@ -7,5 +7,9 @@ DGX-plan phases; 90-test suite; see [`PROJECT_STATUS.md`](PROJECT_STATUS.md)).
 
 **Continuing on RunPod? Start with [`RUNPOD_START_HERE.md`](RUNPOD_START_HERE.md).**
 
+**Want to understand what was built and why? Read
+[`docs/ENGINEERING_REPORT.md`](docs/ENGINEERING_REPORT.md)** — the narrative overview of
+the whole local phase (architecture findings, the five build layers, results, gotchas).
+
 Historical entry points: [`START_HERE.md`](START_HERE.md) (original GX10 setup),
 [`CLAUDE.md`](CLAUDE.md) (project instructions), `prompts/` (bounded task specs 01–05).
