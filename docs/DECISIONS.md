@@ -160,6 +160,25 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-012 — B4 calibration design (owner-approved 2026-07-17)
+
+**Date:** 2026-07-17
+**Status:** accepted (owner-approved)
+**Context:** Real-model calibration needs a corpus, sequence lengths, and a sweep plan;
+a full per-group sweep (~580 targets × 2 formats) costs hours of 4-GPU time.
+**Decision:** (1) Corpus: C4-English streaming (~80%) + code slice (~20%,
+the-stack-smol), seeded, unpadded, non-overlapping windows, token ids saved; held-out
+from disjoint stream regions. (2) Lengths: calibrate at 2k (32 seqs) + 8k (8 seqs) —
+long enough to exercise CSA/HCA streams far beyond the 128 window; held-out eval at
+2k/8k + one 32k spot-check. (3) Sweep: two-stage — FP4 state-level screening
+(group_size = full nope width → ~100 targets) over a fixed [4, 2048] probe batch, then
+group-level FP4 within the most sensitive states; FP8 spot-checks only (QAT-aligned FP8
+expected near-lossless). (4) Ranking: ΔNLL + KL; indexer via top-k overlap
+(D-004/D-008); `build_map_from_sweep` fractions chosen after inspecting distributions.
+**Consequences:** rankings come from a probe subset (stats pass uses the full set);
+documented in the map provenance. `datasets` added to the environment (setup_env.sh).
+**Follow-up:** revisit sweep breadth if screening shows flat sensitivity.
+
 ### D-011 — Phase-B pod P2P is faulty; all multi-GPU runs disable CUDA peer access
 
 **Date:** 2026-07-17
