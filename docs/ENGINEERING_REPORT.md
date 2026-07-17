@@ -176,7 +176,39 @@ projection uses `bmm`, so *no* CUDA forward of the model runs locally. All local
 runs on CPU (which covers every correctness gate); the landing test enforces dev headers
 on RunPod pods so the problem cannot recur where it matters (D-010).
 
-## 4. Where things stand and what's next
+## 4. What the supplied reference PoC contributed
+
+The project started from an attached predecessor repo (`reference/v2_mla_poc/`, kept
+read-only) — a KV-quantization proof of concept for the older DeepSeek-V2/V3 MLA
+architecture. It ended up serving as a **methodology donor**: its ideas shaped the
+experiment design, while every line of V4-facing code was written fresh, because V4's
+architecture shares nothing with what it patches. The full per-component classification
+is `docs/REFERENCE_PORT_MAP.md`; the short version:
+
+**Reused (with modification):**
+- **Teacher-forced comparison** — its trick of feeding baseline and quantized runs the
+  *identical* token history (so logit differences are attributable to the cache policy
+  alone) became our harness. The single most valuable inheritance.
+- **QDQ function skeletons** — the round-through-a-grid-and-back structure of its FP8/FP4
+  simulators carried over; the scale scheme was replaced to match V4's official policy
+  (contiguous groups of 64/32 with power-of-two round-up scales, vs its per-channel
+  absmax).
+- **Calibration workflow shape** — activation stats via hooks, rank targets, serialize a
+  precision config; our `build_map_from_sweep` (fp8/fp4 fractions) directly mirrors its
+  `make_mixed_precision_config`, re-keyed to the V4 target taxonomy.
+- **C4 calibration-data pattern** (seeded, non-overlapping token windows, saved token
+  ids) — earmarked for the RunPod port.
+
+**Not portable, by necessity:** its attention monkey-patch and cache class key off MLA
+modules (`kv_a_proj_with_mqa`, `kv_b_proj`, `kv_lora_rank`) that do not exist in V4; its
+sensitivity formula depends on `kv_b_proj` column norms and therefore has no V4
+counterpart; its memory reporting counted theoretical bytes for values still stored in
+BF16 (exactly the simulation-vs-storage confusion our Stage B/C split eliminates). Its
+setup/download scripts were never executed (project ground rule), and its audited defects
+(malformed `requirements.txt` line, references to files absent from the archive) were
+documented and steered around rather than inherited.
+
+## 5. Where things stand and what's next
 
 **Done and tagged** (`dgx-phase-complete-v1`, pushed to GitHub): all six planned local
 phases, 90 tests green (also from a clean checkout — verified via git worktree),
@@ -195,7 +227,7 @@ weight bytes ever on this machine.
 
 The step-by-step continuation guide is `RUNPOD_START_HERE.md`.
 
-## 5. Repo map (30 seconds)
+## 6. Repo map (30 seconds)
 
 | Path | What it is |
 |---|---|
@@ -211,7 +243,7 @@ The step-by-step continuation guide is `RUNPOD_START_HERE.md`.
 | `prompts/01…05` | the bounded task specs each phase was executed against |
 | `reference/v2_mla_poc/` | read-only predecessor PoC (V2/V3 MLA — ideas ported, code not) |
 
-## 6. Principles that held up (recommended to keep)
+## 7. Principles that held up (recommended to keep)
 
 1. **Bitwise gates over tolerances** wherever the comparison is exact by construction
    (identity policies, storage-vs-simulation, chunking invariance). Every real bug this
