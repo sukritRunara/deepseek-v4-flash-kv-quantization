@@ -11,8 +11,15 @@ model once):
   screening  FP4 state-level sensitivity sweep (group = whole nope width) on the probe
   refine     group-level (64) FP4 sweep inside the --refine-top worst screening states
   fp8spot    FP8 spot-check on the --fp8-spot worst screening states
-  map        build + validate precision map from refine (+ indexer screening) records
-  heldout    evaluate official policy and the built map on held-out data (2k + 8k)
+  indexer8k  indexer sensitivity on an 8k probe — the 2k probe CANNOT measure it:
+             index_topk=512 >= compressed entries at 2048 tokens, so selection never
+             binds and overlap is 1.0 by construction (D-015)
+  map        build + validate precision map: refine records (group-64, worst states)
+             + screening records for non-refined states + indexer8k records;
+             --map-suffix writes precision_map_<suffix>.json (candidate maps)
+  heldout    evaluate official policy and EVERY precision_map*.json on held-out data
+             (2k + 8k, chunked prefill)
+  heldout32k evaluate official + final map on one 32k held-out sequence (D-012)
 
 Simulation only (Stage B): NO memory savings. Compare within this node/run only.
 """
@@ -31,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from v4_kv_quant.calibration_data import build_corpus_samples  # noqa: E402
 from v4_kv_quant.harness import run_teacher_forced  # noqa: E402
-from v4_kv_quant.metrics import logit_comparison_metrics, next_token_nll  # noqa: E402
+from v4_kv_quant.metrics import indexer_topk_overlap, logit_comparison_metrics, next_token_nll  # noqa: E402
 from v4_kv_quant.p2p_workaround import ensure_host_staged_p2p  # noqa: E402
 from v4_kv_quant.policy import NAMED_POLICIES  # noqa: E402
 from v4_kv_quant.sensitivity import build_map_from_sweep, run_sensitivity_sweep  # noqa: E402
@@ -150,12 +157,15 @@ def main() -> int:
     ap.add_argument("--calib-seed", type=int, default=11)
     ap.add_argument("--heldout-seed", type=int, default=12)
     ap.add_argument("--probe-batch", type=int, default=4)
+    ap.add_argument("--probe8k-batch", type=int, default=2)
     ap.add_argument("--stats-prefill-chunk", type=int, default=2048)
     ap.add_argument("--refine-top", type=int, default=15)
     ap.add_argument("--fp8-spot", type=int, default=8)
     ap.add_argument("--fp8-fraction", type=float, default=0.75)
     ap.add_argument("--fp4-fraction", type=float, default=0.0)
     ap.add_argument("--indexer-min-overlap", type=float, default=0.9)
+    ap.add_argument("--map-suffix", default="",
+                    help="write precision_map_<suffix>.json (candidate maps, D-015)")
     args = ap.parse_args()
     stages = [s.strip() for s in args.stages.split(",") if s.strip()]
     out = Path(args.out_dir)
@@ -173,9 +183,17 @@ def main() -> int:
     if set(stages) == {"corpus"}:
         return 0
 
-    _, model = load_model(args.model_path)
-    config = model.config
-    print("[loaded]", flush=True)
+    model_stages = {"stats", "screening", "refine", "fp8spot", "indexer8k",
+                    "heldout", "heldout32k"}
+    if model_stages & set(stages):
+        _, model = load_model(args.model_path)
+        config = model.config
+        print("[loaded]", flush=True)
+    else:  # map building/validation needs only the config — skip the 13-min load
+        from transformers import AutoConfig
+
+        model = None
+        config = AutoConfig.from_pretrained(args.model_path)
 
     if "stats" in stages:
         stats_stage(model, tensors(data, "calib_2k") + tensors(data, "calib_8k"), out,
@@ -197,13 +215,49 @@ def main() -> int:
                         if (t.layer_idx, t.state) in keep]
         sweep_stage(model, probe_batch(data, args), spot_targets, "fp8spot", out, kind_main="fp8_e4m3")
 
+    if "indexer8k" in stages:
+        idx_targets = [t for t in enumerate_targets(config, group_size_main=nope_width(config))
+                       if t.state == INDEXER_STATE]
+        probe8k = torch.cat(tensors(data, "calib_8k")[: args.probe8k_batch], dim=0).to("cuda")
+        print(f"[indexer8k] {len(idx_targets)} indexer targets, probe {tuple(probe8k.shape)}, "
+              f"prefill_chunk={args.stats_prefill_chunk} (2k probe cannot bind top-k, D-015)",
+              flush=True)
+        _, baseline_nll, records = run_sensitivity_sweep(
+            model, probe8k, probe8k.shape[1] - DECODE_TAIL, idx_targets,
+            progress=True, prefill_chunk=args.stats_prefill_chunk,
+        )
+        (out / "indexer8k.json").write_text(json.dumps({
+            "baseline_nll": baseline_nll, "probe": list(probe8k.shape),
+            "prefill_chunk": args.stats_prefill_chunk,
+            "records": [r.as_dict() for r in records],
+        }, indent=2) + "\n")
+        for r in sorted(records, key=lambda r: r.score, reverse=True)[:5]:
+            ov = (r.indexer_overlap or {}).get("mean_overlap")
+            print(f"  worst: {r.target.key:<40} score={r.score:.3e} overlap={ov}")
+
     if "map" in stages:
         from v4_kv_quant.sensitivity import SensitivityRecord
         from v4_kv_quant.targets import QuantTarget
 
-        raw = load_records(out, "refine") + [
-            r for r in load_records(out, "screening") if r["target"]["state"] == INDEXER_STATE
+        # Composition (D-015): group-64 refine records inside the most sensitive
+        # states; state-level screening records for every non-refined main state (the
+        # insensitive majority must receive entries or it silently stays BF16);
+        # indexer records from the 8k probe where top-k selection actually binds.
+        refine_raw = load_records(out, "refine")
+        refined_states = {(r["target"]["layer_idx"], r["target"]["state"]) for r in refine_raw}
+        screening_raw = load_records(out, "screening")
+        main_fallback = [
+            r for r in screening_raw
+            if r["target"]["state"] != INDEXER_STATE
+            and (r["target"]["layer_idx"], r["target"]["state"]) not in refined_states
         ]
+        if (out / "indexer8k.json").exists():
+            indexer_raw = load_records(out, "indexer8k")
+            indexer_source = "indexer8k"
+        else:
+            indexer_raw = [r for r in screening_raw if r["target"]["state"] == INDEXER_STATE]
+            indexer_source = "screening-2k (WARNING: top-k never binds at 2k; D-015)"
+        raw = refine_raw + main_fallback + indexer_raw
         records = []
         for r in raw:
             r = dict(r)
@@ -214,37 +268,89 @@ def main() -> int:
             fp8_fraction=args.fp8_fraction, fp4_fraction=args.fp4_fraction,
             indexer_min_overlap=args.indexer_min_overlap,
             provenance={"created_utc": stamp, "token_ids_file": "token_ids.json",
-                        "design": "D-012", "torch": torch.__version__,
-                        "probe_batch": args.probe_batch, "config": vars(args)},
+                        "design": "D-012 + D-015", "torch": torch.__version__,
+                        "probe_batch": args.probe_batch,
+                        "composition": {"refine_group64": len(refine_raw),
+                                        "screening_state_level": len(main_fallback),
+                                        "indexer": len(indexer_raw),
+                                        "indexer_source": indexer_source},
+                        "config": vars(args)},
         )
         pm.validate(config)
-        pm.to_json(out / "precision_map.json")
-        print(f"[map] {len(pm.entries)} entries -> precision_map.json")
+        suffix = f"_{args.map_suffix}" if args.map_suffix else ""
+        pm.to_json(out / f"precision_map{suffix}.json")
+        print(f"[map] {len(pm.entries)} entries -> precision_map{suffix}.json "
+              f"(indexer source: {indexer_source})")
 
     if "heldout" in stages:
         from v4_kv_quant.precision_map import PrecisionMap
 
+        variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
+        for map_file in sorted(out.glob("precision_map*.json")):
+            variants[map_file.stem] = {"precision_map": PrecisionMap.from_json(map_file)}
         results = {}
         cases = {"held_2k": torch.cat(tensors(data, "held_2k")[:4], dim=0).to("cuda"),
                  "held_8k": tensors(data, "held_8k")[0].to("cuda")}
         for label, ids in cases.items():
             prefill = ids.shape[1] - DECODE_TAIL
-            base = run_teacher_forced(model, ids, prefill)
+            base = run_teacher_forced(model, ids, prefill,
+                                      prefill_chunk=args.stats_prefill_chunk)
             row = {}
-            variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
-            if (out / "precision_map.json").exists():
-                variants["mapped"] = {"precision_map": PrecisionMap.from_json(out / "precision_map.json")}
             for vname, kw in variants.items():
-                q = run_teacher_forced(model, ids, prefill, **kw)
+                q = run_teacher_forced(model, ids, prefill,
+                                       prefill_chunk=args.stats_prefill_chunk, **kw)
                 m = logit_comparison_metrics(base.logits, q.logits)
                 m["nll_baseline"] = next_token_nll(base.logits, ids)
                 m["nll_quantized"] = next_token_nll(q.logits, ids)
                 m["nll_delta"] = m["nll_quantized"] - m["nll_baseline"]
+                m["indexer"] = indexer_topk_overlap(base.indexer_picks, q.indexer_picks)
                 row[vname] = m
                 print(f"[heldout] {label}/{vname}: KL={m['kl_mean']:.3e} "
-                      f"top1={m['top1_agreement']:.4f} dNLL={m['nll_delta']:+.4e}", flush=True)
+                      f"top1={m['top1_agreement']:.4f} dNLL={m['nll_delta']:+.4e} "
+                      f"idx_overlap={m['indexer'].get('mean_overlap')}", flush=True)
             results[label] = row
         (out / "heldout_eval.json").write_text(json.dumps(results, indent=2) + "\n")
+
+    if "heldout32k" in stages:
+        from v4_kv_quant.precision_map import PrecisionMap
+
+        ids32_file = out / "token_ids_32k.json"
+        if ids32_file.exists():
+            ids32 = json.loads(ids32_file.read_text())
+            print(f"[heldout32k] reusing {ids32_file}")
+        else:
+            # Disjoint from every stream region used so far: skip past the calib skip
+            # plus the largest held-out consumption on any source (D-012 disjointness).
+            consumed = [max(data[k]["provenance"]["tokens_consumed_per_source"].values())
+                        for k in ("calib_2k", "calib_8k", "held_2k", "held_8k")]
+            skip32 = max(consumed[:2]) + max(consumed[2:])
+            sample = build_corpus_samples(tok, 1, 32768, seed=args.heldout_seed + 2,
+                                          skip_tokens=skip32)
+            ids32 = {"ids": sample.token_ids(), "provenance": sample.provenance,
+                     "skip_tokens": skip32}
+            ids32_file.write_text(json.dumps(ids32) + "\n")
+        ids = torch.tensor([ids32["ids"][0]], dtype=torch.long).to("cuda")
+        prefill = ids.shape[1] - DECODE_TAIL
+        variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
+        if (out / "precision_map.json").exists():
+            variants["precision_map"] = {
+                "precision_map": PrecisionMap.from_json(out / "precision_map.json")}
+        base = run_teacher_forced(model, ids, prefill,
+                                  prefill_chunk=args.stats_prefill_chunk)
+        row = {}
+        for vname, kw in variants.items():
+            q = run_teacher_forced(model, ids, prefill,
+                                   prefill_chunk=args.stats_prefill_chunk, **kw)
+            m = logit_comparison_metrics(base.logits, q.logits)
+            m["nll_baseline"] = next_token_nll(base.logits, ids)
+            m["nll_quantized"] = next_token_nll(q.logits, ids)
+            m["nll_delta"] = m["nll_quantized"] - m["nll_baseline"]
+            m["indexer"] = indexer_topk_overlap(base.indexer_picks, q.indexer_picks)
+            row[vname] = m
+            print(f"[heldout32k] {vname}: KL={m['kl_mean']:.3e} "
+                  f"top1={m['top1_agreement']:.4f} dNLL={m['nll_delta']:+.4e} "
+                  f"idx_overlap={m['indexer'].get('mean_overlap')}", flush=True)
+        (out / "heldout32k_eval.json").write_text(json.dumps(row, indent=2) + "\n")
 
     print(BANNER)
     return 0

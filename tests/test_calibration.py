@@ -239,6 +239,28 @@ def test_stats_recorder_amax_manual(config):
     assert stats["elements"] == 48
 
 
+def test_teacher_forced_chunked_prefill_matches_one_shot():
+    """run_teacher_forced(prefill_chunk=...) must match one-shot within fp tolerance.
+
+    Added for the 8k indexer sweep / heldout / 32k spot-check (D-015): one-shot 8k+
+    prefill OOMs a 96 GB card, so those paths chunk BOTH sides of each comparison.
+    Dense-indexer fixture for the same reason as the semantics tests (D-004).
+    """
+    dense_model = build_tiny_model(seed=0, index_topk=64)
+    ids = deterministic_input_ids(BATCH, 25)
+    one = run_teacher_forced(dense_model, ids, prefill_len=17)
+    chunked = run_teacher_forced(dense_model, ids, prefill_len=17, prefill_chunk=7)
+    assert chunked.logits.shape == one.logits.shape
+    torch.testing.assert_close(chunked.logits, one.logits, atol=1e-5, rtol=1e-5)
+    assert len(chunked.indexer_picks) > 0
+    # policy path chunks identically (both sides chunked -> valid comparison)
+    pol = main_fp8_nonrope_rope_bf16()
+    q_one = run_teacher_forced(dense_model, ids, prefill_len=17, policy=pol)
+    q_chunked = run_teacher_forced(dense_model, ids, prefill_len=17, policy=pol,
+                                   prefill_chunk=7)
+    torch.testing.assert_close(q_chunked.logits, q_one.logits, atol=1e-5, rtol=1e-5)
+
+
 def test_stats_chunked_prefill_equals_one_shot():
     """Chunked prefill must yield the same collected stats as one-shot, up to fp noise.
 

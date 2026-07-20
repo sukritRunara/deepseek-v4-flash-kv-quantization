@@ -1,0 +1,2106 @@
+{
+  "baseline_nll": 1.566303014755249,
+  "kind_main": "fp4_e2m1",
+  "records": [
+    {
+      "target": {
+        "layer_idx": 0,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0009918212890625,
+      "kl_mean": 0.01614367961883545,
+      "max_abs_logit_err": 76.5,
+      "top1_agreement": 0.9517822265625,
+      "score": 0.01713550090789795,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0005173683166503906,
+      "kl_mean": 0.01718045026063919,
+      "max_abs_logit_err": 118.125,
+      "top1_agreement": 0.9542236328125,
+      "score": 0.01769781857728958,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00067138671875,
+      "kl_mean": 0.01680094003677368,
+      "max_abs_logit_err": 109.5,
+      "top1_agreement": 0.9544677734375,
+      "score": 0.01747232675552368,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0038776397705078125,
+      "kl_mean": 0.015882451087236404,
+      "max_abs_logit_err": 75.0,
+      "top1_agreement": 0.956787109375,
+      "score": 0.019760090857744217,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 3,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0012270212173461914,
+      "kl_mean": 0.016220679506659508,
+      "max_abs_logit_err": 68.0,
+      "top1_agreement": 0.955078125,
+      "score": 0.0174477007240057,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 3,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0010222196578979492,
+      "kl_mean": 0.014949952252209187,
+      "max_abs_logit_err": 70.5,
+      "top1_agreement": 0.954345703125,
+      "score": 0.015972171910107136,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 4,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0013706684112548828,
+      "kl_mean": 0.01568363420665264,
+      "max_abs_logit_err": 86.5625,
+      "top1_agreement": 0.95556640625,
+      "score": 0.017054302617907524,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 4,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0032542943954467773,
+      "kl_mean": 0.015378635376691818,
+      "max_abs_logit_err": 174.375,
+      "top1_agreement": 0.9586181640625,
+      "score": 0.018632929772138596,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 4,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 5,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.001331329345703125,
+      "kl_mean": 0.016102585941553116,
+      "max_abs_logit_err": 48.375,
+      "top1_agreement": 0.9556884765625,
+      "score": 0.01743391528725624,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 5,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00030040740966796875,
+      "kl_mean": 0.01334458775818348,
+      "max_abs_logit_err": 56.0,
+      "top1_agreement": 0.9573974609375,
+      "score": 0.013644995167851448,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 6,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0012941360473632812,
+      "kl_mean": 0.014485763385891914,
+      "max_abs_logit_err": 76.0,
+      "top1_agreement": 0.95703125,
+      "score": 0.015779899433255196,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 6,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0007041692733764648,
+      "kl_mean": 0.01497458666563034,
+      "max_abs_logit_err": 50.25,
+      "top1_agreement": 0.95458984375,
+      "score": 0.015678755939006805,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 6,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 7,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0004774332046508789,
+      "kl_mean": 0.014309722930192947,
+      "max_abs_logit_err": 72.5,
+      "top1_agreement": 0.956787109375,
+      "score": 0.014787156134843826,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 7,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0016853809356689453,
+      "kl_mean": 0.0129164457321167,
+      "max_abs_logit_err": 65.5,
+      "top1_agreement": 0.958251953125,
+      "score": 0.014601826667785645,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 8,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0006481409072875977,
+      "kl_mean": 0.013298377394676208,
+      "max_abs_logit_err": 119.25,
+      "top1_agreement": 0.9580078125,
+      "score": 0.013946518301963806,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 8,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0006672143936157227,
+      "kl_mean": 0.014017745852470398,
+      "max_abs_logit_err": 55.875,
+      "top1_agreement": 0.9571533203125,
+      "score": 0.01468496024608612,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 8,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 9,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.004899501800537109,
+      "kl_mean": 0.013074514456093311,
+      "max_abs_logit_err": 65.75,
+      "top1_agreement": 0.95947265625,
+      "score": 0.01797401625663042,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 9,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0023995637893676758,
+      "kl_mean": 0.011537307873368263,
+      "max_abs_logit_err": 55.5,
+      "top1_agreement": 0.96484375,
+      "score": 0.013936871662735939,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 10,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0001207590103149414,
+      "kl_mean": 0.012227152474224567,
+      "max_abs_logit_err": 72.5,
+      "top1_agreement": 0.958251953125,
+      "score": 0.012347911484539509,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 10,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0010192394256591797,
+      "kl_mean": 0.013030936010181904,
+      "max_abs_logit_err": 65.5,
+      "top1_agreement": 0.958740234375,
+      "score": 0.014050175435841084,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 10,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 11,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0006470680236816406,
+      "kl_mean": 0.012429142370820045,
+      "max_abs_logit_err": 45.75,
+      "top1_agreement": 0.9583740234375,
+      "score": 0.013076210394501686,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 11,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0008920431137084961,
+      "kl_mean": 0.011077665723860264,
+      "max_abs_logit_err": 77.5,
+      "top1_agreement": 0.963623046875,
+      "score": 0.01196970883756876,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 12,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00020611286163330078,
+      "kl_mean": 0.01153906062245369,
+      "max_abs_logit_err": 105.5,
+      "top1_agreement": 0.962158203125,
+      "score": 0.01174517348408699,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 12,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0013363361358642578,
+      "kl_mean": 0.01125289686024189,
+      "max_abs_logit_err": 46.5,
+      "top1_agreement": 0.9620361328125,
+      "score": 0.012589232996106148,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 12,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 13,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0002862215042114258,
+      "kl_mean": 0.011584460735321045,
+      "max_abs_logit_err": 59.75,
+      "top1_agreement": 0.9613037109375,
+      "score": 0.01187068223953247,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 13,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.001132965087890625,
+      "kl_mean": 0.010087136179208755,
+      "max_abs_logit_err": 50.0,
+      "top1_agreement": 0.966064453125,
+      "score": 0.01122010126709938,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 14,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0013401508331298828,
+      "kl_mean": 0.010130699723958969,
+      "max_abs_logit_err": 38.75,
+      "top1_agreement": 0.9622802734375,
+      "score": 0.011470850557088852,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 14,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00015842914581298828,
+      "kl_mean": 0.010831568390130997,
+      "max_abs_logit_err": 60.75,
+      "top1_agreement": 0.962646484375,
+      "score": 0.010989997535943985,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 14,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 15,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0017061233520507812,
+      "kl_mean": 0.0099453404545784,
+      "max_abs_logit_err": 51.5,
+      "top1_agreement": 0.96337890625,
+      "score": 0.011651463806629181,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 15,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00027823448181152344,
+      "kl_mean": 0.009115729480981827,
+      "max_abs_logit_err": 56.5,
+      "top1_agreement": 0.9683837890625,
+      "score": 0.00939396396279335,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 16,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0003361701965332031,
+      "kl_mean": 0.009540412575006485,
+      "max_abs_logit_err": 65.75,
+      "top1_agreement": 0.96484375,
+      "score": 0.009876582771539688,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 16,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0008003711700439453,
+      "kl_mean": 0.008934292010962963,
+      "max_abs_logit_err": 61.5,
+      "top1_agreement": 0.9644775390625,
+      "score": 0.009734663181006908,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 16,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 17,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0011267662048339844,
+      "kl_mean": 0.008948767557740211,
+      "max_abs_logit_err": 43.5,
+      "top1_agreement": 0.965576171875,
+      "score": 0.010075533762574196,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 17,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0007669925689697266,
+      "kl_mean": 0.008243804797530174,
+      "max_abs_logit_err": 65.0,
+      "top1_agreement": 0.96728515625,
+      "score": 0.0090107973664999,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 18,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.001091599464416504,
+      "kl_mean": 0.008400416001677513,
+      "max_abs_logit_err": 46.5,
+      "top1_agreement": 0.96533203125,
+      "score": 0.009492015466094017,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 18,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0029665231704711914,
+      "kl_mean": 0.008798247203230858,
+      "max_abs_logit_err": 61.5,
+      "top1_agreement": 0.969482421875,
+      "score": 0.01176477037370205,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 18,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 19,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.001656651496887207,
+      "kl_mean": 0.007916435599327087,
+      "max_abs_logit_err": 46.5,
+      "top1_agreement": 0.9683837890625,
+      "score": 0.009573087096214294,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 19,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0006322860717773438,
+      "kl_mean": 0.007153790444135666,
+      "max_abs_logit_err": 47.0,
+      "top1_agreement": 0.9696044921875,
+      "score": 0.00778607651591301,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 20,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0026646852493286133,
+      "kl_mean": 0.007805956061929464,
+      "max_abs_logit_err": 44.0,
+      "top1_agreement": 0.968017578125,
+      "score": 0.010470641311258078,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 20,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0021916627883911133,
+      "kl_mean": 0.007568322122097015,
+      "max_abs_logit_err": 60.0,
+      "top1_agreement": 0.970458984375,
+      "score": 0.009759984910488129,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 20,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 21,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0024411678314208984,
+      "kl_mean": 0.007152763195335865,
+      "max_abs_logit_err": 53.5,
+      "top1_agreement": 0.9700927734375,
+      "score": 0.009593931026756763,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 21,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0002294778823852539,
+      "kl_mean": 0.0065537746995687485,
+      "max_abs_logit_err": 48.0,
+      "top1_agreement": 0.9732666015625,
+      "score": 0.006783252581954002,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 22,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0018951892852783203,
+      "kl_mean": 0.006665108259767294,
+      "max_abs_logit_err": 60.0,
+      "top1_agreement": 0.97265625,
+      "score": 0.008560297545045614,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 22,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0002663135528564453,
+      "kl_mean": 0.006369537673890591,
+      "max_abs_logit_err": 72.5,
+      "top1_agreement": 0.973388671875,
+      "score": 0.006635851226747036,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 22,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 23,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0009368658065795898,
+      "kl_mean": 0.008093398064374924,
+      "max_abs_logit_err": 45.0,
+      "top1_agreement": 0.9715576171875,
+      "score": 0.009030263870954514,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 23,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -5.888938903808594e-05,
+      "kl_mean": 0.006066376343369484,
+      "max_abs_logit_err": 78.0,
+      "top1_agreement": 0.9725341796875,
+      "score": 0.00612526573240757,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 24,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -2.9325485229492188e-05,
+      "kl_mean": 0.005549133755266666,
+      "max_abs_logit_err": 46.5,
+      "top1_agreement": 0.9732666015625,
+      "score": 0.005578459240496159,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 24,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.003594040870666504,
+      "kl_mean": 0.005750721320509911,
+      "max_abs_logit_err": 59.625,
+      "top1_agreement": 0.973876953125,
+      "score": 0.009344762191176414,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 24,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 25,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0010184049606323242,
+      "kl_mean": 0.005714261904358864,
+      "max_abs_logit_err": 51.625,
+      "top1_agreement": 0.971923828125,
+      "score": 0.006732666864991188,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 25,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0007001161575317383,
+      "kl_mean": 0.004837862681597471,
+      "max_abs_logit_err": 34.5,
+      "top1_agreement": 0.97314453125,
+      "score": 0.0055379788391292095,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 26,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0022884607315063477,
+      "kl_mean": 0.005657448433339596,
+      "max_abs_logit_err": 32.375,
+      "top1_agreement": 0.975341796875,
+      "score": 0.007945909164845943,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 26,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.002444028854370117,
+      "kl_mean": 0.006732430309057236,
+      "max_abs_logit_err": 37.5,
+      "top1_agreement": 0.97119140625,
+      "score": 0.009176459163427353,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 26,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 27,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0009696483612060547,
+      "kl_mean": 0.004528420977294445,
+      "max_abs_logit_err": 42.5,
+      "top1_agreement": 0.975341796875,
+      "score": 0.0054980693385005,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 27,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.000544428825378418,
+      "kl_mean": 0.004192407708615065,
+      "max_abs_logit_err": 43.0,
+      "top1_agreement": 0.977294921875,
+      "score": 0.004736836533993483,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 28,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00020360946655273438,
+      "kl_mean": 0.004439872689545155,
+      "max_abs_logit_err": 38.0,
+      "top1_agreement": 0.9755859375,
+      "score": 0.004643482156097889,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 28,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.002689361572265625,
+      "kl_mean": 0.004466038662940264,
+      "max_abs_logit_err": 52.5,
+      "top1_agreement": 0.976806640625,
+      "score": 0.007155400235205889,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 28,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 29,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0011783838272094727,
+      "kl_mean": 0.004406902007758617,
+      "max_abs_logit_err": 25.75,
+      "top1_agreement": 0.9786376953125,
+      "score": 0.00558528583496809,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 29,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0030666589736938477,
+      "kl_mean": 0.003797343000769615,
+      "max_abs_logit_err": 31.0,
+      "top1_agreement": 0.9794921875,
+      "score": 0.006864001974463463,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 30,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00037920475006103516,
+      "kl_mean": 0.003949169535189867,
+      "max_abs_logit_err": 62.25,
+      "top1_agreement": 0.9766845703125,
+      "score": 0.004328374285250902,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 30,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0021954774856567383,
+      "kl_mean": 0.0049589709378778934,
+      "max_abs_logit_err": 29.5,
+      "top1_agreement": 0.9735107421875,
+      "score": 0.007154448423534632,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 30,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 31,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0011452436447143555,
+      "kl_mean": 0.0037179565988481045,
+      "max_abs_logit_err": 60.0,
+      "top1_agreement": 0.976318359375,
+      "score": 0.00486320024356246,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 31,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00026702880859375,
+      "kl_mean": 0.0034379223361611366,
+      "max_abs_logit_err": 31.0,
+      "top1_agreement": 0.9774169921875,
+      "score": 0.0037049511447548866,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 32,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -8.404254913330078e-05,
+      "kl_mean": 0.003707743249833584,
+      "max_abs_logit_err": 50.5,
+      "top1_agreement": 0.97705078125,
+      "score": 0.0037917857989668846,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 32,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 9.5367431640625e-06,
+      "kl_mean": 0.0037635951302945614,
+      "max_abs_logit_err": 58.5,
+      "top1_agreement": 0.9775390625,
+      "score": 0.003773131873458624,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 32,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 33,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0013303756713867188,
+      "kl_mean": 0.003259195014834404,
+      "max_abs_logit_err": 40.5,
+      "top1_agreement": 0.97900390625,
+      "score": 0.004589570686221123,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 33,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00015103816986083984,
+      "kl_mean": 0.002862401306629181,
+      "max_abs_logit_err": 30.5,
+      "top1_agreement": 0.978759765625,
+      "score": 0.0030134394764900208,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 34,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00027751922607421875,
+      "kl_mean": 0.003113175742328167,
+      "max_abs_logit_err": 76.75,
+      "top1_agreement": 0.97900390625,
+      "score": 0.0033906949684023857,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 34,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0009483098983764648,
+      "kl_mean": 0.002864846959710121,
+      "max_abs_logit_err": 39.0,
+      "top1_agreement": 0.980224609375,
+      "score": 0.003813156858086586,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 34,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 35,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00024390220642089844,
+      "kl_mean": 0.0027378685772418976,
+      "max_abs_logit_err": 47.0,
+      "top1_agreement": 0.9783935546875,
+      "score": 0.002981770783662796,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 35,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00013744831085205078,
+      "kl_mean": 0.002224401570856571,
+      "max_abs_logit_err": 51.5,
+      "top1_agreement": 0.983642578125,
+      "score": 0.002361849881708622,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 36,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0003355741500854492,
+      "kl_mean": 0.0022669429890811443,
+      "max_abs_logit_err": 46.875,
+      "top1_agreement": 0.9810791015625,
+      "score": 0.0026025171391665936,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 36,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0005704164505004883,
+      "kl_mean": 0.0023485799320042133,
+      "max_abs_logit_err": 53.0,
+      "top1_agreement": 0.981201171875,
+      "score": 0.0029189963825047016,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 36,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 37,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0001348257064819336,
+      "kl_mean": 0.0021874031517654657,
+      "max_abs_logit_err": 62.25,
+      "top1_agreement": 0.9815673828125,
+      "score": 0.0023222288582473993,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 37,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0005759000778198242,
+      "kl_mean": 0.0017962184501811862,
+      "max_abs_logit_err": 34.5,
+      "top1_agreement": 0.9844970703125,
+      "score": 0.0023721185280010104,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 38,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00042235851287841797,
+      "kl_mean": 0.0019704652950167656,
+      "max_abs_logit_err": 57.0,
+      "top1_agreement": 0.9844970703125,
+      "score": 0.0023928238078951836,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 38,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00042068958282470703,
+      "kl_mean": 0.0018743048422038555,
+      "max_abs_logit_err": 40.5,
+      "top1_agreement": 0.9820556640625,
+      "score": 0.0022949944250285625,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 38,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 39,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -2.0384788513183594e-05,
+      "kl_mean": 0.0019052871502935886,
+      "max_abs_logit_err": 33.25,
+      "top1_agreement": 0.9827880859375,
+      "score": 0.0019256719388067722,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 39,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00040352344512939453,
+      "kl_mean": 0.0014000439550727606,
+      "max_abs_logit_err": 51.25,
+      "top1_agreement": 0.984130859375,
+      "score": 0.0018035674002021551,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 40,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.0006445646286010742,
+      "kl_mean": 0.0015352643094956875,
+      "max_abs_logit_err": 50.5,
+      "top1_agreement": 0.982666015625,
+      "score": 0.0021798289380967617,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 40,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": -0.00029098987579345703,
+      "kl_mean": 0.0014947721501812339,
+      "max_abs_logit_err": 38.5,
+      "top1_agreement": 0.9833984375,
+      "score": 0.001785762025974691,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 40,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 41,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0002460479736328125,
+      "kl_mean": 0.0013592024333775043,
+      "max_abs_logit_err": 16.5,
+      "top1_agreement": 0.9852294921875,
+      "score": 0.0016052504070103168,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 41,
+        "layer_type": "heavily_compressed_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.00046837329864501953,
+      "kl_mean": 0.001046281191520393,
+      "max_abs_logit_err": 11.875,
+      "top1_agreement": 0.9874267578125,
+      "score": 0.0015146544901654124,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 42,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 0.0009855031967163086,
+      "kl_mean": 0.001756405457854271,
+      "max_abs_logit_err": 19.625,
+      "top1_agreement": 0.984130859375,
+      "score": 0.0027419086545705795,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 42,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp4_e2m1",
+      "nll_delta": 7.545948028564453e-05,
+      "kl_mean": 0.0010611650068312883,
+      "max_abs_logit_err": 11.75,
+      "top1_agreement": 0.986328125,
+      "score": 0.0011366244871169329,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 42,
+        "layer_type": "compressed_sparse_attention",
+        "state": "indexer_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 128
+      },
+      "kind": "fp4_e2m1_hadamard",
+      "nll_delta": 0.0,
+      "kl_mean": 0.0,
+      "max_abs_logit_err": 0.0,
+      "top1_agreement": 1.0,
+      "score": 0.0,
+      "indexer_overlap": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      },
+      "nan_count": 0,
+      "inf_count": 0
+    }
+  ]
+}

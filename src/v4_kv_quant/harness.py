@@ -42,8 +42,9 @@ def run_teacher_forced(
     precision_map=None,
     capture_indexer: bool = True,
     storage: bool = False,
+    prefill_chunk: int | None = None,
 ) -> TeacherForcedResult:
-    """One-shot prefill of `prefill_len` tokens, then ground-truth single-token decode.
+    """Prefill of `prefill_len` tokens, then ground-truth single-token decode.
 
     Cache selection (mutually exclusive):
       * default            -> stock `DynamicCache` baseline;
@@ -52,6 +53,12 @@ def run_teacher_forced(
       * `precision_map=...`-> `MappedQDQCache` (per-group map, Task-03 calibration).
     Either quantized mode also arms the symmetric indexer-query QDQ wrapper when the
     policy/map quantizes indexer keys.
+
+    `prefill_chunk` feeds the prefill in slices through the same cache (semantics
+    test-pinned chunked==one-shot; needed at 8k+ where one-shot eager attention OOMs a
+    96 GB card — WORKLOG 2026-07-20 B4). Comparisons must use the SAME chunking on
+    both sides: chunk-shaped kernels differ from one-shot at the last ulp, which flips
+    near-tied selective-indexer picks (D-004).
     """
     from transformers import DynamicCache  # local import keeps module import light
 
@@ -90,8 +97,14 @@ def run_teacher_forced(
     chunks: list[torch.Tensor] = []
     try:
         with context:
-            out = model(input_ids[:, :prefill_len], past_key_values=cache, use_cache=True)
-            chunks.append(out.logits)
+            if prefill_chunk is not None and prefill_len > prefill_chunk:
+                for start in range(0, prefill_len, prefill_chunk):
+                    out = model(input_ids[:, start : min(start + prefill_chunk, prefill_len)],
+                                past_key_values=cache, use_cache=True)
+                    chunks.append(out.logits)
+            else:
+                out = model(input_ids[:, :prefill_len], past_key_values=cache, use_cache=True)
+                chunks.append(out.logits)
             for t in range(prefill_len, seq_len):
                 out = model(input_ids[:, t : t + 1], past_key_values=cache, use_cache=True)
                 chunks.append(out.logits)

@@ -1,5 +1,53 @@
 # Worklog
 
+## 2026-07-20 (GCP G4 — B4 run 1 complete: screening rankings + a vacuous-indexer finding; overnight delegation D-015)
+
+### Goal
+
+B4 run 1 rerun (`--stages corpus,stats,screening`) with the chunked stats stage;
+then owner-delegated continuation (D-015 — owner "Go", map provisional).
+
+### Results (run 1)
+
+- corpus: reused `token_ids.json`; stats: 40/40 sequences with `--stats-prefill-chunk
+  2048` (fix verified at scale); screening: 105/105 targets on probe [4, 2048],
+  no NaN/Inf anywhere. Outputs in `results/calibration_full/`, copies in
+  `artifacts/phase_b_gcp/calibration_run1/`.
+- **Main-KV rankings** (FP4 whole-state perturbation, score = KL + |ΔNLL|): early
+  layers dominate — top: layer2/compressed 1.98e-2, layer4/compressed 1.86e-2,
+  layer9/window 1.80e-2, then layers 0–8 window/compressed ~1.5–1.8e-2. Tail (late
+  layers) ~1.1–2.3e-3. Smooth ~8–17× range, **no sharp elbow**; ΔNLL is noise-level
+  throughout (some negative), KL carries the signal. top1 agreement ≥ 0.95 even for
+  worst single-state FP4.
+- **Indexer finding: the 2k probe cannot measure indexer sensitivity.** All 21
+  indexer targets scored exactly 0 with mean/min overlap = 1.0 over 171,780
+  positions. Cause (verified in config): `index_topk = 512` ≥ compressed entries at
+  2048 tokens (CSA ratio 4 → ≤512 entries), so top-k selection NEVER binds at the
+  probe length — overlap is 1.0 by construction and the perturbation is invisible.
+  Consequence: `build_map_from_sweep`'s overlap gate would pass every layer on
+  meaningless evidence. Fix: new `indexer8k` stage (probe [2, 8192] → ~2048 entries
+  ≫ 512; chunked prefill).
+- **Map-composition gap found**: the committed map stage consumed ONLY refine
+  records (top-15 sensitive states) + indexer, leaving the ~69 least-sensitive
+  states without entries → BF16. Inverted for a deployable map; fixed per D-015
+  (refine group-64 records + state-level screening records for non-refined states +
+  indexer8k records).
+
+### Changes (all unit-tested; suite 100 passed)
+
+- `harness.run_teacher_forced(prefill_chunk=...)` + same-shapes-both-sides rule
+  (chunk-kernel ulp noise flips selective-indexer picks — D-004);
+  `run_sensitivity_sweep`/`measure_target` pass-through.
+- `run_calibration_full.py`: `indexer8k` stage; map composition per D-015 +
+  `--map-suffix` candidates; heldout evaluates official + every
+  `precision_map*.json` (chunked, + held-out indexer overlap); `heldout32k` stage
+  (disjoint 32k sample, D-012); config-only load for map-only invocations.
+
+### Next step
+
+Overnight: refine + fp8spot + indexer8k (one load) → 3 candidate maps → heldout →
+guardrail selection (D-015) → 32k spot → B7 matrix.
+
 ## 2026-07-20 (GCP G4 — B4 run 1 attempt 1: corpus OK, stats stage OOM at 8k → chunked-prefill fix)
 
 ### Goal

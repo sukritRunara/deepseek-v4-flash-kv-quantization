@@ -160,6 +160,45 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-015 — Owner delegates the B4 map decision for the overnight run (provisional)
+
+**Date:** 2026-07-20
+**Status:** accepted (owner-approved "Go", 2026-07-20; map itself PROVISIONAL pending
+owner ratification)
+**Context:** The B4 plan reserved a stop point before refine/map for owner review of
+rankings (D-012). Owner is asleep and explicitly delegated: run the full remaining
+workflow overnight, with the agent choosing "something good" under a pre-stated rule.
+Screening (run 1) also surfaced two design gaps that the delegated run must handle:
+(1) **indexer screening at the 2k probe is vacuous** — `index_topk=512` ≥ compressed
+entries at 2048 tokens (ratio 4), so top-k selection never binds and every indexer
+target measures exactly zero with overlap 1.0 by construction; (2) **the map stage as
+committed composes only refine records**, so the ~69 least-sensitive states (never
+refined) would get no entry and stay BF16 — inverted for a deployable map.
+**Decision:** (a) Re-measure the 21 indexer targets on an 8k probe (2048 entries ≫
+topk 512, selection real) — new `indexer8k` stage; requires chunked prefill in the
+teacher-forced harness (one-shot 8192 OOMs — same class as the stats-stage fix).
+(b) Compose the map from refine records (group-64, top-15 states) + screening records
+for non-refined states (state-level) + indexer8k records; fractions apply over that
+combined ranked pool. (c) Build three candidates — conservative (fp8 0.75/fp4 0.0),
+moderate (fp8 1.0/fp4 0.0), aggressive (fp8 0.85/fp4 0.15) — evaluate all on held-out
+2k+8k, and select by guardrails: the chosen map must match or beat the official QDQ
+policy on ΔNLL, KL, and top-1 agreement; indexer entries only for layers with 8k
+mean top-k overlap ≥ 0.9 (D-012). If no candidate passes, fall back to the official
+policy downstream and leave the map decision for the owner. (d) 32k held-out
+spot-check runs on the selected map (D-012).
+**Alternatives considered:** trusting the 2k indexer screening (rejected — measurement
+does not measure anything at that length); refine-only map composition as committed
+(rejected — leaves the insensitive majority unquantized); waiting for owner review
+(explicitly overridden by owner for this run).
+**Evidence:** `results/calibration_full/screening.json` (21/21 indexer targets score
+exactly 0, overlap 1.0); model config `index_topk=512`, `compress_ratios` CSA=4;
+WORKLOG 2026-07-20 B4 run 1.
+**Consequences:** the shipped `precision_map.json` is PROVISIONAL until the owner
+ratifies fractions and indexer gating; all candidates + heldout metrics are preserved
+for that review.
+**Follow-up:** owner morning review; revisit sweep breadth if refine shows flat
+sensitivity (D-012 follow-up stands).
+
 ### D-014 — GCP G4 host P2P is healthy; host-staged workaround becomes opt-in
 
 **Date:** 2026-07-20

@@ -84,6 +84,7 @@ def measure_target(
     baseline_nll: float,
     kind: str | None = None,
     indexer_scale_group: int = 32,
+    prefill_chunk: int | None = None,
 ) -> SensitivityRecord:
     kind = kind or default_kind_for(target)
     run = run_teacher_forced(
@@ -92,6 +93,7 @@ def measure_target(
         prefill_len,
         precision_map=perturbation_map(target, kind, indexer_scale_group),
         capture_indexer=target.state == INDEXER_STATE,
+        prefill_chunk=prefill_chunk,
     )
     metrics = logit_comparison_metrics(baseline.logits, run.logits)
     overlap = None
@@ -119,15 +121,22 @@ def run_sensitivity_sweep(
     kind_indexer: str = DEFAULT_INDEXER_KIND,
     indexer_scale_group: int = 32,
     progress: bool = False,
+    prefill_chunk: int | None = None,
 ) -> tuple[TeacherForcedResult, float, list[SensitivityRecord]]:
-    """Measure every target against one shared baseline run. Deterministic."""
-    baseline = run_teacher_forced(model, input_ids, prefill_len, capture_indexer=True)
+    """Measure every target against one shared baseline run. Deterministic.
+
+    `prefill_chunk` is applied to the baseline AND every perturbed run (identical
+    shapes on both sides of each comparison — the harness docstring explains why).
+    """
+    baseline = run_teacher_forced(model, input_ids, prefill_len, capture_indexer=True,
+                                  prefill_chunk=prefill_chunk)
     baseline_nll = next_token_nll(baseline.logits, input_ids)
     records = []
     for i, target in enumerate(targets):
         kind = kind_indexer if target.state == INDEXER_STATE else kind_main
         record = measure_target(
-            model, input_ids, prefill_len, target, baseline, baseline_nll, kind, indexer_scale_group
+            model, input_ids, prefill_len, target, baseline, baseline_nll, kind,
+            indexer_scale_group, prefill_chunk=prefill_chunk,
         )
         records.append(record)
         if progress:
