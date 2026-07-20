@@ -163,8 +163,9 @@ explicitly re-run the Stage-B quality suite.
 ### D-015 — Owner delegates the B4 map decision for the overnight run (provisional)
 
 **Date:** 2026-07-20
-**Status:** accepted (owner-approved "Go", 2026-07-20; map itself PROVISIONAL pending
-owner ratification)
+**Status:** accepted (owner-approved "Go", 2026-07-20; **map RATIFIED by owner
+2026-07-20** — `moderate`: all main-KV non-RoPE FP8 e4m3, RoPE BF16, indexer BF16
+is the project's calibrated precision map)
 **Context:** The B4 plan reserved a stop point before refine/map for owner review of
 rankings (D-012). Owner is asleep and explicitly delegated: run the full remaining
 workflow overnight, with the agent choosing "something good" under a pre-stated rule.

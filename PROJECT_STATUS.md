@@ -9,20 +9,19 @@ branch `runpod-phase-b`). Bring-up per `docs/GCP_TRANSITION.md`: landing 15/15 v
 `V4_KV_FORCE_HOST_STAGED_P2P=1`), B1/B3 re-validated (B1 continuation word-for-word;
 B3 ALL bitwise gates; random-prompt QDQ divergence reproduces RunPod exactly).
 
+## Precision map — RATIFIED (D-015, owner, 2026-07-20)
+
+`moderate` = all main-KV non-RoPE FP8 e4m3, RoPE BF16, indexer BF16
+(`results/calibration_full/precision_map.json`; copies + all candidates and the
+full evidence chain in `artifacts/phase_b_gcp/calibration_run1/` and WORKLOG
+2026-07-20). Basis: official FP4 indexer's held-out top-k overlap decays below
+the 0.9 gate at 32k (0.952@8k → 0.886@32k) while NLL/top-1 stay clean.
+
 ## Awaiting owner
 
-1. **Ratify the provisional precision map (D-015)** — selected overnight under
-   delegated authority: `moderate` = all main-KV non-RoPE FP8 e4m3, RoPE BF16,
-   indexer BF16 (`results/calibration_full/precision_map.json`, copies + all
-   candidates in `artifacts/phase_b_gcp/calibration_run1/`). Basis: official FP4
-   indexer's held-out top-k overlap decays below the 0.9 gate at 32k (0.952@8k →
-   0.886@32k) while NLL/top-1 stay clean — see WORKLOG 2026-07-20 for the full
-   evidence chain, including two methodology findings (probe-KL saturation at the
-   indexer-flip floor; per-layer indexer sweep invalidated by the uniform
-   query-QDQ wrapper).
-2. Push `runpod-phase-b` to origin (agent's `git push` is permission-blocked).
-3. Release the RunPod volume (GCP step-5 retention condition met 2026-07-20).
-4. Report to upstream: torch.ldexp CUDA device-guard bug (from B3, still open).
+1. Push `runpod-phase-b` to origin (agent's `git push` is permission-blocked).
+2. Release the RunPod volume (GCP step-5 retention condition met 2026-07-20).
+3. Report to upstream: torch.ldexp CUDA device-guard bug (from B3, still open).
 
 ## Headline results (same-node GCP matrix, medians of 5, native P2P)
 

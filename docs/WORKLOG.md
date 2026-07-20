@@ -1,5 +1,11 @@
 # Worklog
 
+## 2026-07-20 (Owner ratifies the B4 precision map)
+
+Owner ratified the D-015 provisional selection: `moderate` — all main-KV non-RoPE
+FP8 e4m3, RoPE BF16, indexer BF16 — is now the project's calibrated precision map.
+D-015 status and PROJECT_STATUS updated; no code changes.
+
 ## 2026-07-20 (GCP G4 — B7: final benchmark matrix, all variants — PHASE B COMPLETE)
 
 ### Goal
