@@ -1,0 +1,18 @@
+{
+  "model_path": "/home/sukrit/models/DeepSeek-V4-Flash",
+  "prefill": 512,
+  "decode": 8,
+  "prompts": {
+    "natural": {
+      "gateA_bitwise": true,
+      "gateB_bitwise": true,
+      "official_vs_baseline_max_abs_dlogit": 15.3125
+    },
+    "random-512": {
+      "gateA_bitwise": true,
+      "gateB_bitwise": true,
+      "official_vs_baseline_max_abs_dlogit": 4.84375
+    }
+  },
+  "all_gates_passed": true
+}

@@ -1,0 +1,99 @@
+{
+  "info": {
+    "cpu_architecture": "x86_64",
+    "platform": "Linux-6.17.0-1021-gcp-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "torch": "2.13.0+cu130",
+    "torch_cuda_runtime": "13.0",
+    "cuda_available": true,
+    "cuda_toolkit": "nvcc not on PATH",
+    "nvidia_smi": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 610.43.02, 97887 MiB\nNVIDIA RTX PRO 6000 Blackwell Server Edition, 610.43.02, 97887 MiB\nNVIDIA RTX PRO 6000 Blackwell Server Edition, 610.43.02, 97887 MiB\nNVIDIA RTX PRO 6000 Blackwell Server Edition, 610.43.02, 97887 MiB",
+    "triton": "3.7.1",
+    "python_dev_headers": "/usr/include/python3.12/Python.h",
+    "transformers": "5.15.0.dev0",
+    "gpu": {
+      "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "compute_capability": "12.0",
+      "total_memory_gib": 95.0,
+      "multi_processor_count": 188
+    },
+    "cuda_mem_get_info_gib": {
+      "free": 94.5,
+      "total": 95.0
+    }
+  },
+  "checks": [
+    {
+      "check": "bf16_matmul[cpu]",
+      "status": "PASS",
+      "required": true,
+      "detail": "cpu: bf16 matmul finite, mean|x|=6.262"
+    },
+    {
+      "check": "fp8_e4m3_roundtrip[cpu]",
+      "status": "PASS",
+      "required": true,
+      "detail": "cpu: e4m3 cast round trip max|err|=15.875 (within format step)"
+    },
+    {
+      "check": "fp8_e8m0_scale_dtype[cpu]",
+      "status": "PASS",
+      "required": false,
+      "detail": "cpu: e8m0 powers-of-two exact; 3.0 -> 4.0"
+    },
+    {
+      "check": "fp4_e2m1_dtype[cpu]",
+      "status": "PASS",
+      "required": false,
+      "detail": "cpu: float4_e2m1fn_x2 storage dtype usable (uint8 view round trip)"
+    },
+    {
+      "check": "bf16_matmul[cuda]",
+      "status": "PASS",
+      "required": true,
+      "detail": "cuda: bf16 matmul finite, mean|x|=6.182"
+    },
+    {
+      "check": "fp8_e4m3_roundtrip[cuda]",
+      "status": "PASS",
+      "required": true,
+      "detail": "cuda: e4m3 cast round trip max|err|=15.875 (within format step)"
+    },
+    {
+      "check": "fp8_e8m0_scale_dtype[cuda]",
+      "status": "PASS",
+      "required": false,
+      "detail": "cuda: e8m0 powers-of-two exact; 3.0 -> 4.0"
+    },
+    {
+      "check": "fp4_e2m1_dtype[cuda]",
+      "status": "PASS",
+      "required": false,
+      "detail": "cuda: float4_e2m1fn_x2 storage dtype usable (uint8 view round trip)"
+    },
+    {
+      "check": "torch_compile[cpu]",
+      "status": "PASS",
+      "required": false,
+      "detail": "cpu inductor compile OK"
+    },
+    {
+      "check": "torch_compile[cuda]",
+      "status": "PASS",
+      "required": false,
+      "detail": "cuda torch.compile (triton backend) OK"
+    },
+    {
+      "check": "triton_kernel[cuda]",
+      "status": "PASS",
+      "required": false,
+      "detail": "hand-written triton kernel OK"
+    },
+    {
+      "check": "fp8_scaled_mm[cuda]",
+      "status": "PASS",
+      "required": false,
+      "detail": "torch._scaled_mm fp8 GEMM OK"
+    }
+  ]
+}

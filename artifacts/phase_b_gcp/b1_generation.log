@@ -1,0 +1,10 @@
+[transformers] This FP8 model spans multiple CUDA devices in one process; routing its FP8 linear and experts layers through Triton/grouped_mm instead of DeepGEMM (DeepGEMM's cached kernels are bound to a single CUDA context and corrupt across devices). Run tensor/expert parallel (one device per process) to use the faster DeepGEMM path.
+[load] 16s
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files:  17%|█▋        | 2/12 [00:00<00:00, 19.36it/s]Fetching 12 files:  92%|█████████▏| 11/12 [00:00<00:00, 59.54it/s]Fetching 12 files: 100%|██████████| 12/12 [00:00<00:00, 58.32it/s]
+[generate] 99s for 32 tokens (incl. first-call autotune)
+Pipeline parallelism in ai is  a technique that splits a model across multiple devices, with each device responsible for a subset of layers. This is different from data parallelism, where each device has a
+[gpu0] allocated 34.3 GiB
+[gpu1] allocated 40.0 GiB
+[gpu2] allocated 40.0 GiB
+[gpu3] allocated 31.0 GiB

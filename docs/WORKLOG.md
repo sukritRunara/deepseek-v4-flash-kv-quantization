@@ -1,5 +1,45 @@
 # Worklog
 
+## 2026-07-20 (GCP G4 — step 5 re-validation: B1 GO, B3 ALL GATES PASSED — bring-up complete)
+
+### Goal
+
+`docs/GCP_TRANSITION.md` step 5: one-model-load re-validations on the GCP instance —
+(a) B1 generation sanity, (b) B3 bitwise gates, both on native P2P (D-014).
+
+### Commands run
+
+```bash
+ls /home/sukrit/models/DeepSeek-V4-Flash/model-*.safetensors | xargs -P 16 -I{} cat {} > /dev/null
+.venv/bin/python <B1 scriptlet, RUNPOD_START_HERE step 1 w/ GCP path>   # artifacts/phase_b_gcp/b1_generation.log
+.venv/bin/python tools/b3_identity_gates.py                             # artifacts/phase_b_gcp/b3_gates.{log,json}
+```
+
+### Results
+
+- **B1: GO.** Coherent greedy continuation, word-for-word identical to the RunPod B1
+  text ("…a technique that splits a model across multiple devices…"). Per-GPU
+  allocated 34.3/40.0/40.0/31.0 GiB — same sharding as RunPod. Load **16 s** with warm
+  page cache (RunPod: 868 s off MooseFS; local-PD + pre-warm is dramatically faster);
+  generate 32 tokens in 99 s incl. first-call Triton autotune (not a perf number).
+  Ran with NO P2P workaround → first real-model validation of native P2P (D-014).
+- **B3: ALL GATES PASSED** via the committed driver. Gate A (QDQCache(baseline_bf16)
+  == stock, logits AND indexer picks) and gate B (storage == qdq under
+  reference_official_qdq) bitwise on both prompts. Informative official-QDQ vs
+  baseline max|dlogit|: 15.31 natural / **4.844 random-512 — exactly the RunPod
+  value** (same seeded ids), a strong cross-host reproducibility check. (Natural-prompt
+  value differs from RunPod's 7.5 because the original scratchpad's natural text was
+  not preserved; the committed driver embeds its own fixed text. Expected per D-004 —
+  near-tie indexer top-k flips dominate; judged properly in B5.)
+- Stage-B/Stage-C machinery fully validated on this host. **RunPod volume retention
+  condition met (GCP_TRANSITION step 5) — operator may release the RunPod volume.**
+
+### Next step
+
+B4 run 1: `tools/run_calibration_full.py --stages corpus,stats,screening`
+(first real exercise of the `datasets` streaming path), then owner reviews rankings
+(D-012 stop point).
+
 ## 2026-07-20 (GCP G4 — bring-up steps 1–4: environment, P2P verdict, weights)
 
 ### Goal

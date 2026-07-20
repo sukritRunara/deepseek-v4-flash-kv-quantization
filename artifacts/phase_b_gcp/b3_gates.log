@@ -1,0 +1,12 @@
+[p2p_workaround] not armed (V4_KV_FORCE_HOST_STAGED_P2P!=1): native P2P in use; run tools/p2p_stress_check.py before trusting a new host (D-014)
+[transformers] This FP8 model spans multiple CUDA devices in one process; routing its FP8 linear and experts layers through Triton/grouped_mm instead of DeepGEMM (DeepGEMM's cached kernels are bound to a single CUDA context and corrupt across devices). Run tensor/expert parallel (one device per process) to use the faster DeepGEMM path.
+[loaded]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files: 100%|██████████| 12/12 [00:00<00:00, 16003.70it/s]
+[PASS] gateA identity (natural): logits and indexer picks bitwise identical
+[PASS] gateB storage==qdq (natural): logits and indexer picks bitwise identical
+[info] official-QDQ vs baseline max|dlogit| (natural): 1.531e+01
+[PASS] gateA identity (random-512): logits and indexer picks bitwise identical
+[PASS] gateB storage==qdq (random-512): logits and indexer picks bitwise identical
+[info] official-QDQ vs baseline max|dlogit| (random-512): 4.844e+00
+ALL GATES PASSED
