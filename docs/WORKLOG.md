@@ -38,7 +38,21 @@
   artifact suggested.
 - Decision now binary: official (= all-main-FP8 + indexer-FP4) vs moderate
   (= all-main-FP8 + indexer-BF16), statistically tied at 2k/8k. Discriminator:
-  32k spot-check (selection pressure 8192 entries vs top-512), running.
+  32k spot-check (selection pressure 8192 entries vs top-512).
+- **32k spot-check (1 × 32768 held-out seq, disjoint stream region):**
+  official  KL 1.521e-2, top1 0.9767, dNLL −2.9e-4, idx_overlap **0.886** (< 0.9!)
+  moderate  KL 1.542e-2, top1 0.9771, dNLL −1.6e-4, idx_overlap **0.911**
+  The official FP4 indexer's overlap decays with context (0.952 @ 8k → 0.886 @
+  32k) and crosses below the D-012 gate; moderate holds. Other metrics tied — the
+  overlap gate is the binding criterion (D-004: judge the indexer by top-k
+  overlap, not logit closeness).
+- **PROVISIONAL SELECTION (D-015): `moderate` — all main-KV non-RoPE FP8 e4m3
+  (state-level for the 69 non-refined states, group-64 within the top-15), RoPE
+  dims BF16, indexer BF16.** Staged as `precision_map.json`. Owner notes for
+  ratification: (a) official shows NO NLL/top-1 damage even at 32k — if indexer
+  memory savings outweigh the overlap gate, official is defensible; (b) a
+  long-context retrieval eval would discriminate better than C4 NLL (CLAUDE.md
+  metric list) — candidate follow-up.
 
 ## 2026-07-20 (GCP G4 — B4 run 1 complete: screening rankings + a vacuous-indexer finding; overnight delegation D-015)
 
