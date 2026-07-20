@@ -239,6 +239,55 @@ def test_stats_recorder_amax_manual(config):
     assert stats["elements"] == 48
 
 
+def test_metrics_position_chunking_matches_unchunked():
+    """Chunked metric accumulation must reproduce the naive full-tensor formulas.
+
+    The chunked path exists because full-vocab fp32 log-softmax over an 8k/32k
+    sequence OOMs next to the resident weights (WORKLOG 2026-07-20 B4 overnight).
+    """
+    from v4_kv_quant.metrics import logit_comparison_metrics
+
+    torch.manual_seed(3)
+    base = torch.randn(2, 11, 37)
+    test = base + 0.05 * torch.randn(2, 11, 37)
+    test[1, 4, 5] = float("nan")
+    test[0, 7, 2] = float("inf")
+
+    # naive reference (the pre-chunking implementation)
+    b32, t32 = base.float(), test.float()
+    diff = (b32 - t32).abs()
+    log_p = torch.log_softmax(b32, dim=-1)
+    log_q = torch.log_softmax(t32, dim=-1)
+    kl = (log_p.exp() * (log_p - log_q)).sum(-1)
+    expected = {
+        "max_abs_logit_err": diff.max().item(),
+        "mean_abs_logit_err": diff.mean().item(),
+        "rms_logit_err": diff.square().mean().sqrt().item(),
+        "kl_mean": kl.mean().item(),
+        "kl_max": kl.max().item(),
+        "top1_agreement": (b32.argmax(-1) == t32.argmax(-1)).float().mean().item(),
+        "nan_count": 1,
+        "inf_count": 1,
+    }
+    for chunk in (3, 7, 22, 1000):  # multiple chunks, uneven tail, single chunk
+        got = logit_comparison_metrics(base, test, position_chunk=chunk)
+        for key, want in expected.items():
+            if key in ("nan_count", "inf_count"):
+                assert got[key] == want, (key, chunk)
+            elif want != want:  # NaN propagates through mean/rms paths identically
+                assert got[key] != got[key], (key, chunk)
+            else:
+                assert got[key] == pytest.approx(want, rel=1e-6, nan_ok=True), (key, chunk)
+
+    ids = torch.randint(0, 37, (2, 11))
+    logits = torch.randn(2, 11, 37)
+    want_nll = torch.nn.functional.cross_entropy(
+        logits[:, :-1].float().flatten(0, 1), ids[:, 1:].flatten()).item()
+    for chunk in (4, 9, 1000):
+        assert next_token_nll(logits, ids, position_chunk=chunk) == pytest.approx(
+            want_nll, rel=1e-6), chunk
+
+
 def test_teacher_forced_chunked_prefill_matches_one_shot():
     """run_teacher_forced(prefill_chunk=...) must match one-shot within fp tolerance.
 
