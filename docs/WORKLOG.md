@@ -1,5 +1,53 @@
 # Worklog
 
+## 2026-07-20 (GCP G4 — B7: final benchmark matrix, all variants — PHASE B COMPLETE)
+
+### Goal
+
+Plan step B7: full same-node matrix (`scripts/runpod/launch_4gpu_bench.sh` →
+landing test, then `configs/bench_runpod_4gpu.json`: baseline/qdq/storage ×
+1024/8192/65536, batch 1, 128 decode tokens, 5 trials + 2 warmup,
+prefill_chunk 2048, policy `reference_official_qdq`, NATIVE P2P per D-014).
+
+### Results (medians of 5; `results/benchmark_runpod_20260720T083335Z.json`,
+copy at `artifacts/phase_b_gcp/benchmark_matrix.json`)
+
+| prompt | variant | TTFT | prefill tok/s | decode tok/s | ITL p50 | cache | vs baseline |
+|---|---|---|---|---|---|---|---|
+| 1024 | baseline | 491 ms | 2086 | 5.0 | 195 ms | 13.4 MiB | — |
+| 1024 | qdq | 531 ms | 1927 | 4.5 | 213 ms | 13.4 MiB | 1.000× (sim) |
+| 1024 | storage | 544 ms | 1884 | 4.4 | 221 ms | 7.2 MiB | **0.535×** |
+| 8192 | baseline | 5.45 s | 1503 | 5.0 | 196 ms | 60.5 MiB | — |
+| 8192 | qdq | 5.73 s | 1429 | 4.6 | 212 ms | 60.5 MiB | 1.000× |
+| 8192 | storage | 5.77 s | 1419 | 4.4 | 219 ms | 31.2 MiB | **0.516×** |
+| 65536 | baseline | 85.1 s | 770 | 5.0 | 195 ms | 436.7 MiB | — |
+| 65536 | qdq | 87.1 s | 752 | 4.6 | 212 ms | 436.7 MiB | 1.000× |
+| 65536 | storage | 87.4 s | 750 | 4.4 | 218 ms | 223.1 MiB | **0.511×** |
+
+- Peak alloc ~42/48/69 GiB (hottest GPU), dominated by weights; identical across
+  variants at each length.
+- **Actual storage halves cache bytes (0.51–0.54×, scales included)** at a cost of
+  ~9–12% ITL and 1–6% prefill (unfused pure-PyTorch dequant-on-read — Stage-D
+  fusion is the known remedy). QDQ sim saves nothing by design (labeled).
+- **Native-P2P node vs RunPod host-staged (historical, NOT comparable, but worth
+  noting):** baseline decode 5.0 vs 3.3 tok/s, ITL p50 195 vs 296 ms, TTFT
+  491 ms vs 546 ms @ 1k. The D-011 caveat does not apply to these numbers (D-014).
+- Micro-overheads @65k shapes: fp8 window-step encode 78 µs (RunPod: 146);
+  fp4 indexer entry encode 219 µs (370); decodes 22–65 µs.
+- Allocator OOM-retry warnings at 65k cells (same benign pattern as B2); all 9
+  cells completed.
+- Note: qdq/storage variants use the OFFICIAL policy (per config). A benchmark
+  variant for the selected B4 map (indexer BF16 → slightly larger cache, no FP4
+  indexer encode cost) is a candidate follow-up; quality-side comparison already
+  done in B4 heldout/32k.
+
+### Phase B status
+
+B0–B7 all complete. Deliverables: bitwise-validated Stage-B/C machinery on the
+real checkpoint (B3, GCP re-validated), calibrated provisional precision map
+(B4/B5, D-015 — owner ratification pending), storage memory proof + full latency
+matrix on a healthy-P2P node (B6/B7). Manifest regenerated (51 files).
+
 ## 2026-07-20 (GCP G4 — B4 overnight: refine/fp8spot/indexer8k, candidate maps, heldout; two methodology findings)
 
 ### Results

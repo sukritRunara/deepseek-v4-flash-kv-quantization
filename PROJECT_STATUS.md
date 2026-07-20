@@ -2,26 +2,45 @@
 
 ## Current phase
 
-RunPod — **Phase A (1-GPU landing pod) complete** (2026-07-17): environment rebuilt for
-x86-64/SM120, hardware smoke all-PASS, landing test ALL CHECKS PASSED, suite 90 passed,
-tiny CUDA benchmark ran end to end. One incompatibility found and fixed (GX10-hardcoded
-host-identity tests). Details: WORKLOG 2026-07-17 "RunPod Phase A".
-(GX10 local development Tasks 01–05 completed 2026-07-16/17, tagged `dgx-phase-complete-v1`.)
+GCP G4 (`deepseek-v4-flash-g4-4gpu`, D-013) — **PHASE B COMPLETE, B0–B7** (2026-07-20,
+branch `runpod-phase-b`). Bring-up per `docs/GCP_TRANSITION.md`: landing 15/15 vs
+`expectations_runpod.json` verbatim, suite green (now 101 tests), weights @ pin,
+**native P2P healthy → D-014** (host-staged workaround now opt-in via
+`V4_KV_FORCE_HOST_STAGED_P2P=1`), B1/B3 re-validated (B1 continuation word-for-word;
+B3 ALL bitwise gates; random-prompt QDQ divergence reproduces RunPod exactly).
 
-## Active task
+## Awaiting owner
 
-RunPod **Phase B** on the 4-GPU pod (2026-07-17, branch `runpod-phase-b`): checklist in
-`docs/RUNPOD_PHASE_B_PLAN.md`. **B0 done** (rebuild green: landing 15/15, suite 90).
-**B1 done — GO**: native FP8/FP4 generation works on SM120 across 4 GPUs, after
-root-causing silently-corrupting pod P2P (D-011 — `ensure_host_staged_p2p()` is now
-mandatory in every multi-GPU run; pod health gate: `tools/p2p_stress_check.py`) and
-adding `kernels==0.15.2`. B2 done (baseline matrix in WORKLOG/results). B3 done — ALL bitwise gates PASS on
-the real model (identity + D-009 storage==qdq), after fixing an upstream torch.ldexp
-multi-GPU bug (qdq.py, WORKLOG). B4 design approved (D-012); loader + staged CLI committed
-(no sweep outputs yet). **TRANSITION IN PROGRESS: Phase B resumes on GCP G4
-(D-013, `docs/GCP_TRANSITION.md`) — this pod is sealed; next action happens on the
-GCP instance (bring-up checklist, then B4 run 1).** Operator items: report the faulty
-node to RunPod; prefer a stress-checked healthy node for the final B7 matrix.
+1. **Ratify the provisional precision map (D-015)** — selected overnight under
+   delegated authority: `moderate` = all main-KV non-RoPE FP8 e4m3, RoPE BF16,
+   indexer BF16 (`results/calibration_full/precision_map.json`, copies + all
+   candidates in `artifacts/phase_b_gcp/calibration_run1/`). Basis: official FP4
+   indexer's held-out top-k overlap decays below the 0.9 gate at 32k (0.952@8k →
+   0.886@32k) while NLL/top-1 stay clean — see WORKLOG 2026-07-20 for the full
+   evidence chain, including two methodology findings (probe-KL saturation at the
+   indexer-flip floor; per-layer indexer sweep invalidated by the uniform
+   query-QDQ wrapper).
+2. Push `runpod-phase-b` to origin (agent's `git push` is permission-blocked).
+3. Release the RunPod volume (GCP step-5 retention condition met 2026-07-20).
+4. Report to upstream: torch.ldexp CUDA device-guard bug (from B3, still open).
+
+## Headline results (same-node GCP matrix, medians of 5, native P2P)
+
+- **Actual FP8/FP4 storage halves the KV cache: 0.51–0.54× baseline bytes**
+  (scales included) at 1k/8k/65k contexts; QDQ simulation = 1.000× by design.
+- Cost of unfused dequant-on-read: ~9–12% ITL, 1–6% prefill (Stage-D fusion TBD).
+- Baseline on healthy P2P: decode 5.0 tok/s, ITL p50 195 ms (RunPod host-staged
+  historical: 3.3 / 296 — not comparable, recorded for context).
+- Full matrix: WORKLOG 2026-07-20 B7 + `artifacts/phase_b_gcp/benchmark_matrix.json`.
+
+## Possible follow-ups (not started)
+
+- Benchmark variant for the selected map (indexer BF16) — quality side already
+  covered by B4 heldout/32k.
+- Long-context retrieval eval (CLAUDE.md metric list) to discriminate indexer
+  policies beyond C4 NLL.
+- Per-layer indexer scorer wrappers, if per-layer indexer decisions are ever needed.
+- Stage-D fused dequant kernels.
 
 ## Completion gate evidence
 

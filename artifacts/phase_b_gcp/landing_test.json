@@ -75,16 +75,8 @@
       "check": "cuda_model_forward",
       "status": "PASS",
       "detail": "tiny model forward on cuda"
-    },
-    {
-      "check": "pytest_suite",
-      "status": "PASS",
-      "detail": "95 passed in 7.35s"
     }
   ],
-  "suite": {
-    "returncode": 0,
-    "summary": "95 passed in 7.35s"
-  },
+  "suite": null,
   "passed": true
 }
