@@ -1,5 +1,45 @@
 # Worklog
 
+## 2026-07-20 (GCP G4 — B4 overnight: refine/fp8spot/indexer8k, candidate maps, heldout; two methodology findings)
+
+### Results
+
+- **refine** (105 group-64 FP4 targets in top-15 states): scores 1.27–2.33e-2, no
+  elbow; single groups score ≈ their whole state. **fp8spot** (8 worst states,
+  FP8): 1.48–2.09e-2 — *the same* as FP4 on the same states.
+  **Interpretation:** the KL score saturates at the selective-indexer flip floor —
+  any perturbation of an early layer, however fine, cascades near-tie top-k flips
+  through the ~40 downstream indexer layers (late layers score ~10× lower: short
+  cascade). Rankings order states honestly; format choice (FP8 vs FP4) is NOT
+  measurable by probe KL in early layers (D-004 regime). ΔNLL noise-level
+  throughout; no NaN/Inf anywhere.
+- **indexer8k sweep is a measurement artifact — do not use per-layer.** All 21
+  targets showed uniform overlap ≈ 0.615–0.62 and dNLL ≈ +0.03, even layer 42 (no
+  downstream cascade). Cause (confirmed in code, `mapped_cache.indexer_query_context`
+  docstring): the indexer-query QDQ wrapper applies to ALL layers uniformly — a
+  one-layer key perturbation scored 20 layers with FP4-rotated queries against BF16
+  unrotated keys (mismatched bases → scrambled picks everywhere). Valid indexer
+  evidence is the ALL-layers aggregate below. Per-layer indexer granularity is
+  unmeasurable without per-layer scorer wrappers (extends D-008's "on/off per layer"
+  to a practical "on/off for all layers" tonight).
+- **Candidate maps** (D-015 composition: 105 refine group-records + 69 state-level
+  screening records; indexer excluded by the 0.9 gate on the artifact data — see
+  above; kept BF16 in all candidates): conservative fp8 0.75 (130 entries),
+  moderate fp8 1.0 (174), aggressive fp8 0.85 + fp4 0.15 (173).
+- **Heldout (2k + 8k, chunked, official + 3 candidates)** — KL / dNLL / top1 /
+  8k-idx-overlap:
+  official      1.19e-2 / +9.6e-4 / 0.9558 | 1.14e-2 / +8.4e-4 / 0.9485 / **0.952**
+  conservative  1.13e-2 / −7.0e-4 / 0.9551 | 1.14e-2 / −1.5e-3 / 0.9485 / 0.970
+  moderate      1.20e-2 / +9.2e-4 / 0.9591 | 1.19e-2 / +8.7e-4 / 0.9491 / 0.969
+  aggressive    1.34e-2 / +1.3e-3 / 0.9496 | 1.39e-2 / −9.9e-4 / 0.9490 / 0.969
+  Guardrails (D-015): aggressive FAILS (KL +12–21%); conservative and moderate pass;
+  **official itself passes the 0.9 overlap gate in aggregate (0.952)** — the
+  all-FP4 indexer is benign on held-out data at 8k, unlike what the per-layer
+  artifact suggested.
+- Decision now binary: official (= all-main-FP8 + indexer-FP4) vs moderate
+  (= all-main-FP8 + indexer-BF16), statistically tied at 2k/8k. Discriminator:
+  32k spot-check (selection pressure 8192 entries vs top-512), running.
+
 ## 2026-07-20 (GCP G4 — B4 run 1 complete: screening rankings + a vacuous-indexer finding; overnight delegation D-015)
 
 ### Goal

@@ -1,0 +1,158 @@
+{
+  "baseline_nll": 1.566303014755249,
+  "kind_main": "fp8_e4m3",
+  "records": [
+    {
+      "target": {
+        "layer_idx": 0,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 0.004379391670227051,
+      "kl_mean": 0.016480589285492897,
+      "max_abs_logit_err": 54.5,
+      "top1_agreement": 0.9544677734375,
+      "score": 0.020859980955719948,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 1,
+        "layer_type": "sliding_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -0.0003267526626586914,
+      "kl_mean": 0.01636495627462864,
+      "max_abs_logit_err": 87.0,
+      "top1_agreement": 0.9593505859375,
+      "score": 0.01669170893728733,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "compressed_sparse_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 0.0016742944717407227,
+      "kl_mean": 0.015983199700713158,
+      "max_abs_logit_err": 71.5,
+      "top1_agreement": 0.9537353515625,
+      "score": 0.01765749417245388,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 2,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 0.0006444454193115234,
+      "kl_mean": 0.016299352049827576,
+      "max_abs_logit_err": 67.5,
+      "top1_agreement": 0.9564208984375,
+      "score": 0.0169437974691391,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 3,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -0.0016301870346069336,
+      "kl_mean": 0.01635422185063362,
+      "max_abs_logit_err": 83.875,
+      "top1_agreement": 0.9517822265625,
+      "score": 0.017984408885240555,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 4,
+        "layer_type": "compressed_sparse_attention",
+        "state": "compressed_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -0.001601099967956543,
+      "kl_mean": 0.015503490343689919,
+      "max_abs_logit_err": 126.125,
+      "top1_agreement": 0.9571533203125,
+      "score": 0.01710459031164646,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 5,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": -0.0015550851821899414,
+      "kl_mean": 0.01478948350995779,
+      "max_abs_logit_err": 58.125,
+      "top1_agreement": 0.9586181640625,
+      "score": 0.016344568692147732,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    },
+    {
+      "target": {
+        "layer_idx": 9,
+        "layer_type": "heavily_compressed_attention",
+        "state": "window_kv",
+        "group_index": 0,
+        "start": 0,
+        "end": 448
+      },
+      "kind": "fp8_e4m3",
+      "nll_delta": 0.0019009113311767578,
+      "kl_mean": 0.012904047966003418,
+      "max_abs_logit_err": 52.5,
+      "top1_agreement": 0.95947265625,
+      "score": 0.014804959297180176,
+      "indexer_overlap": null,
+      "nan_count": 0,
+      "inf_count": 0
+    }
+  ]
+}

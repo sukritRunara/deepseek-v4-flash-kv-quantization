@@ -259,10 +259,15 @@ def main() -> int:
             indexer_source = "screening-2k (WARNING: top-k never binds at 2k; D-015)"
         raw = refine_raw + main_fallback + indexer_raw
         records = []
+        fields = ("kind", "nll_delta", "kl_mean", "max_abs_logit_err",
+                  "top1_agreement", "indexer_overlap")
         for r in raw:
             r = dict(r)
             r.pop("score", None)  # derived property, not a constructor field
-            records.append(SensitivityRecord(target=QuantTarget(**r.pop("target")), **r))
+            target = QuantTarget(**r.pop("target"))
+            kwargs = {k: r.pop(k) for k in fields if k in r}
+            # leftovers (nan_count/inf_count, ...) were spread from `extra` by as_dict
+            records.append(SensitivityRecord(target=target, extra=r, **kwargs))
         pm = build_map_from_sweep(
             records, name=f"v4-flash-b4-{stamp}",
             fp8_fraction=args.fp8_fraction, fp4_fraction=args.fp4_fraction,
