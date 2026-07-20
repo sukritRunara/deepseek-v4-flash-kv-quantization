@@ -160,6 +160,30 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-014 — GCP G4 host P2P is healthy; host-staged workaround becomes opt-in
+
+**Date:** 2026-07-20
+**Status:** accepted
+**Context:** D-013 made the D-011 workaround "conditional on `tools/p2p_stress_check.py`
+results on the new host." On the GCP `g4-standard-48` (`deepseek-v4-flash-g4-4gpu`,
+driver 610.43.02), the stress check passes natively: 0 corrupt transfers across all 12
+ordered pairs in both phases (plain + concurrent-compute, 64 MiB × 20 iters) — the
+RunPod fault was host-specific, as diagnosed.
+**Decision:** `ensure_host_staged_p2p()` is now OPT-IN via `V4_KV_FORCE_HOST_STAGED_P2P=1`,
+gated inside the function (env check before any CUDA interaction) so all call sites stay
+unconditional. `tools/p2p_stress_check.py --workaround` arms it itself. Default on this
+host: native P2P.
+**Alternatives considered:** removing the workaround entirely (rejected — future hosts
+may be faulty and the tool remains the health gate); per-call-site gating (rejected —
+one central gate is harder to bypass accidentally).
+**Evidence:** stress-check run 2026-07-20 (WORKLOG "GCP bring-up"); `tests/test_p2p_workaround.py`
+pins the gate order.
+**Consequences:** GCP timing numbers reflect direct PCIe P2P; the "host-staged D2D"
+caveat on all RunPod Phase-B numbers does NOT apply to GCP results (one more reason
+never to compare across the two nodes). On any future host, run the stress check first
+and set the env var if it fails.
+**Follow-up:** none.
+
 ### D-013 — Migrate Phase B from RunPod to GCP G4 (same GPU) — owner-approved
 
 **Date:** 2026-07-17

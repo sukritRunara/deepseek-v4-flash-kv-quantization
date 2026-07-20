@@ -131,7 +131,7 @@ def worst_states(out: Path, top: int) -> list[tuple[int, str]]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--model-path", default="/workspace/models/DeepSeek-V4-Flash")
+    ap.add_argument("--model-path", default="/home/sukrit/models/DeepSeek-V4-Flash")
     ap.add_argument("--stages", default="corpus,stats,screening")
     ap.add_argument("--out-dir", default="results/calibration_full")
     ap.add_argument("--calib-2k", type=int, default=32)

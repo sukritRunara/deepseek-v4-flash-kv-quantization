@@ -19,7 +19,7 @@ if [[ "${RUNPOD_ALLOW_WEIGHTS:-0}" != "1" ]]; then
 fi
 
 : "${MODEL_ID:=deepseek-ai/DeepSeek-V4-Flash}"
-: "${MODEL_DIR:=/workspace/models/DeepSeek-V4-Flash}"
+: "${MODEL_DIR:=/home/sukrit/models/DeepSeek-V4-Flash}"  # GCP G4 boot disk (D-013/D-014)
 : "${MIN_FREE_GB:=200}"
 
 revision=$(python3 -c "import json;print(json.load(open('configs/source_pins.json'))['model_sha'])")
@@ -32,7 +32,8 @@ if (( free_gb < MIN_FREE_GB )); then
 fi
 
 command -v hf >/dev/null || { echo "hf CLI missing: pip install -U huggingface_hub" >&2; exit 1; }
-export HF_HUB_ENABLE_HF_TRANSFER="${HF_HUB_ENABLE_HF_TRANSFER:-1}"
+# hub 1.x dropped hf_transfer (WORKLOG B1); the default xet backend is used instead.
+export HF_HUB_ENABLE_HF_TRANSFER="${HF_HUB_ENABLE_HF_TRANSFER:-0}"
 
 echo "downloading $MODEL_ID @ $revision -> $MODEL_DIR"
 hf download "$MODEL_ID" --revision "$revision" --local-dir "$MODEL_DIR"

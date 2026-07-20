@@ -1,5 +1,65 @@
 # Worklog
 
+## 2026-07-20 (GCP G4 — bring-up steps 1–4: environment, P2P verdict, weights)
+
+### Goal
+
+Execute `docs/GCP_TRANSITION.md` steps 1–4 on the GCP instance
+(`deepseek-v4-flash-g4-4gpu`).
+
+### Environment
+
+- GCP `g4-standard-48`: 4× RTX PRO 6000 Blackwell Server Edition 96 GB (CC 12.0/SM120),
+  driver 610.43.02 (CUDA UMD 13.3), x86_64. Differences from the RunPod pod: single
+  AMD EPYC 9B45 socket, **one NUMA node** (RunPod: 2× Xeon, GPUs split across NUMA 0/3),
+  708 GiB RAM, 968 GB boot PD (no `/workspace`; no MooseFS). `python3-dev`, `python3-venv`,
+  git, git-lfs preinstalled. **Shared VM**: `/home/soroosh` carries an unrelated 405 GB
+  TRT-LLM project — check `nvidia-smi` for foreign GPU processes before timed runs.
+- Installed by bring-up: torch 2.13.0+cu130, triton 3.7.1, transformers 5.15.0.dev0
+  (editable @ `150eb7c9ed40`), model source @ `60d8d70770c6`, kernels 0.15.2, datasets
+  5.0.0, huggingface_hub 1.24.0. Capture: `artifacts/env/*-20260720T064803Z.*`.
+
+### Commands run (essentials)
+
+```bash
+# step 2 — setup_env.sh executed step-by-step (same commands; permission-classifier
+# on this box blocks whole-script background runs), ending with:
+.venv/bin/python tools/hardware_smoke.py                     # all required+optional PASS
+.venv/bin/python tools/runpod_landing_test.py --expect configs/expectations_runpod.json --run-suite
+# -> ALL 15 CHECKS PASSED; suite 95 passed (7.35 s). expectations_runpod.json passes
+#    verbatim on GCP (GPU name 'NVIDIA RTX PRO 6000 Blackwell Server Edition' contains
+#    'RTX PRO 6000'; CC 12.0) — no expectations_gcp.json needed.
+.venv/bin/python tools/p2p_stress_check.py                   # step 3, BEFORE any multi-GPU work
+# -> 0 corrupt transfers, all 12 ordered pairs, both phases -> D-014 (workaround opt-in)
+HF_HUB_ENABLE_HF_TRANSFER=0 RUNPOD_ALLOW_WEIGHTS=1 \
+  MODEL_DIR=/home/sukrit/models/DeepSeek-V4-Flash bash scripts/runpod/download_model.sh
+# -> 149 GB / 46 shards @ 60d8d70 in ~6 min (xet backend); 289 GB disk headroom left
+.venv/bin/python -m pytest tests -q                          # 98 passed (95 + 3 new)
+```
+
+### Findings / changes
+
+1. **Native P2P is healthy on this host** → D-014: `ensure_host_staged_p2p()` is now
+   opt-in via `V4_KV_FORCE_HOST_STAGED_P2P=1` (gate inside the function, env check
+   before any CUDA call; `tests/test_p2p_workaround.py`). `p2p_stress_check.py
+   --workaround` arms it itself. GCP numbers will reflect direct PCIe P2P — the
+   RunPod "host-staged D2D" caveat is dead here.
+2. Model paths moved off `/workspace` (does not exist on GCP): weights at
+   `/home/sukrit/models/DeepSeek-V4-Flash`; defaults updated in
+   `configs/bench_runpod_4gpu.json`, `tools/run_calibration_full.py`,
+   `scripts/runpod/download_model.sh`.
+3. `download_model.sh` no longer defaults `HF_HUB_ENABLE_HF_TRANSFER=1` (hub 1.x
+   dropped hf_transfer — B1 finding; xet is the default backend and delivered the
+   149 GB in ~6 min on GCP's NIC).
+4. **B3 gates driver committed** as `tools/b3_identity_gates.py` (reconstructed from
+   WORKLOG B3 / `artifacts/phase_b_runpod/b3_gates_run2.log`; the original was pod
+   scratchpad) — step 5b and any future host re-validation now have a repo tool.
+
+### Next step
+
+Step 5 re-validation (one model load each): B1 generation sanity, then
+`tools/b3_identity_gates.py`. Then B4 run 1.
+
 ## 2026-07-17 (RunPod Phase B — B2: baseline benchmark bring-up)
 
 ### Goal

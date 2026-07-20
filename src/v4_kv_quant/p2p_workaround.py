@@ -15,6 +15,12 @@ then disable via the CUDA runtime. Call this once, after CUDA init, before movin
 data between GPUs (idempotent; safe to call when P2P is healthy, at the cost of slower
 inter-GPU copies).
 
+Since the move to GCP (D-014): the workaround is OPT-IN via the environment variable
+``V4_KV_FORCE_HOST_STAGED_P2P=1``. The GCP G4 host passes the full stress check
+natively, so healthy hosts keep direct P2P by default; set the variable only on a host
+where ``tools/p2p_stress_check.py`` shows corruption (as the RunPod Phase-B pod did).
+Callers keep calling this unconditionally — the gate lives here.
+
 Validation for a given pod: ``tools/p2p_stress_check.py`` (exits non-zero on corruption).
 """
 
@@ -22,8 +28,11 @@ from __future__ import annotations
 
 import ctypes
 import ctypes.util
+import os
 
 import torch
+
+FORCE_ENV_VAR = "V4_KV_FORCE_HOST_STAGED_P2P"
 
 _CUDA_SUCCESS = 0
 _CUDA_ERROR_PEER_ACCESS_NOT_ENABLED = 705
@@ -44,8 +53,15 @@ def _load_cudart() -> ctypes.CDLL:
 def ensure_host_staged_p2p(verbose: bool = True) -> int:
     """Disable CUDA peer access between all device pairs; return #pairs disabled.
 
-    No-op (returns 0) with fewer than two visible CUDA devices.
+    Opt-in (D-014): no-op (returns 0) unless ``V4_KV_FORCE_HOST_STAGED_P2P=1`` is set.
+    Also a no-op with fewer than two visible CUDA devices.
     """
+    if os.environ.get(FORCE_ENV_VAR, "0") != "1":
+        if verbose:
+            print(f"[p2p_workaround] not armed ({FORCE_ENV_VAR}!=1): native P2P in use; "
+                  f"run tools/p2p_stress_check.py before trusting a new host (D-014)",
+                  flush=True)
+        return 0
     n = torch.cuda.device_count()
     if n < 2:
         return 0

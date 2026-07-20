@@ -1,5 +1,5 @@
 {
-  "model_path": "/workspace/models/DeepSeek-V4-Flash",
+  "model_path": "/home/sukrit/models/DeepSeek-V4-Flash",
   "device_map": "auto",
   "dtype": "auto",
   "device": "cuda",

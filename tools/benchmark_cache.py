@@ -37,8 +37,8 @@ def load_model(settings: BenchSettings):
         from transformers import AutoModelForCausalLM
 
         if torch.cuda.device_count() > 1:
-            # Mandatory on multi-GPU pods until P2P health is proven (D-011): direct
-            # GPU-to-GPU copies silently corrupt on the Phase-B pod; stage through host.
+            # Opt-in since D-014 (env V4_KV_FORCE_HOST_STAGED_P2P=1): required only on
+            # hosts where tools/p2p_stress_check.py shows corruption (D-011, RunPod).
             from v4_kv_quant.p2p_workaround import ensure_host_staged_p2p
 
             ensure_host_staged_p2p()

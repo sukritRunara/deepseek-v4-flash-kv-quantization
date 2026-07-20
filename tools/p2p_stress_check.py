@@ -33,8 +33,11 @@ def main() -> int:
         print("fewer than 2 CUDA devices; nothing to check")
         return 0
     if args.workaround:
-        from v4_kv_quant.p2p_workaround import ensure_host_staged_p2p
+        import os
 
+        from v4_kv_quant.p2p_workaround import FORCE_ENV_VAR, ensure_host_staged_p2p
+
+        os.environ[FORCE_ENV_VAR] = "1"  # --workaround always arms it (D-014 opt-in gate)
         ensure_host_staged_p2p()
 
     torch.manual_seed(0)
