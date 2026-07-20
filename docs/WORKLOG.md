@@ -1,5 +1,38 @@
 # Worklog
 
+## 2026-07-20 (GCP G4 — B4 run 1 attempt 1: corpus OK, stats stage OOM at 8k → chunked-prefill fix)
+
+### Goal
+
+B4 run 1 (`tools/run_calibration_full.py --stages corpus,stats,screening`), first
+at-scale execution of the calibration pipeline.
+
+### Findings
+
+1. **Corpus stage works on the first real run of the `datasets` streaming path**
+   (C4-en + codeparrot-clean, unauthenticated): 40 calib + 10 held-out sequences
+   tokenized and saved → `results/calibration_full/token_ids.json`.
+2. **stats_stage OOMs on the first 8192-token sequence** (all 32 × 2k sequences pass):
+   it ran one-shot forwards, and eager attention asked for a 20 GiB score tensor on
+   GPU 0 (`combined_logits`, modeling_deepseek_v4.py:739) — the same failure class as
+   WORKLOG B2 (one-shot 65k OOM → bench engine grew `prefill_chunk`). The stats stage
+   had simply never run at scale (RunPod was sealed before B4). Fix: chunked prefill
+   through the same cache in `stats_stage` (`--stats-prefill-chunk`, default 2048,
+   mirroring the bench engine).
+3. **Chunked-vs-one-shot stats equivalence is provable only on the dense-indexer
+   fixture** (new `test_stats_chunked_prefill_equals_one_shot`): write structure and
+   element counts match exactly on any fixture; values agree to ~1e-6 relative. With a
+   *selective* indexer, chunk-shaped-kernel fp dust (~1e-7) flips near-tied top-k picks
+   and downstream layers legitimately diverge (measured 2.6e-1 on tiny layer2/window_kv
+   with index_topk=2) — the exact D-004 mechanism, NOT a chunking bug. Methodological
+   note for B4: aggregate stats over 40 sequences are insensitive to near-tie flips,
+   and D-012 rankings come from the perturbation sweep, whose baseline and perturbed
+   runs share identical shapes (self-consistent). Suite: 99 passed.
+
+### Next step
+
+Relaunch `--stages corpus,stats,screening` (corpus reuses saved token ids).
+
 ## 2026-07-20 (GCP G4 — step 5 re-validation: B1 GO, B3 ALL GATES PASSED — bring-up complete)
 
 ### Goal

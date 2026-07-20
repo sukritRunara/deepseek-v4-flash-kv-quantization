@@ -83,11 +83,18 @@ def tensors(data: dict, key: str) -> list[torch.Tensor]:
 
 
 @torch.no_grad()
-def stats_stage(model, samples: list[torch.Tensor], out: Path) -> None:
+def stats_stage(model, samples: list[torch.Tensor], out: Path, prefill_chunk: int) -> None:
     recorder = StatsRecorder(group_size_main=64)
     for i, ids in enumerate(samples):
         cache = StatsCollectorCache(model.config, recorder)
-        model(ids.to("cuda"), past_key_values=cache, use_cache=True)
+        ids = ids.to("cuda")
+        # Chunked prefill through the same cache, as in the bench engine: one-shot 8192
+        # OOMs a 96 GB card under eager attention (same class as WORKLOG B2; hit on the
+        # first at-scale stats run, WORKLOG 2026-07-20 B4). Write structure is identical
+        # chunked vs one-shot; values agree to ~1e-7 relative (chunk-shaped kernels
+        # reorder reductions — D-004 path noise; test-pinned with tolerance).
+        for start in range(0, ids.shape[1], prefill_chunk):
+            model(ids[:, start : start + prefill_chunk], past_key_values=cache, use_cache=True)
         del cache
         if (i + 1) % 8 == 0:
             print(f"[stats] {i + 1}/{len(samples)} sequences", flush=True)
@@ -143,6 +150,7 @@ def main() -> int:
     ap.add_argument("--calib-seed", type=int, default=11)
     ap.add_argument("--heldout-seed", type=int, default=12)
     ap.add_argument("--probe-batch", type=int, default=4)
+    ap.add_argument("--stats-prefill-chunk", type=int, default=2048)
     ap.add_argument("--refine-top", type=int, default=15)
     ap.add_argument("--fp8-spot", type=int, default=8)
     ap.add_argument("--fp8-fraction", type=float, default=0.75)
@@ -170,7 +178,8 @@ def main() -> int:
     print("[loaded]", flush=True)
 
     if "stats" in stages:
-        stats_stage(model, tensors(data, "calib_2k") + tensors(data, "calib_8k"), out)
+        stats_stage(model, tensors(data, "calib_2k") + tensors(data, "calib_8k"), out,
+                    prefill_chunk=args.stats_prefill_chunk)
 
     if "screening" in stages:
         state_targets = enumerate_targets(config, group_size_main=nope_width(config))

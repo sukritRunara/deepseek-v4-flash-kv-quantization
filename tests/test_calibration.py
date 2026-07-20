@@ -239,6 +239,46 @@ def test_stats_recorder_amax_manual(config):
     assert stats["elements"] == 48
 
 
+def test_stats_chunked_prefill_equals_one_shot():
+    """Chunked prefill must yield the same collected stats as one-shot, up to fp noise.
+
+    tools/run_calibration_full.py stats_stage chunks long sequences (one-shot 8192
+    OOMs a 96 GB card under eager attention — WORKLOG 2026-07-20 B4). Cache-write
+    STRUCTURE (keys, element counts) must match exactly on any fixture; VALUE equality
+    is only provable on the dense-indexer fixture (D-004: with a selective indexer,
+    ~1e-7 chunk-shaped-kernel noise flips near-tied top-k picks and downstream layers
+    legitimately diverge — measured 2.6e-1 on layer2/window_kv with index_topk=2).
+    Even dense, values pass through kernels whose reduction order differs at the last
+    ulp, so statistics are compared within float tolerance, not bitwise.
+    """
+    dense_model = build_tiny_model(seed=0, index_topk=64)
+    ids = deterministic_input_ids(BATCH, 24)
+    config = dense_model.config
+
+    recorder_one = StatsRecorder(group_size_main=8, group_size_indexer=32)
+    cache = StatsCollectorCache(config, recorder_one)
+    with torch.no_grad():
+        dense_model(ids, past_key_values=cache, use_cache=True)
+
+    recorder_chunked = StatsRecorder(group_size_main=8, group_size_indexer=32)
+    cache = StatsCollectorCache(config, recorder_chunked)
+    chunk = 7  # deliberately unaligned with compression boundaries
+    with torch.no_grad():
+        for start in range(0, ids.shape[1], chunk):
+            dense_model(ids[:, start : start + chunk], past_key_values=cache,
+                        use_cache=True)
+
+    one, chunked = recorder_one.summary(), recorder_chunked.summary()
+    assert set(one) == set(chunked)
+    for key in one:
+        assert one[key]["elements"] == chunked[key]["elements"], key
+        assert one[key]["amax"] == pytest.approx(chunked[key]["amax"], rel=1e-5), key
+        assert one[key]["per_group_amax"] == pytest.approx(
+            chunked[key]["per_group_amax"], rel=1e-5, abs=1e-7), key
+        assert one[key]["rms_qdq_err"] == pytest.approx(
+            chunked[key]["rms_qdq_err"], rel=1e-4, abs=1e-7), key
+
+
 # ---------------------------------------------------------------------------
 # Sensitivity sweep and map building
 # ---------------------------------------------------------------------------
