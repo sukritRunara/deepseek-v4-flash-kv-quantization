@@ -1,5 +1,36 @@
 # Worklog
 
+## 2026-07-21 (D-017 execution: gates re-anchored, ladder20 ratified, 128k/192k indexer extrapolation study)
+
+Owner "go" on the D-017 recommendation. Doc actions: adopted gate set (primary
+dNLL + retrieval-v2 parity; diagnostic FP8-relative overlap, threshold
+provisional); ratified **ladder20** as the project map (`precision_map.json`;
+v1 preserved as `precision_map_fp8only_v1.json`). Then the pre-registered
+indexer study at 128k and 192k (new `heldout128k`/`heldoutcustom` stages,
+chunk 1024, logits offload; l20+fp4idx candidate map built, 194 entries).
+
+### Study results (means of 2 seqs per length; JSONs in artifacts/ladder/)
+
+- **FP4-indexer relative overlap (official vs FP8-only v1): 0.987 @8k → 0.969
+  @32k → 0.961 @65k → 0.954 @128k → 0.949 @192k.** Monotone decline, ~−0.5 to
+  −0.8 pp per octave, deceleration stalled — **NO plateau. Per the D-017
+  pre-registered criterion the FP4 indexer is NOT adopted; BF16 indexer
+  stands,** now backed by a five-length series instead of the retired absolute
+  gate. (l20+fp4idx: 0.947 @192k, dNLL +0.0054 — worst of both, as expected.)
+- Primary gates stay clean for every variant at every length (official dNLL
+  +0.0007 @128k / +0.0019 @192k; retrieval-v2 = 1.000 for ALL variants at 128k,
+  thrice-saturated overall) — the relative-overlap diagnostic remains the only
+  discriminating instrument, and what it discriminates has never yet shown up
+  in quality. Recorded as an open interpretation question.
+- **New finding — ladder20 carries a small constant dNLL offset vs FP8-only v1
+  at long context:** excess ≈ +0.0019/+0.0021/+0.0023 at 65k/128k/192k
+  (≈ +0.2% PPL, stable, NOT compounding; its relative overlap stays flat at
+  0.995). This was inside the noise floor at the lengths used for
+  ratification. Owner should re-affirm or roll back D-017's ladder20
+  ratification with this number in view: ladder20 = 0.58× cache at ≈ +0.2%
+  long-context PPL; v1 = 0.65× at the cleanest quality ever measured.
+  Rollback is a one-file swap (v1 preserved).
+
 ## 2026-07-20/21 (Overnight #2, D-016: retrieval-v2, bytes truth, MappedStorageCache, gate proposal)
 
 Owner-approved scope executed in full; stop conditions honored (nothing ratified,

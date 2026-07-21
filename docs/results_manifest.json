@@ -1,8 +1,8 @@
 {
-  "generated_utc": "2026-07-21T08:52:47Z",
-  "repo_head": "f2f000a5bac062a155f78ad8b0556e47b8c6e55f",
+  "generated_utc": "2026-07-21T19:08:51Z",
+  "repo_head": "730b7103d8af263148d173ca44185fd176555523",
   "note": "results/ is gitignored; regenerate outputs with the tools listed in docs/WORKLOG.md and verify against these hashes. artifacts/ is tracked.",
-  "file_count": 79,
+  "file_count": 94,
   "files": [
     {
       "path": "results/b3_gates.json",
@@ -30,6 +30,11 @@
       "sha256": "3f1d354b97593cd1724bfe58fc646ecd7bcf6e8600d1e5a7dec1bb7478c1cfb3"
     },
     {
+      "path": "results/calibration_full/candidates/precision_map_ladder20.json",
+      "bytes": 32580,
+      "sha256": "32e4a8ea2c0210f885657dc6004c70ed29378dc0c9ab6cc7c9975e2b8d2d498c"
+    },
+    {
       "path": "results/calibration_full/candidates/precision_map_ladder40.json",
       "bytes": 32580,
       "sha256": "89c7f36365363dfd0d1a1641672908fe78b4e8cfd3d9371e5d20558662207149"
@@ -55,6 +60,16 @@
       "sha256": "cb8055e9f255288ee96fb4d8c8f0ade6fcce39fa488f11209b7cbbf45485a695"
     },
     {
+      "path": "results/calibration_full/heldout128k_eval.json",
+      "bytes": 5117,
+      "sha256": "b3157264c417cf683121593e248e925dc80737f184206ced3e3d96e4cf58885f"
+    },
+    {
+      "path": "results/calibration_full/heldout196608_eval.json",
+      "bytes": 5104,
+      "sha256": "09c7d656cc8abe5f7c2274cdb318c379e38c60d6b428a8ae7df55c1d944a044c"
+    },
+    {
       "path": "results/calibration_full/heldout32k_eval.json",
       "bytes": 8883,
       "sha256": "90f8d6e0c59403a29acb8b55f3ed81315394dbf517cfdc3c54dfda80e2f588f9"
@@ -76,18 +91,33 @@
     },
     {
       "path": "results/calibration_full/precision_map.json",
+      "bytes": 32580,
+      "sha256": "32e4a8ea2c0210f885657dc6004c70ed29378dc0c9ab6cc7c9975e2b8d2d498c"
+    },
+    {
+      "path": "results/calibration_full/precision_map_fp8only_v1.json",
       "bytes": 32564,
       "sha256": "ed74ba12698d44f10b624eca69c8f737c752bade59aa5cf74c4b4de721ece153"
     },
     {
-      "path": "results/calibration_full/precision_map_ladder20.json",
-      "bytes": 32580,
-      "sha256": "32e4a8ea2c0210f885657dc6004c70ed29378dc0c9ab6cc7c9975e2b8d2d498c"
+      "path": "results/calibration_full/precision_map_l20fp4idx.json",
+      "bytes": 36621,
+      "sha256": "9c497f934c26d5570c6ae5a0f060752f0215fb2715cbf557a0c4da3754d2004c"
     },
     {
       "path": "results/calibration_full/refine.json",
       "bytes": 53220,
       "sha256": "35fe5f33bfdc41e77d284def6909ab7467843fbc302e8e47a4b661eb4f3430c8"
+    },
+    {
+      "path": "results/calibration_full/retrieval2_128k_eval.json",
+      "bytes": 42041,
+      "sha256": "c51e6cf2ce5553c10c3f5fb68ca7c1d1bd168e9802061aef4b4db960274c2d06"
+    },
+    {
+      "path": "results/calibration_full/retrieval2_128k_ids.json",
+      "bytes": 1513620,
+      "sha256": "dc69dd27cf31da690c4da02ee8d2e7a3d1de53e27035375bdb108e3b18cea3ff"
     },
     {
       "path": "results/calibration_full/retrieval2_eval.json",
@@ -118,6 +148,16 @@
       "path": "results/calibration_full/token_ids.json",
       "bytes": 935469,
       "sha256": "54666391ce933394dc39768566ca9d9a2198c280b49612a2e4b3121756b9e615"
+    },
+    {
+      "path": "results/calibration_full/token_ids_128k.json",
+      "bytes": 1495680,
+      "sha256": "27218559987486646b9126b638e460097dcec1dd4c778c817e7393853a5cb998"
+    },
+    {
+      "path": "results/calibration_full/token_ids_196608.json",
+      "bytes": 2249946,
+      "sha256": "38ce224c9bf0c007ed581e56760121ca4f624b8970c26033390840e17545c63b"
     },
     {
       "path": "results/calibration_full/token_ids_32k.json",
@@ -290,6 +330,16 @@
       "sha256": "e91a01b94e39e696a152350d92afc99a182d25e1088b026009e7ef6667bb6521"
     },
     {
+      "path": "artifacts/phase_b_gcp/ladder/heldout128k_eval.json",
+      "bytes": 5117,
+      "sha256": "b3157264c417cf683121593e248e925dc80737f184206ced3e3d96e4cf58885f"
+    },
+    {
+      "path": "artifacts/phase_b_gcp/ladder/heldout196608_eval.json",
+      "bytes": 5104,
+      "sha256": "09c7d656cc8abe5f7c2274cdb318c379e38c60d6b428a8ae7df55c1d944a044c"
+    },
+    {
       "path": "artifacts/phase_b_gcp/ladder/heldout32k_eval.json",
       "bytes": 8883,
       "sha256": "90f8d6e0c59403a29acb8b55f3ed81315394dbf517cfdc3c54dfda80e2f588f9"
@@ -315,6 +365,11 @@
       "sha256": "b68a10f6d4e1362c31b950aa5532a7670c5ccf00b15b249a1d64486ff69729e8"
     },
     {
+      "path": "artifacts/phase_b_gcp/ladder/precision_map_l20fp4idx.json",
+      "bytes": 36621,
+      "sha256": "9c497f934c26d5570c6ae5a0f060752f0215fb2715cbf557a0c4da3754d2004c"
+    },
+    {
       "path": "artifacts/phase_b_gcp/ladder/precision_map_ladder20.json",
       "bytes": 32580,
       "sha256": "32e4a8ea2c0210f885657dc6004c70ed29378dc0c9ab6cc7c9975e2b8d2d498c"
@@ -335,6 +390,16 @@
       "sha256": "a23e1957b069e5e30e6df79d5a666cfbfee939685f078362c4749f9ef5add12d"
     },
     {
+      "path": "artifacts/phase_b_gcp/ladder/retrieval2_128k_eval.json",
+      "bytes": 42041,
+      "sha256": "c51e6cf2ce5553c10c3f5fb68ca7c1d1bd168e9802061aef4b4db960274c2d06"
+    },
+    {
+      "path": "artifacts/phase_b_gcp/ladder/retrieval2_128k_ids.json",
+      "bytes": 1513620,
+      "sha256": "dc69dd27cf31da690c4da02ee8d2e7a3d1de53e27035375bdb108e3b18cea3ff"
+    },
+    {
       "path": "artifacts/phase_b_gcp/ladder/retrieval2_eval.json",
       "bytes": 126178,
       "sha256": "3483fa465f8b51e3eea45092919293e4b864c2bfd6ee7ce61b6d17d9a057da69"
@@ -353,6 +418,16 @@
       "path": "artifacts/phase_b_gcp/ladder/retrieval_ids.json",
       "bytes": 1235565,
       "sha256": "09ca44309ec3633bb4bdd2ed5d5f0520d8a59f882f05ae6f665afb92f169debd"
+    },
+    {
+      "path": "artifacts/phase_b_gcp/ladder/token_ids_128k.json",
+      "bytes": 1495680,
+      "sha256": "27218559987486646b9126b638e460097dcec1dd4c778c817e7393853a5cb998"
+    },
+    {
+      "path": "artifacts/phase_b_gcp/ladder/token_ids_196608.json",
+      "bytes": 2249946,
+      "sha256": "38ce224c9bf0c007ed581e56760121ca4f624b8970c26033390840e17545c63b"
     },
     {
       "path": "artifacts/phase_b_gcp/ladder/token_ids_65k.json",
