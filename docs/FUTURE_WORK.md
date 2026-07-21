@@ -92,6 +92,57 @@ which is the KV cache's actual job. Retrieval would also pressure-test the D-015
 indexer decision. Cost: corpus regen is cheap; eval adds model-load time per
 ladder point; retrieval harness is NEW code (does not exist yet).
 
+## Discussion outcomes (owner + agent, 2026-07-20, post step 0)
+
+1. **Verdict on the all-FP4 delta:** ~1% PPL is within community norms for 4-bit KV
+   caches and not alarming by itself; the real concern is the LENGTH TREND of
+   selection overlap (0.961 @ 8k → 0.890 @ 32k, gate-failing), with behavior
+   beyond 32k unknown on a 1M-context model. PPL delta is roughly flat with
+   length; the failure mode that grows is selection drift — which perplexity
+   barely sees.
+2. **Coupling finding:** FP4 main-KV damage degrades indexer selection EVEN WITH a
+   BF16 indexer — queries/keys are computed from hidden states shaped by attention
+   over the FP4-stored cache; near-tied scores then flip (more candidates at long
+   context → more flips). Consequence: every FP4-containing map must be gated at
+   long context on overlap, not just on perplexity.
+3. **Characterization:** all-FP4 is mildly-but-really degraded (no degeneration,
+   94% token agreement, +1% PPL) — neither "serious" nor "free." Unknowns: task-
+   level impact, retrieval impact, behavior past 32k.
+4. **Held-out growth scope confirmed:** needed for the ladder's middle rungs
+   (deltas ~1e-3 ≲ current error bars), NOT needed to interpret step 0 (effect was
+   ~10× noise). Retrieval eval is NOT mixture-specific — it is the correct
+   instrument for the selection-drift failure mode and also pressure-tests the
+   ratified map.
+5. **Agreed sequencing:** retrieval harness (new code) → held-out growth (cheap)
+   → ONE ladder pass, gated per rung on (ΔNLL within noise) AND (32k overlap
+   ≥ 0.9) AND (retrieval parity); ratify a mixture only if a plateau appears.
+   Ladder is self-terminating (stop at the first sloping rung). Prize is bounded:
+   the whole mixture space is ~16 points of baseline bytes (0.51× → 0.35×), the
+   2× win being already banked — hence modest expectations.
+6. **Portfolio note:** Stage-D fused kernels (recover ~10% ITL on the ratified
+   map, benefits every deployment) likely beat the ladder on value per
+   engineering-hour; they are a parallel track (engineering-heavy) while the
+   ladder is GPU-cheap.
+
+## Long-context testing (owner question, 2026-07-20 — agreed: wise, do it)
+
+- Motivation: the failing trend is in the length dimension; 32k is ~3% of the
+  model's advertised context. Decay curve shape (saturating vs sliding) decides
+  FP4 viability — and matters for the RATIFIED map too (0.969 @ 8k → 0.911 @ 32k
+  is not comfortably above the 0.9 gate; a 65k measurement is wanted regardless
+  of the ladder).
+- Feasibility: benchmark already runs 65k on this node, but the teacher-forced
+  harness keeps all logits on-GPU (~17 GB at 65k next to 34 GiB weights on GPU 0
+  → OOM). Small required change: stream logits (or per-chunk metrics) to CPU —
+  metrics are already position-chunked, so this is cheap. NOT yet implemented.
+- Proposed rungs: add 65k (and if the harness change proves comfortable, ~128k)
+  to the held-out suite for baseline, ratified map, official, and any ladder
+  candidates.
+- Corpus caveat: held-out windows are packed short documents — long sequences,
+  not long-range dependencies. 65k perplexity/overlap is still informative (the
+  overlap metric does not need natural long-range structure), but the retrieval
+  eval remains the sharper long-context instrument.
+
 ## Standing constraints
 
 - Indexer precision remains a BINARY (all-layers) choice — per-layer indexer
