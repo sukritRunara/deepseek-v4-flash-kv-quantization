@@ -113,6 +113,46 @@ def probe_batch(data: dict, args) -> torch.Tensor:
     return torch.cat(tensors(data, "calib_2k")[: args.probe_batch], dim=0).to("cuda")
 
 
+def eval_variants(out: Path, args) -> dict:
+    """official policy + every precision_map*.json in out + --heldout-policies."""
+    from v4_kv_quant.precision_map import PrecisionMap
+
+    variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
+    for map_file in sorted(out.glob("precision_map*.json")):
+        variants[map_file.stem] = {"precision_map": PrecisionMap.from_json(map_file)}
+    for pname in [p.strip() for p in args.heldout_policies.split(",") if p.strip()]:
+        variants[pname] = {"policy": NAMED_POLICIES[pname]()}
+    return variants
+
+
+def eval_cases(model, cases: dict, variants: dict, args, offload: bool = False) -> dict:
+    """Teacher-forced baseline-vs-variant metrics per case; offload=True streams
+    logits/picks to CPU with chunkwise-GPU metric math (65k-scale runs)."""
+    dev = "cuda" if offload else None
+    results = {}
+    for label, ids in cases.items():
+        prefill = ids.shape[1] - DECODE_TAIL
+        base = run_teacher_forced(model, ids, prefill,
+                                  prefill_chunk=args.stats_prefill_chunk,
+                                  logits_to_cpu=offload)
+        row = {}
+        for vname, kw in variants.items():
+            q = run_teacher_forced(model, ids, prefill,
+                                   prefill_chunk=args.stats_prefill_chunk,
+                                   logits_to_cpu=offload, **kw)
+            m = logit_comparison_metrics(base.logits, q.logits, compute_device=dev)
+            m["nll_baseline"] = next_token_nll(base.logits, ids, compute_device=dev)
+            m["nll_quantized"] = next_token_nll(q.logits, ids, compute_device=dev)
+            m["nll_delta"] = m["nll_quantized"] - m["nll_baseline"]
+            m["indexer"] = indexer_topk_overlap(base.indexer_picks, q.indexer_picks)
+            row[vname] = m
+            print(f"[{label}/{vname}] KL={m['kl_mean']:.3e} "
+                  f"top1={m['top1_agreement']:.4f} dNLL={m['nll_delta']:+.4e} "
+                  f"idx_overlap={m['indexer'].get('mean_overlap')}", flush=True)
+        results[label] = row
+    return results
+
+
 def sweep_stage(model, probe: torch.Tensor, targets, label: str, out: Path, kind_main: str):
     print(f"[{label}] {len(targets)} targets, probe {tuple(probe.shape)}", flush=True)
     _, baseline_nll, records = run_sensitivity_sweep(
@@ -169,6 +209,12 @@ def main() -> int:
     ap.add_argument("--heldout-policies", default="",
                     help="comma list of NAMED_POLICIES to evaluate alongside official"
                          " + maps in heldout/heldout32k (e.g. step-0 all-FP4)")
+    ap.add_argument("--n-32k", type=int, default=2)
+    ap.add_argument("--n-65k", type=int, default=2)
+    ap.add_argument("--retrieval-lens", default="8192,32768,65536")
+    ap.add_argument("--retrieval-seqs", type=int, default=2)
+    ap.add_argument("--retrieval-needles", type=int, default=8)
+    ap.add_argument("--retrieval-seed", type=int, default=31)
     args = ap.parse_args()
     stages = [s.strip() for s in args.stages.split(",") if s.strip()]
     out = Path(args.out_dir)
@@ -291,78 +337,130 @@ def main() -> int:
               f"(indexer source: {indexer_source})")
 
     if "heldout" in stages:
-        from v4_kv_quant.precision_map import PrecisionMap
-
-        variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
-        for map_file in sorted(out.glob("precision_map*.json")):
-            variants[map_file.stem] = {"precision_map": PrecisionMap.from_json(map_file)}
-        for pname in [p.strip() for p in args.heldout_policies.split(",") if p.strip()]:
-            variants[pname] = {"policy": NAMED_POLICIES[pname]()}
-        results = {}
-        cases = {"held_2k": torch.cat(tensors(data, "held_2k")[:4], dim=0).to("cuda"),
-                 "held_8k": tensors(data, "held_8k")[0].to("cuda")}
-        for label, ids in cases.items():
-            prefill = ids.shape[1] - DECODE_TAIL
-            base = run_teacher_forced(model, ids, prefill,
-                                      prefill_chunk=args.stats_prefill_chunk)
-            row = {}
-            for vname, kw in variants.items():
-                q = run_teacher_forced(model, ids, prefill,
-                                       prefill_chunk=args.stats_prefill_chunk, **kw)
-                m = logit_comparison_metrics(base.logits, q.logits)
-                m["nll_baseline"] = next_token_nll(base.logits, ids)
-                m["nll_quantized"] = next_token_nll(q.logits, ids)
-                m["nll_delta"] = m["nll_quantized"] - m["nll_baseline"]
-                m["indexer"] = indexer_topk_overlap(base.indexer_picks, q.indexer_picks)
-                row[vname] = m
-                print(f"[heldout] {label}/{vname}: KL={m['kl_mean']:.3e} "
-                      f"top1={m['top1_agreement']:.4f} dNLL={m['nll_delta']:+.4e} "
-                      f"idx_overlap={m['indexer'].get('mean_overlap')}", flush=True)
-            results[label] = row
+        # Grown held-out usage (FUTURE_WORK #3): ALL built windows — 8×2k as two
+        # batch-4 cases, both 8k sequences.
+        h2k = tensors(data, "held_2k")
+        h8k = tensors(data, "held_8k")
+        cases = {"held_2k_a": torch.cat(h2k[:4], dim=0).to("cuda"),
+                 "held_2k_b": torch.cat(h2k[4:8], dim=0).to("cuda")}
+        for i, t in enumerate(h8k):
+            cases[f"held_8k_{'ab'[i]}"] = t.to("cuda")
+        results = eval_cases(model, cases, eval_variants(out, args), args)
         (out / "heldout_eval.json").write_text(json.dumps(results, indent=2) + "\n")
 
-    if "heldout32k" in stages:
-        from v4_kv_quant.precision_map import PrecisionMap
+    if "heldout32k" in stages or "heldout65k" in stages:
+        # Long-sequence held-out ids: chained disjoint stream regions (D-012).
+        consumed = [max(data[k]["provenance"]["tokens_consumed_per_source"].values())
+                    for k in ("calib_2k", "calib_8k", "held_2k", "held_8k")]
+        skip32 = max(consumed[:2]) + max(consumed[2:])
 
-        ids32_file = out / "token_ids_32k.json"
-        if ids32_file.exists():
-            ids32 = json.loads(ids32_file.read_text())
-            print(f"[heldout32k] reusing {ids32_file}")
+        def long_ids(path: Path, n: int, seq_len: int, seed: int, skip: int) -> dict:
+            if path.exists():
+                blob = json.loads(path.read_text())
+                if len(blob["ids"]) >= n:
+                    print(f"[long-heldout] reusing {path}")
+                    return blob
+            sample = build_corpus_samples(tok, n, seq_len, seed=seed, skip_tokens=skip)
+            blob = {"ids": sample.token_ids(), "provenance": sample.provenance,
+                    "skip_tokens": skip}
+            path.write_text(json.dumps(blob) + "\n")
+            return blob
+
+    if "heldout32k" in stages:
+        ids32 = long_ids(out / "token_ids_32k.json", args.n_32k, 32768,
+                         args.heldout_seed + 2, skip32)
+        cases = {f"held_32k_{'abcd'[i]}": torch.tensor([w], dtype=torch.long).to("cuda")
+                 for i, w in enumerate(ids32["ids"][: args.n_32k])}
+        results = eval_cases(model, cases, eval_variants(out, args), args)
+        (out / "heldout32k_eval.json").write_text(json.dumps(results, indent=2) + "\n")
+
+    if "heldout65k" in stages:
+        skip65 = skip32 + 2_000_000  # own region, far past every 32k consumption
+        ids65 = long_ids(out / "token_ids_65k.json", args.n_65k, 65536,
+                         args.heldout_seed + 3, skip65)
+        cases = {f"held_65k_{'abcd'[i]}": torch.tensor([w], dtype=torch.long).to("cuda")
+                 for i, w in enumerate(ids65["ids"][: args.n_65k])}
+        # logits offload: a 65k run's logits are ~17 GiB — cannot stay on GPU 0.
+        results = eval_cases(model, cases, eval_variants(out, args), args, offload=True)
+        (out / "heldout65k_eval.json").write_text(json.dumps(results, indent=2) + "\n")
+
+    if "retrieval" in stages:
+        from v4_kv_quant.retrieval import (
+            Needle,
+            RetrievalSample,
+            build_retrieval_sample,
+            make_needles_text,
+            score_retrieval,
+        )
+
+        rid_file = out / "retrieval_ids.json"
+        lens = [int(x) for x in args.retrieval_lens.split(",")]
+        if rid_file.exists():
+            rblob = json.loads(rid_file.read_text())
+            print(f"[retrieval] reusing {rid_file}")
         else:
-            # Disjoint from every stream region used so far: skip past the calib skip
-            # plus the largest held-out consumption on any source (D-012 disjointness).
             consumed = [max(data[k]["provenance"]["tokens_consumed_per_source"].values())
                         for k in ("calib_2k", "calib_8k", "held_2k", "held_8k")]
-            skip32 = max(consumed[:2]) + max(consumed[2:])
-            sample = build_corpus_samples(tok, 1, 32768, seed=args.heldout_seed + 2,
-                                          skip_tokens=skip32)
-            ids32 = {"ids": sample.token_ids(), "provenance": sample.provenance,
-                     "skip_tokens": skip32}
-            ids32_file.write_text(json.dumps(ids32) + "\n")
-        ids = torch.tensor([ids32["ids"][0]], dtype=torch.long).to("cuda")
-        prefill = ids.shape[1] - DECODE_TAIL
-        variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
-        if (out / "precision_map.json").exists():
-            variants["precision_map"] = {
-                "precision_map": PrecisionMap.from_json(out / "precision_map.json")}
-        for pname in [p.strip() for p in args.heldout_policies.split(",") if p.strip()]:
-            variants[pname] = {"policy": NAMED_POLICIES[pname]()}
-        base = run_teacher_forced(model, ids, prefill,
-                                  prefill_chunk=args.stats_prefill_chunk)
-        row = {}
-        for vname, kw in variants.items():
-            q = run_teacher_forced(model, ids, prefill,
-                                   prefill_chunk=args.stats_prefill_chunk, **kw)
-            m = logit_comparison_metrics(base.logits, q.logits)
-            m["nll_baseline"] = next_token_nll(base.logits, ids)
-            m["nll_quantized"] = next_token_nll(q.logits, ids)
-            m["nll_delta"] = m["nll_quantized"] - m["nll_baseline"]
-            m["indexer"] = indexer_topk_overlap(base.indexer_picks, q.indexer_picks)
-            row[vname] = m
-            print(f"[heldout32k] {vname}: KL={m['kl_mean']:.3e} "
-                  f"top1={m['top1_agreement']:.4f} dNLL={m['nll_delta']:+.4e} "
-                  f"idx_overlap={m['indexer'].get('mean_overlap')}", flush=True)
-        (out / "heldout32k_eval.json").write_text(json.dumps(row, indent=2) + "\n")
+            # own stream region, far past all NLL held-out builds (which consume <2M)
+            skip_r = max(consumed[:2]) + max(consumed[2:]) + 5_000_000
+            rblob = {"samples": [], "skip_tokens_base": skip_r,
+                     "needles_per_sample": args.retrieval_needles}
+            for li, seq_len in enumerate(lens):
+                fill = build_corpus_samples(tok, args.retrieval_seqs, seq_len,
+                                            seed=args.retrieval_seed + li,
+                                            skip_tokens=skip_r)
+                for si, window in enumerate(fill.token_ids()):
+                    needles = make_needles_text(
+                        tok, args.retrieval_needles,
+                        seed=args.retrieval_seed * 1000 + li * 100 + si)
+                    sample = build_retrieval_sample(window, needles, seq_len)
+                    rblob["samples"].append({
+                        "length": seq_len, "input_ids": sample.input_ids,
+                        "needles": [vars(n) for n in sample.needles],
+                    })
+                skip_r += max(fill.provenance["tokens_consumed_per_source"].values())
+            rid_file.write_text(json.dumps(rblob) + "\n")
+            print(f"[retrieval] built {len(rblob['samples'])} samples -> {rid_file}")
+
+        variants = {"baseline": {}} | eval_variants(out, args)
+        per_sample: dict = {}
+        for s in rblob["samples"]:
+            sample = RetrievalSample(
+                input_ids=s["input_ids"],
+                needles=[Needle(**d) for d in s["needles"]],
+            )
+            ids = torch.tensor([s["input_ids"]], dtype=torch.long).to("cuda")
+            base_picks = None
+            for vname, kw in variants.items():
+                run = run_teacher_forced(model, ids, prefill_len=ids.shape[1],
+                                         prefill_chunk=args.stats_prefill_chunk,
+                                         logits_to_cpu=True, **kw)
+                sc = score_retrieval(run.logits, sample)
+                if vname == "baseline":
+                    base_picks = run.indexer_picks
+                else:
+                    sc["indexer_vs_baseline"] = indexer_topk_overlap(
+                        base_picks, run.indexer_picks)
+                per_sample.setdefault(str(s["length"]), {}).setdefault(
+                    vname, []).append(sc)
+                idx = sc.get("indexer_vs_baseline", {}) or {}
+                print(f"[retrieval {s['length']}/{vname}] acc={sc['token_acc']:.3f} "
+                      f"exact={sc['exact_rate']:.3f} nll={sc['nll_mean']:.3f} "
+                      f"idx_overlap={idx.get('mean_overlap', '-')}", flush=True)
+                del run
+        summary = {}
+        for length, rows in per_sample.items():
+            summary[length] = {}
+            for vname, scs in rows.items():
+                summary[length][vname] = {
+                    "token_acc": sum(x["token_acc"] for x in scs) / len(scs),
+                    "exact_rate": sum(x["exact_rate"] for x in scs) / len(scs),
+                    "nll_mean": sum(x["nll_mean"] for x in scs) / len(scs),
+                    "n_samples": len(scs),
+                }
+        (out / "retrieval_eval.json").write_text(json.dumps(
+            {"summary": summary, "per_sample": per_sample}, indent=2) + "\n")
+        print("[retrieval] done -> retrieval_eval.json")
 
     print(BANNER)
     return 0

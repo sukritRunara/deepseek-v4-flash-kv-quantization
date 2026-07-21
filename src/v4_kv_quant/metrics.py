@@ -7,7 +7,8 @@ import torch.nn.functional as F
 
 
 def logit_comparison_metrics(
-    baseline: torch.Tensor, test: torch.Tensor, position_chunk: int = 1024
+    baseline: torch.Tensor, test: torch.Tensor, position_chunk: int = 1024,
+    compute_device: str | torch.device | None = None,
 ) -> dict[str, float]:
     """Compare two logit tensors of identical shape `[B, T, V]` (teacher-forced histories).
 
@@ -16,13 +17,17 @@ def logit_comparison_metrics(
     (fp64 accumulators). Materializing full-vocab fp32 log-softmax for a whole 8k+
     sequence costs ~8.5 GiB per tensor and OOMs GPU 0 next to the resident weights
     (WORKLOG 2026-07-20 B4 overnight); 32k would need ~17 GiB per tensor.
+
+    `compute_device` moves each chunk there for the math — pass "cuda" when the
+    logits live on CPU (65k-eval offload path) to keep the math fast while only one
+    chunk at a time occupies GPU memory.
     """
     if baseline.shape != test.shape:
         raise ValueError(f"shape mismatch {tuple(baseline.shape)} vs {tuple(test.shape)}")
     base_flat = baseline.flatten(0, -2)
     test_flat = test.flatten(0, -2)
     n_pos, n_elem = base_flat.shape[0], base_flat.numel()
-    dev = baseline.device
+    dev = torch.device(compute_device) if compute_device is not None else baseline.device
     abs_sum = torch.zeros((), dtype=torch.float64, device=dev)
     sq_sum = torch.zeros((), dtype=torch.float64, device=dev)
     kl_sum = torch.zeros((), dtype=torch.float64, device=dev)
@@ -32,8 +37,8 @@ def logit_comparison_metrics(
     nan_count = torch.zeros((), dtype=torch.int64, device=dev)
     inf_count = torch.zeros((), dtype=torch.int64, device=dev)
     for start in range(0, n_pos, position_chunk):
-        b32 = base_flat[start : start + position_chunk].float()
-        t32 = test_flat[start : start + position_chunk].float()
+        b32 = base_flat[start : start + position_chunk].to(dev).float()
+        t32 = test_flat[start : start + position_chunk].to(dev).float()
         diff = (b32 - t32).abs()
         abs_sum += diff.sum(dtype=torch.float64)
         sq_sum += diff.square().sum(dtype=torch.float64)
@@ -59,21 +64,23 @@ def logit_comparison_metrics(
 
 
 def next_token_nll(
-    logits: torch.Tensor, input_ids: torch.Tensor, position_chunk: int = 1024
+    logits: torch.Tensor, input_ids: torch.Tensor, position_chunk: int = 1024,
+    compute_device: str | torch.device | None = None,
 ) -> float:
     """Mean next-token NLL: `logits[:, t]` predicts `input_ids[:, t+1]`.
 
     Chunked along positions for the same memory reason as `logit_comparison_metrics`
     (cross-entropy is per-token; sum/N is exactly the previous mean reduction).
     """
+    dev = torch.device(compute_device) if compute_device is not None else logits.device
     shifted_logits = logits[:, :-1].flatten(0, 1)
-    targets = input_ids[:, 1:].flatten().to(logits.device)
+    targets = input_ids[:, 1:].flatten()
     n = targets.shape[0]
-    total = torch.zeros((), dtype=torch.float64, device=logits.device)
+    total = torch.zeros((), dtype=torch.float64, device=dev)
     for start in range(0, n, position_chunk):
         total += F.cross_entropy(
-            shifted_logits[start : start + position_chunk].float(),
-            targets[start : start + position_chunk],
+            shifted_logits[start : start + position_chunk].to(dev).float(),
+            targets[start : start + position_chunk].to(dev),
             reduction="sum",
         ).to(torch.float64)
     return (total / n).item()
@@ -88,23 +95,34 @@ def indexer_topk_overlap(
     per chunk); `-1` marks invalid sentinels. Overlap for one (batch, position) is
     `|valid(base) ∩ valid(test)| / |valid(base)|`; positions with no valid baseline picks
     are skipped. Returns mean/min overlap and the fraction of positions with a perfect match.
+
+    Vectorized (sort + batched searchsorted): the original per-position Python-set loop
+    is O(positions) interpreter work — ~1.4M set intersections for one 65k run, unusably
+    slow. Rows are unique-valued (top-k indices), so counting sorted-search hits equals
+    set intersection.
     """
-    overlaps: list[float] = []
+    chunks: list[torch.Tensor] = []
     for base_chunk, test_chunk in zip(baseline_picks, test_picks, strict=True):
         if base_chunk.shape[:2] != test_chunk.shape[:2]:
             raise ValueError("pick chunks misaligned between runs")
-        for b in range(base_chunk.shape[0]):
-            for s in range(base_chunk.shape[1]):
-                base_set = {int(i) for i in base_chunk[b, s].tolist() if i >= 0}
-                if not base_set:
-                    continue
-                test_set = {int(i) for i in test_chunk[b, s].tolist() if i >= 0}
-                overlaps.append(len(base_set & test_set) / len(base_set))
-    if not overlaps:
+        b = base_chunk.flatten(0, 1).long()  # [N, k_b]
+        t = test_chunk.flatten(0, 1).long()  # [N, k_t]
+        big = torch.iinfo(torch.long).max
+        n_base = (b >= 0).sum(-1)  # valid base picks per position
+        b_sorted, _ = torch.where(b >= 0, b, torch.full_like(b, big)).sort(dim=-1)
+        # invalid test entries -> big-1: never equals a real pick or the `big` sentinel
+        t_query = torch.where(t >= 0, t, torch.full_like(t, big - 1))
+        idx = torch.searchsorted(b_sorted, t_query).clamp(max=b_sorted.shape[-1] - 1)
+        matches = (b_sorted.gather(-1, idx) == t_query) & (t >= 0)
+        keep = n_base > 0
+        if keep.any():
+            chunks.append(matches.sum(-1)[keep].double() / n_base[keep].double())
+    if not chunks:
         return {"positions": 0, "mean_overlap": 1.0, "min_overlap": 1.0, "exact_match_rate": 1.0}
+    overlaps = torch.cat([c.cpu() for c in chunks])
     return {
-        "positions": len(overlaps),
-        "mean_overlap": sum(overlaps) / len(overlaps),
-        "min_overlap": min(overlaps),
-        "exact_match_rate": sum(1.0 for o in overlaps if o == 1.0) / len(overlaps),
+        "positions": int(overlaps.numel()),
+        "mean_overlap": overlaps.mean().item(),
+        "min_overlap": overlaps.min().item(),
+        "exact_match_rate": (overlaps == 1.0).double().mean().item(),
     }

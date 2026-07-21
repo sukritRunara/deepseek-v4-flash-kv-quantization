@@ -43,6 +43,7 @@ def run_teacher_forced(
     capture_indexer: bool = True,
     storage: bool = False,
     prefill_chunk: int | None = None,
+    logits_to_cpu: bool = False,
 ) -> TeacherForcedResult:
     """Prefill of `prefill_len` tokens, then ground-truth single-token decode.
 
@@ -59,6 +60,10 @@ def run_teacher_forced(
     96 GB card — WORKLOG 2026-07-20 B4). Comparisons must use the SAME chunking on
     both sides: chunk-shaped kernels differ from one-shot at the last ulp, which flips
     near-tied selective-indexer picks (D-004).
+
+    `logits_to_cpu` streams each chunk's logits (and captured indexer picks) to host
+    memory as produced: a full 65k-run's logits are ~17 GiB — resident-on-GPU they OOM
+    next to the weights. Pair with `compute_device="cuda"` in the metrics calls.
     """
     from transformers import DynamicCache  # local import keeps module import light
 
@@ -71,12 +76,12 @@ def run_teacher_forced(
     result = TeacherForcedResult(logits=torch.empty(0))
     hooks = []
     if capture_indexer:
+        def _capture(mod, args, out):
+            picks = out.detach()
+            result.indexer_picks.append(picks.cpu() if logits_to_cpu else picks.clone())
+
         for indexer in _find_indexers(model):
-            hooks.append(
-                indexer.register_forward_hook(
-                    lambda mod, args, out: result.indexer_picks.append(out.detach().clone())
-                )
-            )
+            hooks.append(indexer.register_forward_hook(_capture))
 
     if policy is not None:
         if storage:
@@ -94,6 +99,9 @@ def run_teacher_forced(
     else:
         cache = DynamicCache(config=model.config)
         context = nullcontext(model)
+    def _keep(logits: torch.Tensor) -> torch.Tensor:
+        return logits.cpu() if logits_to_cpu else logits
+
     chunks: list[torch.Tensor] = []
     try:
         with context:
@@ -101,13 +109,13 @@ def run_teacher_forced(
                 for start in range(0, prefill_len, prefill_chunk):
                     out = model(input_ids[:, start : min(start + prefill_chunk, prefill_len)],
                                 past_key_values=cache, use_cache=True)
-                    chunks.append(out.logits)
+                    chunks.append(_keep(out.logits))
             else:
                 out = model(input_ids[:, :prefill_len], past_key_values=cache, use_cache=True)
-                chunks.append(out.logits)
+                chunks.append(_keep(out.logits))
             for t in range(prefill_len, seq_len):
                 out = model(input_ids[:, t : t + 1], past_key_values=cache, use_cache=True)
-                chunks.append(out.logits)
+                chunks.append(_keep(out.logits))
     finally:
         for hook in hooks:
             hook.remove()
