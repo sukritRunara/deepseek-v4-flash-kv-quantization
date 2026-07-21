@@ -92,9 +92,16 @@ def run_teacher_forced(
             cache = build_qdq_cache(model.config, policy)
         context = indexer_query_qdq(model, policy)
     elif precision_map is not None:
-        from .mapped_cache import MappedQDQCache, indexer_query_context
+        from .mapped_cache import indexer_query_context
 
-        cache = MappedQDQCache(model.config, precision_map)
+        if storage:
+            from .mapped_storage_cache import MappedStorageCache
+
+            cache = MappedStorageCache(model.config, precision_map)
+        else:
+            from .mapped_cache import MappedQDQCache
+
+            cache = MappedQDQCache(model.config, precision_map)
         context = indexer_query_context(model, precision_map)
     else:
         cache = DynamicCache(config=model.config)
