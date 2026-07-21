@@ -233,7 +233,7 @@ def main() -> int:
         return 0
 
     model_stages = {"stats", "screening", "refine", "fp8spot", "indexer8k",
-                    "heldout", "heldout32k"}
+                    "heldout", "heldout32k", "heldout65k", "retrieval"}
     if model_stages & set(stages):
         _, model = load_model(args.model_path)
         config = model.config
