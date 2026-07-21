@@ -198,6 +198,36 @@ dNLL + retrieval with overlap as diagnostic only)?
 Also pending regardless: measure ACTUAL cache bytes for ratified + ladder20
 (memory tool / benchmark storage variant), and the >65k overlap-decay question.
 
+## DRAFT gate re-anchor proposal (D-016 item — NOT adopted, owner decision)
+
+Evidence (Run A/B data, FP8-relative overlap = variant ÷ ratified-map at the same
+length; grown held-out means):
+
+| variant | 8k abs/rel | 32k abs/rel | 65k abs/rel |
+|---|---|---|---|
+| ratified FP8 map | 0.943 / 1.000 | 0.924 / 1.000 | 0.906 / 1.000 |
+| ladder20 | 0.942 / **0.999** | 0.921 / **0.997** | 0.902 / **0.996** |
+| all-FP4 main | 0.932 / 0.989 | 0.906 / 0.981 | 0.886 / 0.977 |
+| official (FP4 idx) | 0.931 / 0.987 | 0.896 / 0.969 | 0.871 / **0.961** |
+
+Reading: ABSOLUTE overlap decays for everyone (inherent near-tie drift grows with
+candidate count) — an absolute 0.9 gate eventually fails even all-FP8 with zero
+quality loss. RELATIVE overlap separates the causes cleanly: main-KV-only changes
+are length-invariant (ladder20 ≥ 0.996 everywhere); the FP4 indexer's damage
+genuinely compounds with length (0.987 → 0.961 and still falling).
+
+**Proposed gate set (replacing "absolute mean overlap ≥ 0.9"):**
+1. PRIMARY: dNLL within noise of the FP8 map at every tested length, AND
+   retrieval parity (v2 task) at the longest tested length.
+2. DIAGNOSTIC: FP8-relative indexer overlap ≥ 0.99 at the longest tested length
+   (threshold owner-tunable; ladder20 passes at 0.996, official fails at 0.961).
+Under this proposal, the D-015 indexer decision (BF16) would be RE-EXAMINED: its
+original basis (absolute 0.886 < 0.9 at 32k) conflated inherent drift with format
+damage — though the relative metric still shows the FP4 indexer as the one
+genuinely length-degrading component, so the conservative call may well survive.
+The bytes stakes are now quantified (analytic, validated −2.2% vs measured):
+ratified 0.652× vs official 0.511× vs ladder20+fp4idx 0.453×.
+
 ## Standing constraints
 
 - Indexer precision remains a BINARY (all-layers) choice — per-layer indexer
