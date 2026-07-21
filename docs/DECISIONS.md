@@ -160,6 +160,43 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-017 — Gate re-anchor ADOPTED; ladder20 ratified as the project map; indexer decision deferred to a 128k extrapolation study
+
+**Date:** 2026-07-21
+**Status:** accepted (owner "go" on the agent's recommendation)
+**Context:** Overnight #2 (D-016) delivered: measured map bytes (ratified-v1
+0.641–0.647×, ladder20 0.580–0.587×, both real-model bitwise-gated via
+MappedStorageCache); retrieval-v2 saturated for all variants (twice-replicated
+robustness result); FP8-relative overlap analysis separating inherent drift from
+format damage.
+**Decision:**
+1. **Quality gates re-anchored**: PRIMARY = ΔNLL within noise of the FP8
+   reference at every tested length AND retrieval-v2 parity at the longest
+   length; DIAGNOSTIC = FP8-relative indexer overlap at the longest tested
+   length, threshold ≥ 0.99 marked PROVISIONAL (calibrated on two well-separated
+   clusters; will firm up as candidates land between them). The absolute
+   overlap ≥ 0.9 gate is retired (length-naive — fails all-FP8 eventually with
+   zero quality cost).
+2. **ladder20 is ratified as the project precision map** (supersedes the D-015
+   map): 139×FP8 + 34×FP4 (late layers 22–42) main-KV, RoPE BF16, indexer BF16.
+   Evidence exceeds the D-015 map's own ratification base: dNLL noise-level at
+   2k/8k/32k/65k, retrieval perfect twice, relative overlap ≥ 0.996
+   length-invariant, real-model storage bitwise gate PASS, measured 0.58×.
+   The D-015 map is preserved as `precision_map_fp8only_v1.json`.
+3. **Indexer stays BF16 pending data**: the FP4 indexer is the one component
+   with compounding relative decay (0.987→0.961 @65k, no plateau); the 14-point
+   bytes prize (0.58→0.45×) is claimed only if a **128k length-extrapolation
+   study** (this session) shows the relative-overlap curve plateauing with
+   clean dNLL/retrieval. Study variants: ladder20 vs ladder20+FP4-indexer vs
+   official; 196k stretch goal if memory allows.
+**Evidence:** WORKLOG 2026-07-20/21 overnight #2; FUTURE_WORK "DRAFT gate
+re-anchor" (now adopted per above); `artifacts/phase_b_gcp/ladder/`.
+**Consequences:** benchmark/storage tooling can now target the ratified map
+directly (MappedStorageCache); the D-015 conservative indexer call remains in
+force unless the extrapolation study clears it.
+**Follow-up:** 128k study this session; Stage-D kernels as the next supervised
+phase; owner housekeeping (push, RunPod volume, ldexp report) still open.
+
 ### D-016 — Ladder verdict endorsed: keep ratified map, instrument-first follow-ups; second overnight delegation
 
 **Date:** 2026-07-20

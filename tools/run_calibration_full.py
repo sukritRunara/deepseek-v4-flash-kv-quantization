@@ -125,20 +125,24 @@ def eval_variants(out: Path, args) -> dict:
     return variants
 
 
-def eval_cases(model, cases: dict, variants: dict, args, offload: bool = False) -> dict:
+def eval_cases(model, cases: dict, variants: dict, args, offload: bool = False,
+               chunk: int | None = None) -> dict:
     """Teacher-forced baseline-vs-variant metrics per case; offload=True streams
-    logits/picks to CPU with chunkwise-GPU metric math (65k-scale runs)."""
+    logits/picks to CPU with chunkwise-GPU metric math (65k-scale runs).
+    `chunk` overrides the prefill chunk (128k needs 1024: attention transients
+    scale with chunk x kv_len and 2048 fit only up to ~65k)."""
     dev = "cuda" if offload else None
+    chunk = chunk or args.stats_prefill_chunk
     results = {}
     for label, ids in cases.items():
         prefill = ids.shape[1] - DECODE_TAIL
         base = run_teacher_forced(model, ids, prefill,
-                                  prefill_chunk=args.stats_prefill_chunk,
+                                  prefill_chunk=chunk,
                                   logits_to_cpu=offload)
         row = {}
         for vname, kw in variants.items():
             q = run_teacher_forced(model, ids, prefill,
-                                   prefill_chunk=args.stats_prefill_chunk,
+                                   prefill_chunk=chunk,
                                    logits_to_cpu=offload, **kw)
             m = logit_comparison_metrics(base.logits, q.logits, compute_device=dev)
             m["nll_baseline"] = next_token_nll(base.logits, ids, compute_device=dev)
@@ -211,6 +215,11 @@ def main() -> int:
                          " + maps in heldout/heldout32k (e.g. step-0 all-FP4)")
     ap.add_argument("--n-32k", type=int, default=2)
     ap.add_argument("--n-65k", type=int, default=2)
+    ap.add_argument("--n-128k", type=int, default=2)
+    ap.add_argument("--retrieval-prefix", default="",
+                    help="override the ids/eval file prefix (new lengths -> new files)")
+    ap.add_argument("--retrieval-skip-offset", type=int, default=0,
+                    help="override the corpus skip offset for a fresh stream region")
     ap.add_argument("--retrieval-lens", default="8192,32768,65536")
     ap.add_argument("--retrieval-seqs", type=int, default=2)
     ap.add_argument("--retrieval-needles", type=int, default=8)
@@ -234,7 +243,8 @@ def main() -> int:
         return 0
 
     model_stages = {"stats", "screening", "refine", "fp8spot", "indexer8k",
-                    "heldout", "heldout32k", "heldout65k", "retrieval", "retrieval2"}
+                    "heldout", "heldout32k", "heldout65k", "heldout128k",
+                    "retrieval", "retrieval2"}
     if model_stages & set(stages):
         _, model = load_model(args.model_path)
         config = model.config
@@ -385,6 +395,16 @@ def main() -> int:
         results = eval_cases(model, cases, eval_variants(out, args), args, offload=True)
         (out / "heldout65k_eval.json").write_text(json.dumps(results, indent=2) + "\n")
 
+    if "heldout128k" in stages:
+        skip128 = skip32 + 4_000_000  # own region (65k region spans +2M..+4M)
+        ids128 = long_ids(out / "token_ids_128k.json", args.n_128k, 131072,
+                          args.heldout_seed + 4, skip128)
+        cases = {f"held_128k_{'abcd'[i]}": torch.tensor([w], dtype=torch.long).to("cuda")
+                 for i, w in enumerate(ids128["ids"][: args.n_128k])}
+        results = eval_cases(model, cases, eval_variants(out, args), args,
+                             offload=True, chunk=1024)
+        (out / "heldout128k_eval.json").write_text(json.dumps(results, indent=2) + "\n")
+
     def run_retrieval(prefix: str, generator, n_needles: int, skip_offset: int) -> None:
         from v4_kv_quant.retrieval import (
             Needle,
@@ -431,9 +451,11 @@ def main() -> int:
             )
             ids = torch.tensor([s["input_ids"]], dtype=torch.long).to("cuda")
             base_picks = None
+            # 128k+ needs the smaller chunk (attention transients ~ chunk x kv_len)
+            r_chunk = 1024 if s["length"] > 65536 else args.stats_prefill_chunk
             for vname, kw in variants.items():
                 run = run_teacher_forced(model, ids, prefill_len=ids.shape[1],
-                                         prefill_chunk=args.stats_prefill_chunk,
+                                         prefill_chunk=r_chunk,
                                          logits_to_cpu=True, **kw)
                 sc = score_retrieval(run.logits, sample)
                 # per-kind breakdown (plain vs updated) for interference analysis
@@ -469,15 +491,17 @@ def main() -> int:
     if "retrieval" in stages:
         from v4_kv_quant.retrieval import make_needles_text
 
-        run_retrieval("retrieval", make_needles_text, args.retrieval_needles,
-                      skip_offset=5_000_000)
+        run_retrieval(args.retrieval_prefix or "retrieval", make_needles_text,
+                      args.retrieval_needles,
+                      skip_offset=args.retrieval_skip_offset or 5_000_000)
 
     if "retrieval2" in stages:
         from v4_kv_quant.retrieval import make_needles_text_v2
 
         # v2 (D-016): paraphrased cues + fact updates + name collisions; own region
-        run_retrieval("retrieval2", make_needles_text_v2, args.retrieval2_needles,
-                      skip_offset=10_000_000)
+        run_retrieval(args.retrieval_prefix or "retrieval2", make_needles_text_v2,
+                      args.retrieval2_needles,
+                      skip_offset=args.retrieval_skip_offset or 10_000_000)
 
     print(BANNER)
     return 0
