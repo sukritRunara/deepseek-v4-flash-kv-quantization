@@ -1,0 +1,3870 @@
+{
+  "summary": {
+    "8192": {
+      "baseline": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0006479822448781647,
+        "n_samples": 2
+      },
+      "official": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0004798145239419682,
+        "n_samples": 2
+      },
+      "precision_map": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0005467298358183825,
+        "n_samples": 2
+      },
+      "precision_map_ladder20": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0007326977566606274,
+        "n_samples": 2
+      },
+      "precision_map_ladder40": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.000639134968594135,
+        "n_samples": 2
+      },
+      "precision_map_ladder60": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0005946558640630428,
+        "n_samples": 2
+      },
+      "precision_map_ladder80": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0007175728056552089,
+        "n_samples": 2
+      },
+      "main_fp4_nonrope_rope_bf16": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0004947619176078888,
+        "n_samples": 2
+      }
+    },
+    "32768": {
+      "baseline": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0008084921389581723,
+        "n_samples": 2
+      },
+      "official": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0009431045182282105,
+        "n_samples": 2
+      },
+      "precision_map": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0009413122950547859,
+        "n_samples": 2
+      },
+      "precision_map_ladder20": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0008112162849158722,
+        "n_samples": 2
+      },
+      "precision_map_ladder40": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0007051268375448672,
+        "n_samples": 2
+      },
+      "precision_map_ladder60": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0008258258931732598,
+        "n_samples": 2
+      },
+      "precision_map_ladder80": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0005902723377744223,
+        "n_samples": 2
+      },
+      "main_fp4_nonrope_rope_bf16": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0007193112544143787,
+        "n_samples": 2
+      }
+    },
+    "65536": {
+      "baseline": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0011673631574922183,
+        "n_samples": 2
+      },
+      "official": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0008081297918920427,
+        "n_samples": 2
+      },
+      "precision_map": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0009827242649294021,
+        "n_samples": 2
+      },
+      "precision_map_ladder20": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0007948763972223105,
+        "n_samples": 2
+      },
+      "precision_map_ladder40": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0011032085852775708,
+        "n_samples": 2
+      },
+      "precision_map_ladder60": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.000812850904452489,
+        "n_samples": 2
+      },
+      "precision_map_ladder80": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.00119786548256684,
+        "n_samples": 2
+      },
+      "main_fp4_nonrope_rope_bf16": {
+        "token_acc": 1.0,
+        "exact_rate": 1.0,
+        "nll_mean": 0.0010708530251690718,
+        "n_samples": 2
+      }
+    }
+  },
+  "per_sample": {
+    "8192": {
+      "baseline": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.004754598252475262,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.9160887758480385e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.085894008516334e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.039883828634629e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.011046464962419e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.335142201241979e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.6264931875630282e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.817345936520724e-06,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006167732311013197
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0049009076319634914,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.356212831335142e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00018222788639832288,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.7255328202736564e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.09252243116498e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.219688217854127e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.245225217251573e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.820976265473291e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006791912586550097
+        }
+      ],
+      "official": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0022472566924989223,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00012203932419652119,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.35275724157691e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.463771337119397e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.335228393552825e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.09807831197395e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8079714209306985e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.4093613976438064e-06,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00030977834978784813,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9394891961814339,
+            "min_overlap": 0.208984375,
+            "exact_match_rate": 0.2506323814175811
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.004700556397438049,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.477429557591677e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00017302919877693057,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.0205694454489276e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.800483682425693e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00011175934196216986,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.814785698836204e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.066103403805755e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006498506980960883,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9492008847706563,
+            "min_overlap": 0.3046875,
+            "exact_match_rate": 0.25085335147613813
+          }
+        }
+      ],
+      "precision_map": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0021869519259780645,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.8584908401826397e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.1635773009620607e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.417412911716383e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.484209785005078e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.264969907628256e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.0344361473689787e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.1896889191120863e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0002944922923404647,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9507569541966866,
+            "min_overlap": 0.22265625,
+            "exact_match_rate": 0.2525687769307259
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005935543682426214,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.438870281679556e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00016205073916353285,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.2814876754418947e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7178502932656556e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.968302088556811e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.960461855167523e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.111904753604904e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007989673792963004,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9667991578424018,
+            "min_overlap": 0.306640625,
+            "exact_match_rate": 0.2524466618983654
+          }
+        }
+      ],
+      "precision_map_ladder20": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005197170190513134,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00010150679008802399,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.9959692255943082e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.576348929840606e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.081317870761268e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.7193035495874938e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.0257817343226634e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.0037251740868669e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006753800716410296,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9494518838606086,
+            "min_overlap": 0.12109375,
+            "exact_match_rate": 0.2526327419476766
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005852316506206989,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.96049857349135e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00018572476983536035,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.455666799505707e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.2330807041726075e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.307621515588835e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.2584203988080844e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.625516107305884e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007900154416802252,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.965085913013392,
+            "min_overlap": 0.388671875,
+            "exact_match_rate": 0.25245829190144736
+          }
+        }
+      ],
+      "precision_map_ladder40": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.003593251807615161,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00010035580635303631,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.6926114009693265e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.1165764590259641e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.776239049737342e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.0871747690543998e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.2542542612645775e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.4924846254871227e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00048347512745294807,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9431045371004367,
+            "min_overlap": 0.25,
+            "exact_match_rate": 0.2525222569183981
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005782312713563442,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.030789129203185e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00015542443725280464,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.488449536031112e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.0448798245051876e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0002187545906053856,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.5020050341263413e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.120550122228451e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007947948097353219,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9587944674985026,
+            "min_overlap": 0.365234375,
+            "exact_match_rate": 0.2522605818490542
+          }
+        }
+      ],
+      "precision_map_ladder60": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0034223643597215414,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.242797124083154e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.0163595005869865e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.026624876336427e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8095313862431794e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.3828253031533677e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.300664891663473e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.42094677357818e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0004483346008328226,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9406903347223918,
+            "min_overlap": 0.203125,
+            "exact_match_rate": 0.25226639685059515
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.004954271484166384,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00013801638851873577,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00011226784408790991,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8983721020049416e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.076856152503751e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.000568139657843858,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.722018719709013e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.664734246442094e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.000740977127293263,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9562978897177689,
+            "min_overlap": 0.328125,
+            "exact_match_rate": 0.25205705679512
+          }
+        }
+      ],
+      "precision_map_ladder80": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005607116501778364,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00010563583782641217,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.0880788724753074e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.900808446313022e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.500977593124844e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.625294423021842e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.8311216738075018e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.3589626178145409e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007288837312557916,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9388495232970768,
+            "min_overlap": 0.126953125,
+            "exact_match_rate": 0.25185934674272686
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0049778795801103115,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.476183575112373e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00014597963308915496,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.2977132175583392e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.8927004677825607e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00029306235956028104,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.021212028717855e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.629537478554994e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007062618800546261,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9549752267305445,
+            "min_overlap": 0.38671875,
+            "exact_match_rate": 0.2517372317103664
+          }
+        }
+      ],
+      "main_fp4_nonrope_rope_bf16": [
+        {
+          "needles": [
+            {
+              "name": "harbor-76",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0025221616961061954,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-35",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.688741218065843e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-91",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.6573783290805295e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-34",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.059759471099824e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "harbor-28",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.778627797146328e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "obsidian-36",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.4332144878135296e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "willow-95",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8397537132841535e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-95",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.243812327331398e-06,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0003394429366210261,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9396159904728468,
+            "min_overlap": 0.130859375,
+            "exact_match_rate": 0.25140577662253083
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "kestrel-41",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0047639054246246815,
+              "n_tokens": 7
+            },
+            {
+              "name": "prism-45",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.918540020706132e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "falcon-53",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00015525701746810228,
+              "n_tokens": 6
+            },
+            {
+              "name": "prism-83",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.540759694762528e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "quartz-36",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.148058360442519e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-68",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.984988431213424e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "velvet-98",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.9033272110391408e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "orchid-37",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.652800948359072e-05,
+              "n_tokens": 7
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006500808985947515,
+          "indexer_vs_baseline": {
+            "positions": 171969,
+            "mean_overlap": 0.9574397197859789,
+            "min_overlap": 0.244140625,
+            "exact_match_rate": 0.2513999616209898
+          }
+        }
+      ]
+    },
+    "32768": {
+      "baseline": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.008059234358370304,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00015155656728893518,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.748058199766092e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.170618907053722e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.611036148271523e-06,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.1563026419025846e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.8213782873936e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.2315402020467445e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0010402860674503245
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0032372553832829,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.003221930470318e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.4306551242480054e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.6120333131984808e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.296065162634477e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.5079592230904382e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0009682909585535526,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00019953999435529113,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0005766982104660201
+        }
+      ],
+      "official": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.008897428400814533,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00014957250095903873,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.916904435958713e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.6951238649198785e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.244219129148405e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.4746680941898376e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.669071237614844e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.407956708339043e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0011502573369170932,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.8939361396406953,
+            "min_overlap": 0.052734375,
+            "exact_match_rate": 0.0626263507081453
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0046670641750097275,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.8216268371324986e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.807362372754142e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.254452192573808e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7440861231298186e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.299356790696038e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00046608332195319235,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0005951972561888397,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007359516995393278,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.8978040830535633,
+            "min_overlap": 0.0234375,
+            "exact_match_rate": 0.06267867134645709
+          }
+        }
+      ],
+      "precision_map": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.009009099565446377,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00012418683036230505,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7714442694559693e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.155160114460159e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.0221967386314645e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.811905713111628e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.059757197363069e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.0670389858423732e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.001153153396273865,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9185856066923184,
+            "min_overlap": 0.046875,
+            "exact_match_rate": 0.06321786459128134
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0039121550507843494,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00011276926670689136,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.038479892187752e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.136728653567843e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.459238359937444e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.750350020301994e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0009676623158156872,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0007293349481187761,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007294711938357068,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9311827598046696,
+            "min_overlap": 0.064453125,
+            "exact_match_rate": 0.06315827719764848
+          }
+        }
+      ],
+      "precision_map_ladder20": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0066420151852071285,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00012072118988726288,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.1144336137222126e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.678362974023912e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.332922112051165e-06,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.274364856537431e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.728619387606159e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.659363624639809e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0008561860771010288,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9147768930124698,
+            "min_overlap": 0.08984375,
+            "exact_match_rate": 0.0631335702295568
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005085516255348921,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.335028203669935e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.863434151047841e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8685033865040168e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8739234292297624e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.0344488802948035e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0004700037243310362,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00039469858165830374,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007662464927307155,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9282120591350381,
+            "min_overlap": 0.021484375,
+            "exact_match_rate": 0.06305508927208912
+          }
+        }
+      ],
+      "precision_map_ladder40": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.004982014186680317,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00011182598245795816,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.1111612770473585e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.441287147637922e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.2865495894802734e-06,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.177643394446932e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.70030790893361e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.4829422070761211e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006514612204000514,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.902910696005283,
+            "min_overlap": 0.02734375,
+            "exact_match_rate": 0.06310595655933669
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0050131166353821754,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00017507048323750496,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.5544464986305684e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.56136481766589e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.9324175557121634e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.778154546627775e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00016000271716620773,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0006338859675452113,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007587924546896829,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9148722436288723,
+            "min_overlap": 0.056640625,
+            "exact_match_rate": 0.06302020884654792
+          }
+        }
+      ],
+      "precision_map_ladder60": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.007108295802026987,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00019221942056901753,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.7439982154173777e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.3232030141807627e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.3872425370209385e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.457962000335101e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.0232045497104991e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7894328013644554e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.000929720706722037,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.900345176554904,
+            "min_overlap": 0.046875,
+            "exact_match_rate": 0.06303764905931852
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.004829805810004473,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0001604967110324651,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.51043529715389e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8282931705471128e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.1112351280171424e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.4443849067902192e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.118730041431263e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0006450153305195272,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007219310796244827,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9131568437166183,
+            "min_overlap": 0.009765625,
+            "exact_match_rate": 0.06298096836781408
+          }
+        }
+      ],
+      "precision_map_ladder80": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005140135996043682,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0001584911806276068,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.1322604374727234e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.7332717106910422e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.480241038138047e-06,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.939215720398352e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.046508704253938e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.8357837689109147e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006745132876631033,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.8980105554162761,
+            "min_overlap": 0.03515625,
+            "exact_match_rate": 0.06290539411247484
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0037216339260339737,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.097651152638718e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.457963091728743e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.1026570973626804e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.6404922866495326e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.303329463553382e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.610119453398511e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.449505159864202e-05,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0005060313878857414,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9102170381114066,
+            "min_overlap": 0.015625,
+            "exact_match_rate": 0.06292574102737386
+          }
+        }
+      ],
+      "main_fp4_nonrope_rope_bf16": [
+        {
+          "needles": [
+            {
+              "name": "meadow-86",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.005273577757179737,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-76",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.72809105203487e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "velvet-94",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.426348823471926e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-96",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.3327362466952763e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "harbor-33",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.0221992852166295e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "bramble-32",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.06822475977242e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-66",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.165714810573263e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-90",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.5639967386960052e-05,
+              "n_tokens": 5
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0006850199301311477,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9010939702735207,
+            "min_overlap": 0.03125,
+            "exact_match_rate": 0.06281673969755765
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "nectar-26",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00521652027964592,
+              "n_tokens": 5
+            },
+            {
+              "name": "pluto-38",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.256521348608658e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "kestrel-61",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.622456304379739e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-28",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.6045650884043425e-05,
+              "n_tokens": 8
+            },
+            {
+              "name": "harbor-18",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.757232479983941e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "marble-64",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.720540240057744e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "juniper-93",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.16565957898274e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "lantern-45",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0005710305995307863,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0007536025786976097,
+          "indexer_vs_baseline": {
+            "positions": 688065,
+            "mean_overlap": 0.9134016255050394,
+            "min_overlap": 0.01953125,
+            "exact_match_rate": 0.0628399933145851
+          }
+        }
+      ]
+    },
+    "65536": {
+      "baseline": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.003366986056789756,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.796938785351813e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.8387266866047867e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.137480962323025e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.4358997658709995e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.98689496453153e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.1592845112318173e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.358968802378513e-05,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00044004035612488224
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.014800040051341057,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.721543756313622e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.250734051922336e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.11949572985759e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7393249183660373e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.176815855316818e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.282094621681608e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.454753020079806e-05,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0018946859588595544
+        }
+      ],
+      "official": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.002429995918646455,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00011088627070421353,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.840423258021474e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.6344641810283065e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.842560651421081e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.039939868671354e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.4960457519919146e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.11943607206922e-06,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00032944918223165587,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8665760461445996,
+            "min_overlap": 0.00390625,
+            "exact_match_rate": 0.03130883531597676
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.009950755164027214,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.6644261348992586e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.4475061915582046e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.8800228392356075e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.9359020370757207e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.1326380849350244e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.5331028155051172e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00012779206736013293,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0012868104015524295,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8832681628889444,
+            "min_overlap": 0.03125,
+            "exact_match_rate": 0.03134880064060782
+          }
+        }
+      ],
+      "precision_map": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0025484252255409956,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.811128307366744e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.2290983906714246e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7059719286626205e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.458395778783597e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.6491313696606085e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.3172284525353462e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.732008609513287e-06,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0003383623790114143,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8985387303506849,
+            "min_overlap": 0.0078125,
+            "exact_match_rate": 0.031543540767901015
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.012644730508327484,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.706760465633124e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.846914038760588e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.9621409592218697e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.9610489946207963e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.210214683553204e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.530404137563892e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.97838656581007e-05,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00162708615084739,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.9244435768070867,
+            "min_overlap": 0.044921875,
+            "exact_match_rate": 0.03158277945026606
+          }
+        }
+      ],
+      "precision_map_ladder20": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.003035125322639942,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.837446123128757e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.5513825928792357e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.304387428215705e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.3855274068628205e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.556520126352552e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.5995126280758996e-06,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.32449674513191e-05,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0004032305014618487,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8940254800176102,
+            "min_overlap": 0.0078125,
+            "exact_match_rate": 0.031539180914304896
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.009043224155902863,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.44036296964623e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.91902899031993e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.1981739337206818e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.149386975564994e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.564153303159401e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.653580279205926e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00018970732344314456,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0011865222929827723,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.9205816363738589,
+            "min_overlap": 0.033203125,
+            "exact_match_rate": 0.031576966312137904
+          }
+        }
+      ],
+      "precision_map_ladder40": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.002960737096145749,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.6944351197453216e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.233753523090854e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.226740434707608e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.7523372662253678e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.5561828553909436e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.3900618543848395e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.046550647122785e-06,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00039341484466604015,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8789614081087282,
+            "min_overlap": 0.005859375,
+            "exact_match_rate": 0.031527554638048585
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.014214247465133667,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.0744401707779616e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.953627285431139e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.7380416466039605e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.865656824724283e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.09214046865236e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.7900845705298707e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.463123231194913e-05,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0018130023258891015,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.9057611769615527,
+            "min_overlap": 0.02734375,
+            "exact_match_rate": 0.03154790062149713
+          }
+        }
+      ],
+      "precision_map_ladder60": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.003973504528403282,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.394074004376307e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.949349072878249e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.754949648282491e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 8.821356459520757e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.1591003941430245e-06,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.599485797982197e-06,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.582478216732852e-05,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0005216116225597034,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8758651428365244,
+            "min_overlap": 0.001953125,
+            "exact_match_rate": 0.03149994223193985
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.008314269594848156,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.676450281403959e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.4185067710932344e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.293747406336479e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.6773137506097555e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.760934825753793e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.9416543586412445e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00021076582197565585,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0011040901863452746,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.9023060412402185,
+            "min_overlap": 0.05859375,
+            "exact_match_rate": 0.03151374843499422
+          }
+        }
+      ],
+      "precision_map_ladder80": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0026952980551868677,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.936818731948733e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.4419608962489292e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.143339952453971e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.100782007299131e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.163576391467359e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.2695481927949004e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 9.894261893350631e-06,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.00035485569259208205,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8730731803015638,
+            "min_overlap": 0.00390625,
+            "exact_match_rate": 0.031471603183565094
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0158262699842453,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00010060000931844115,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.223161810543388e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.1327279430115595e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 4.493892629398033e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.425884642638266e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.147426782059483e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00016590124869253486,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.002040875272541598,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.900872285219079,
+            "min_overlap": 0.044921875,
+            "exact_match_rate": 0.03148976924021558
+          }
+        }
+      ],
+      "main_fp4_nonrope_rope_bf16": [
+        {
+          "needles": [
+            {
+              "name": "harbor-74",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0038599721156060696,
+              "n_tokens": 4
+            },
+            {
+              "name": "marble-10",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 6.468267383752391e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "kestrel-25",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.971522008010652e-05,
+              "n_tokens": 7
+            },
+            {
+              "name": "orchid-44",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 3.578533505788073e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "orchid-32",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.841216079716105e-06,
+              "n_tokens": 5
+            },
+            {
+              "name": "nectar-45",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.0192223271587864e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "zephyr-97",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.282801506225951e-05,
+              "n_tokens": 4
+            },
+            {
+              "name": "willow-92",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 1.2188993423478678e-05,
+              "n_tokens": 4
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0005051507240523279,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.8758811516739476,
+            "min_overlap": 0.005859375,
+            "exact_match_rate": 0.03140911194868743
+          }
+        },
+        {
+          "needles": [
+            {
+              "name": "velvet-82",
+              "depth": 0.0625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.012511109933257103,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-33",
+              "depth": 0.1875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.00011313737923046574,
+              "n_tokens": 5
+            },
+            {
+              "name": "falcon-73",
+              "depth": 0.3125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0001336585555691272,
+              "n_tokens": 7
+            },
+            {
+              "name": "quartz-33",
+              "depth": 0.4375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 2.7727068300009705e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "cobalt-62",
+              "depth": 0.5625,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 7.122869283193722e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "bramble-54",
+              "depth": 0.6875,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.261454498395324e-05,
+              "n_tokens": 5
+            },
+            {
+              "name": "saffron-80",
+              "depth": 0.8125,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 5.956024324405007e-05,
+              "n_tokens": 6
+            },
+            {
+              "name": "lantern-69",
+              "depth": 0.9375,
+              "token_acc": 1.0,
+              "exact": true,
+              "nll": 0.0001234061928698793,
+              "n_tokens": 6
+            }
+          ],
+          "token_acc": 1.0,
+          "exact_rate": 1.0,
+          "nll_mean": 0.0016365553262858157,
+          "indexer_vs_baseline": {
+            "positions": 1376193,
+            "mean_overlap": 0.9043027292956003,
+            "min_overlap": 0.03125,
+            "exact_match_rate": 0.031447623988786456
+          }
+        }
+      ]
+    }
+  }
+}

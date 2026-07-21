@@ -143,6 +143,61 @@ ladder point; retrieval harness is NEW code (does not exist yet).
   overlap metric does not need natural long-range structure), but the retrieval
   eval remains the sharper long-context instrument.
 
+## LADDER RESULTS (Runs A+B, 2026-07-20 — HARD STOP: awaiting owner review)
+
+Rungs: fp4_fraction 0.2/0.4/0.6/0.8 over the ranked main pool (FP8 remainder,
+indexer BF16), ordered by sweep score ascending. NOTE deviation from the plan's
+"route 1 stats" ordering: per-group QDQ RMS was never collected (only per-group
+amax), and sweep-ascending places honestly-measured late layers into FP4 first —
+same intent, existing machinery. Route-2 trigger NOT fired: at 65k power the
+dNLL ordering is monotone (the 2k–32k non-monotonicity was measurement noise).
+
+**65k NLL rung** (2×65k seqs, first use of the logits-offload path; means):
+
+| variant | dNLL | top1 | idx-overlap |
+|---|---|---|---|
+| official | +0.0008 | 0.963 | **0.871** |
+| ratified FP8 map | −0.0009 | 0.964 | 0.906 |
+| ladder20 | +0.0010 | 0.959 | 0.902 |
+| ladder40 | +0.0040 | 0.953 | 0.889 |
+| ladder60 | +0.0043 | 0.952 | 0.887 |
+| ladder80 | +0.0050 | 0.952 | 0.883 |
+| all-FP4 | +0.0066 | 0.955 | 0.886 |
+
+**Retrieval (needle-in-haystack, 8k/32k/65k, 2×8 needles each): EVERY variant
+scored perfect 1.000 token-acc / 1.000 exact — including all-FP4 at 65k.**
+Two readings, both recorded: (a) genuinely good news — whole-cache FP4 does NOT
+break verbatim long-range recall even at 65k (the feared catastrophic failure
+mode does not occur at these settings); (b) the instrument saturates at ceiling
+for this task design (unique high-salience cue+code, pure induction-copy) and
+therefore cannot rank rungs. A harder retrieval task (multi-fact interference,
+paraphrased cues, distractor codes) would be needed for discrimination.
+
+**Curve reading (per-main-entry bytes, PROJECTED — overall cache bytes for the
+ratified map and rungs still unmeasured):** FP8 ≈ 0.57× BF16 per entry → each
++20% FP4 ≈ −0.04×; all-FP4 ≈ 0.36×. ladder20 is quality-free (dNLL noise-level
+at every length incl. 65k; overlap 0.902 vs ratified 0.906 ≈ sample noise) for a
+~7% further cache cut. ladder40+ pay real, monotone costs (+0.4–0.5% PPL,
+overlap < 0.89 @65k). No cliff, no free lunch past ~20%: the curve is shallow.
+
+**New finding — the overlap gate itself drifts with context for EVERYONE:**
+ratified map 0.969 @8k → 0.924 @32k → 0.906 @65k (official: 0.871 @65k). Yet
+ratified dNLL stays ≈0 and retrieval is perfect. Near-tie density grows with
+candidate count, so some selection drift at long context appears inherent —
+an absolute 0.9 overlap gate may be the wrong criterion at 65k+ (it would
+eventually fail even the all-FP8 map, without any measurable quality loss).
+Owner question: re-anchor the gate (e.g., length-dependent threshold, or gate on
+dNLL + retrieval with overlap as diagnostic only)?
+
+**Decision options for owner (nothing ratified):**
+1. Keep the ratified FP8 map as-is (ladder20's ~7% extra saving not worth a
+   config change / the 65k-overlap ambiguity).
+2. Adopt ladder20 (all metrics within noise of ratified at every tested length;
+   +7% cache saving; provisional pending a harder retrieval eval).
+3. Build the harder retrieval task first, then revisit 2.
+Also pending regardless: measure ACTUAL cache bytes for ratified + ladder20
+(memory tool / benchmark storage variant), and the >65k overlap-decay question.
+
 ## Standing constraints
 
 - Indexer precision remains a BINARY (all-layers) choice — per-layer indexer

@@ -1,5 +1,29 @@
 # Worklog
 
+## 2026-07-20 (Future work: FP4 ladder Runs A+B — results in, hard stop for owner)
+
+Owner-approved continuation (FUTURE_WORK.md): long-context eval plumbing built
+(retrieval harness `src/v4_kv_quant/retrieval.py`; harness `logits_to_cpu`
+offload; chunkwise-GPU metrics via `compute_device`; vectorized indexer overlap —
+suite 107), four ladder rungs (fp4 0.2–0.8) built from committed sweep data, and
+two eval passes run:
+
+- Run A (2k/8k grown held-out + 2×32k): mid-rung dNLL differences sit inside
+  per-sequence scatter (±0.003–0.005) — NLL cannot rank rungs at 32k power;
+  overlap decays cleanly with FP4 fraction. No hard gate failures.
+- Run B (2×65k NLL + retrieval 8k/32k/65k): at 65k the dNLL ordering becomes
+  monotone (ladder20 +0.001 ≈ noise; 40/60/80 +0.004–0.005; all-FP4 +0.0066);
+  **retrieval is a perfect 1.000 for every variant including all-FP4** —
+  verbatim long-range recall survives whole-cache FP4 (real result), and the
+  task saturates as a discriminator (instrument result). Official FP4-indexer
+  overlap continues its slide: 0.871 @65k. The ratified map itself reaches
+  0.906 @65k with zero dNLL — the absolute 0.9 overlap gate looks length-naive
+  (see FUTURE_WORK "LADDER RESULTS" for the full table and owner options).
+
+One tool bug fixed mid-run (new stages missing from the model-load gate).
+Route-2 (gradient-weighted ordering) NOT triggered: monotone at 65k power.
+**No new map ratified — stopped for owner review per plan.**
+
 ## 2026-07-20 (Owner ratifies the B4 precision map)
 
 Owner ratified the D-015 provisional selection: `moderate` — all main-KV non-RoPE
