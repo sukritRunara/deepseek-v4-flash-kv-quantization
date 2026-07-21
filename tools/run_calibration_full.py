@@ -359,7 +359,7 @@ def main() -> int:
         results = eval_cases(model, cases, eval_variants(out, args), args)
         (out / "heldout_eval.json").write_text(json.dumps(results, indent=2) + "\n")
 
-    if "heldout32k" in stages or "heldout65k" in stages:
+    if {"heldout32k", "heldout65k", "heldout128k"} & set(stages):
         # Long-sequence held-out ids: chained disjoint stream regions (D-012).
         consumed = [max(data[k]["provenance"]["tokens_consumed_per_source"].values())
                     for k in ("calib_2k", "calib_8k", "held_2k", "held_8k")]
