@@ -21,6 +21,28 @@ and FP4 indexer failed the 32k overlap gate) on the existing held-out suite
 the curve is even alive before investing in the ladder.
 **Stop point: owner discussion of the result before any mixture work.**
 
+### Step 0 RESULT (run 2026-07-20, `--heldout-policies main_fp4_nonrope_rope_bf16`;
+same-run comparators; full rows in `heldout_eval.json` / `heldout32k_eval.json`)
+
+| variant | 2k dNLL / top1 | 8k dNLL / top1 | 32k dNLL / top1 | 32k idx-overlap |
+|---|---|---|---|---|
+| ratified FP8 map | +0.0009 / 0.9591 | +0.0009 / 0.9491 | −0.0002 / 0.9771 | 0.911 |
+| official | +0.0010 / 0.9558 | +0.0008 / 0.9485 | −0.0003 / 0.9767 | 0.886 |
+| **all-FP4 main-KV** | **+0.0096 / 0.9452** | **+0.0080 / 0.9390** | **+0.0086 / 0.9703** | **0.890** |
+
+**Reading:** the far end of the curve is ALIVE but measurably degraded — ΔNLL
+≈ +0.008–0.010 (≈ **+0.9–1.0% perplexity**), consistent in sign across all three
+lengths (a real signal, ~10× the FP8 map's noise-level deltas, so current
+held-out power resolves it fine at this magnitude). Top-1 drops ~1–1.5 points.
+Notably, at 32k the indexer overlap falls to 0.890 — below the 0.9 gate — even
+though the indexer itself is BF16: FP4 damage to the compressed cache content the
+indexer scores over drags selection with it. Implication for the ladder: the
+interesting region is the middle — how much FP4 (ordered least-sensitive-first
+per route 1) fits before ΔNLL exceeds noise and/or 32k overlap crosses 0.9.
+Endpoints now anchored: 0.51× bytes at ~0% quality cost (FP8) vs ~0.35× bytes at
+~1% perplexity + gate failure (all-FP4).
+**Status: HARD STOP honored — awaiting owner discussion before ladder work.**
+
 ## Agreed approach for the mixture search (owner decision, 2026-07-20)
 
 **Route 3 (brute-force candidate ladder) with Route 1 as the ordering heuristic;

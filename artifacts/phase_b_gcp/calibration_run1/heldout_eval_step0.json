@@ -1,0 +1,120 @@
+{
+  "held_2k": {
+    "official": {
+      "max_abs_logit_err": 72.75,
+      "mean_abs_logit_err": 0.40870243446812843,
+      "rms_logit_err": 0.6835597433983741,
+      "kl_mean": 0.011938864601286467,
+      "kl_max": 3.6117818355560303,
+      "top1_agreement": 0.955810546875,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 1.629686211165301,
+      "nll_quantized": 1.6306443643034174,
+      "nll_delta": 0.0009581531381164243,
+      "indexer": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      }
+    },
+    "precision_map": {
+      "max_abs_logit_err": 85.25,
+      "mean_abs_logit_err": 0.40532098641561476,
+      "rms_logit_err": 0.6861847454072431,
+      "kl_mean": 0.01200057663612331,
+      "kl_max": 3.116523265838623,
+      "top1_agreement": 0.9591064453125,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 1.629686211165301,
+      "nll_quantized": 1.63060504725111,
+      "nll_delta": 0.000918836085809005,
+      "indexer": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      }
+    },
+    "main_fp4_nonrope_rope_bf16": {
+      "max_abs_logit_err": 85.5,
+      "mean_abs_logit_err": 0.5074233799895986,
+      "rms_logit_err": 0.8168062481919796,
+      "kl_mean": 0.017777699090834653,
+      "kl_max": 2.572359085083008,
+      "top1_agreement": 0.9451904296875,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 1.629686211165301,
+      "nll_quantized": 1.6392673684377814,
+      "nll_delta": 0.009581157272480434,
+      "indexer": {
+        "positions": 171780,
+        "mean_overlap": 1.0,
+        "min_overlap": 1.0,
+        "exact_match_rate": 1.0
+      }
+    }
+  },
+  "held_8k": {
+    "official": {
+      "max_abs_logit_err": 63.375,
+      "mean_abs_logit_err": 0.28427018061544895,
+      "rms_logit_err": 0.4554608884047269,
+      "kl_mean": 0.011422214158271136,
+      "kl_max": 0.9067464470863342,
+      "top1_agreement": 0.948486328125,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 1.9698146391141955,
+      "nll_quantized": 1.9706526486053673,
+      "nll_delta": 0.0008380094911717428,
+      "indexer": {
+        "positions": 171969,
+        "mean_overlap": 0.9522327379862068,
+        "min_overlap": 0.380859375,
+        "exact_match_rate": 0.2509289464961708
+      }
+    },
+    "precision_map": {
+      "max_abs_logit_err": 136.4375,
+      "mean_abs_logit_err": 0.28540892399706513,
+      "rms_logit_err": 0.46483078281666784,
+      "kl_mean": 0.011847391888811301,
+      "kl_max": 1.0728931427001953,
+      "top1_agreement": 0.9490966796875,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 1.9698146391141955,
+      "nll_quantized": 1.9706798763505677,
+      "nll_delta": 0.0008652372363722183,
+      "indexer": {
+        "positions": 171969,
+        "mean_overlap": 0.9685980717273172,
+        "min_overlap": 0.375,
+        "exact_match_rate": 0.25283045200006976
+      }
+    },
+    "main_fp4_nonrope_rope_bf16": {
+      "max_abs_logit_err": 133.25,
+      "mean_abs_logit_err": 0.3690180851268295,
+      "rms_logit_err": 0.580532062171411,
+      "kl_mean": 0.017937318017524427,
+      "kl_max": 0.9377683401107788,
+      "top1_agreement": 0.93896484375,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 1.9698146391141955,
+      "nll_quantized": 1.9778441861208185,
+      "nll_delta": 0.00802954700662295,
+      "indexer": {
+        "positions": 171969,
+        "mean_overlap": 0.9605786053736429,
+        "min_overlap": 0.365234375,
+        "exact_match_rate": 0.25165582168879275
+      }
+    }
+  }
+}

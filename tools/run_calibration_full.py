@@ -166,6 +166,9 @@ def main() -> int:
     ap.add_argument("--indexer-min-overlap", type=float, default=0.9)
     ap.add_argument("--map-suffix", default="",
                     help="write precision_map_<suffix>.json (candidate maps, D-015)")
+    ap.add_argument("--heldout-policies", default="",
+                    help="comma list of NAMED_POLICIES to evaluate alongside official"
+                         " + maps in heldout/heldout32k (e.g. step-0 all-FP4)")
     args = ap.parse_args()
     stages = [s.strip() for s in args.stages.split(",") if s.strip()]
     out = Path(args.out_dir)
@@ -293,6 +296,8 @@ def main() -> int:
         variants = {"official": {"policy": NAMED_POLICIES["reference_official_qdq"]()}}
         for map_file in sorted(out.glob("precision_map*.json")):
             variants[map_file.stem] = {"precision_map": PrecisionMap.from_json(map_file)}
+        for pname in [p.strip() for p in args.heldout_policies.split(",") if p.strip()]:
+            variants[pname] = {"policy": NAMED_POLICIES[pname]()}
         results = {}
         cases = {"held_2k": torch.cat(tensors(data, "held_2k")[:4], dim=0).to("cuda"),
                  "held_8k": tensors(data, "held_8k")[0].to("cuda")}
@@ -340,6 +345,8 @@ def main() -> int:
         if (out / "precision_map.json").exists():
             variants["precision_map"] = {
                 "precision_map": PrecisionMap.from_json(out / "precision_map.json")}
+        for pname in [p.strip() for p in args.heldout_policies.split(",") if p.strip()]:
+            variants[pname] = {"policy": NAMED_POLICIES[pname]()}
         base = run_teacher_forced(model, ids, prefill,
                                   prefill_chunk=args.stats_prefill_chunk)
         row = {}
