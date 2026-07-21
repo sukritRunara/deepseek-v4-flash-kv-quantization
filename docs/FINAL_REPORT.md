@@ -172,9 +172,15 @@ the wrong lens). A long-context retrieval benchmark would discriminate further a
 is the top recommended follow-up.
 
 Quality of the ratified map on held-out data (teacher-forced vs. unquantized
-baseline): ΔNLL ≈ +0.0009 at 2k, +0.0009 at 8k, −0.0002 at 32k (all within noise of
-zero; baseline NLL ≈ 1.57), top-1 agreement 0.949–0.977, indexer overlap ≥ 0.91
-everywhere tested.
+baseline): ΔNLL ≈ +0.0009 at 2k, +0.0009 at 8k, −0.0002 at 32k (baseline NLL ≈
+1.57), top-1 agreement 0.949–0.977, indexer overlap ≥ 0.91 everywhere tested.
+**In perplexity terms: a ratio of e^ΔNLL ≈ 1.0009 — under 0.1% change — and at 32k
+the quantized version scored nominally *better* than the baseline, the tell that
+these deltas are measurement noise, not degradation.** The 95–98% top-1 agreement
+should not be read as a 2–5% accuracy loss: disagreements concentrate at positions
+where the baseline model is itself nearly undecided between tokens (near-tied
+logits), where either choice is equally good — which is exactly why perplexity
+stays flat while agreement sits below 100%.
 
 ## 7. The result: measured memory and speed (final node, medians of 5)
 
@@ -214,8 +220,11 @@ entry encode ≈ 219 µs; FP4 full decode ≈ 65 µs.
 - Batch size 1, single process, eager attention, pipeline-sharded over 4 GPUs.
   Serving stacks with continuous batching will see different absolute numbers;
   the *ratio* (cache bytes) is layout-determined and transfers.
-- Quality evals are next-token-prediction on C4-style text + code at 2k/8k/32k.
-  No instruction-following, reasoning, or long-context retrieval evals were run.
+- Quality evals are next-token-prediction (NLL/perplexity) on C4-style text + code
+  at 2k/8k/32k. No instruction-following, reasoning, or long-context retrieval
+  evals were run. The held-out sample is modest (a handful of long sequences), so
+  "≤0.1% perplexity change, sign flipping across lengths" is best read as "no
+  measurable impact at this statistical power," not as a precise bound.
 - The ~10% ITL overhead is the unfused read path, not the format.
 - Peak GPU allocation barely moves at these settings because weights dominate at
   batch 1 — the cache savings matter at scale, not in this microbenchmark's peak.
