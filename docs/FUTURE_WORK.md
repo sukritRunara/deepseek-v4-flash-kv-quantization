@@ -1,0 +1,90 @@
+# Future Work — FP8/FP4 Mixture Across the KV Cache
+
+*Planning record, 2026-07-20, agreed with owner in-session (post-Phase-B). Nothing
+here has been executed. Purpose: survive context compaction so the discussion can
+resume exactly here. Background: `docs/FINAL_REPORT.md`, D-015, WORKLOG 2026-07-20.*
+
+## Goal
+
+Extend the ratified all-FP8 map toward FP4: measure the full tradeoff curve of
+**cache bytes vs quality** from all-FP8 (measured: 0.51× baseline bytes) toward
+all-FP4 main-KV (projected ~0.35×: nope channels 0.25× + RoPE BF16 + scales), and
+pick a mixture on that curve. Same Stage-B→Stage-C discipline as Phase B (bitwise
+storage contract means quality results transfer to real storage).
+
+## Step 0 — cheap first datapoint (OWNER-APPROVED; run this, then HARD STOP)
+
+Evaluate **all-FP4 main-KV** (`main_fp4_nonrope_rope_bf16` named policy — already
+exists; indexer stays BF16 per the D-015 finding that the indexer choice is binary
+and FP4 indexer failed the 32k overlap gate) on the existing held-out suite
+(2k/8k + 32k spot). One model load, ~30 min. This tells us whether the far end of
+the curve is even alive before investing in the ladder.
+**Stop point: owner discussion of the result before any mixture work.**
+
+## Agreed approach for the mixture search (owner decision, 2026-07-20)
+
+**Route 3 (brute-force candidate ladder) with Route 1 as the ordering heuristic;
+Route 2 only if the ladder shows the ordering is bad.**
+
+- **Route 3 — candidate ladder:** build maps at fp4_fraction ≈ 0, 0.2, 0.4, 0.6,
+  0.8, 1.0 over the ranked main-KV pool (FP8 for the rest), evaluate ALL of them
+  on held-out end-metrics in one or two model loads (the multi-map heldout stage
+  already supports this via `precision_map*.json` glob). Deliverable: Pareto curve
+  of cache-bytes (computable per map via `v4_kv_quant.memory`) vs ΔNLL/overlap
+  (+ retrieval if added). Rationale: end-metrics average out indexer-flip noise;
+  this is the honest measurement even though it costs GPU time.
+- **Route 1 — ordering heuristic (zero GPU):** rank groups for "FP4 first" by the
+  per-group QDQ RMS error / amax already collected in
+  `results/calibration_full/activation_stats.json` (stats pass covered the FULL
+  calibration set). Validity unproven — the ladder itself tests it.
+- **Route 2 — gradient-weighted score (in reserve):** the reference PoC's concept
+  (`reference/v2_mla_poc/ops/sensitivity.py`), deferred by D-004: quantization
+  error × gradient magnitude per group; needs backward passes; must be validated
+  against empirical perturbation before trusting. Port ONLY if the route-1
+  ordering produces a visibly bad ladder (e.g., non-monotone quality vs fraction).
+
+## The measurement crux (why per-target KL cannot pick FP4 vs FP8)
+
+Established 2026-07-20 (WORKLOG "two methodology findings"): V4's indexer selects
+top-512 entries via scores containing many near-ties. ANY perturbation of an early
+layer — FP8-fine or FP4-coarse — flips some near-tie selections in the ~40
+downstream indexer layers, and those flips alone produce KL ≈ 1.5e-2. The
+instrument is pinned at that floor: FP8 and FP4 perturbations of early-layer
+states read identically. Late layers (short cascade) read ~10× lower and remain
+discriminating. Consequences: (a) per-target KL orders layers but cannot choose
+formats in early layers; (b) mixture decisions must rest on end-to-end held-out
+metrics (NLL/perplexity, retrieval), where unbiased flip noise averages out;
+(c) ΔNLL per target is noise-level at current probe sizes — statistical power is
+the binding constraint (next section).
+
+## Open question #3 — held-out statistical power (+ retrieval eval)
+
+NOT yet decided with owner. The issue: current held-out set is small (evaluated:
+4×2k, 1×8k, 1×32k). Ladder points will differ by ~1e-3 NLL or less; at current
+sample sizes the error bars swamp that. Proposal: grow held-out to ~32×2k + 8×8k +
+4×32k (≈8× tokens → ~2.8× tighter error bars; report per-sequence variance so
+every Pareto point carries an error bar). Additionally: a long-context retrieval
+eval (needle-in-haystack style) — C4 perplexity mostly tests short-range
+prediction; cache damage plausibly shows first as degraded long-range recall,
+which is the KV cache's actual job. Retrieval would also pressure-test the D-015
+indexer decision. Cost: corpus regen is cheap; eval adds model-load time per
+ladder point; retrieval harness is NEW code (does not exist yet).
+
+## Standing constraints
+
+- Indexer precision remains a BINARY (all-layers) choice — per-layer indexer
+  measurement is impossible without new per-layer scorer wrappers (finding #3,
+  WORKLOG 2026-07-20); FP4 indexer already fails the 0.9 overlap gate at 32k.
+- Guardrail discipline as in D-015: candidates compared against both the baseline
+  and the ratified FP8 map; memory claims include scales; same-node comparisons.
+- Stop points: after step 0 (owner discussion); after the ladder, before any
+  ratification of a new map.
+
+## Kimi context (owner note)
+
+Owner knows of equivalent FP8/FP4-mixture work on a Kimi model. Kimi is
+MLA-family — architecturally closer to `reference/v2_mla_poc` than to V4. V4
+differences that change the problem: shared-KV MQA (one 512-vec is both K and V),
+per-layer window/compressed/indexer streams (mixture is over heterogeneous
+states, not one latent), and the selective indexer (source of the measurement
+noise floor above, which MLA-based studies would not have faced).
