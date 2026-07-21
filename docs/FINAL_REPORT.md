@@ -1,6 +1,8 @@
 # Final Report — DeepSeek-V4-Flash KV-Cache Quantization
 
-*Written 2026-07-20, at Phase B completion (branch `runpod-phase-b`). Audience: both
+*Written 2026-07-20 at Phase B completion; updated 2026-07-21 with the
+post-ratification mixture study (§9, D-016/D-017), which supersedes parts of §6–§7
+as marked. Branch `runpod-phase-b`. Audience: both
 ML engineers and technically-literate non-specialists — plain-language framing is
 inline throughout. Deep references: `docs/ENGINEERING_REPORT.md` (local phase, for
 engineers), `docs/V4_CACHE_ARCHITECTURE.md`, `docs/DECISIONS.md` (D-001…D-015),
@@ -22,7 +24,9 @@ numbers instead of 16-bit — without changing what the model says?** And not "p
 fine" but *measured*: which parts of the cache tolerate shorthand, which don't, and
 what do we actually save in bytes and lose in speed or quality?
 
-**The answer: yes — the cache shrinks to about half its size (0.51–0.54×), with
+**The answer: yes — the benchmarked storage variant shrinks the cache to about
+half its size (0.51–0.54×), and the finally-shipped mixed-precision map (§9)
+measures 0.58× — with
 output quality on held-out text statistically indistinguishable from the original,
 at a ~9–12% latency cost that is an artifact of our unoptimized read path, not of
 the compression itself.** Along the way the project also produced three
@@ -157,6 +161,13 @@ in any architecture with sparse selection:
 
 ## 6. The result: the ratified precision map
 
+> **Status update (2026-07-21, D-017):** the map described in this section was the
+> Phase-B result and has since been SUPERSEDED as the project map by **ladder20**,
+> a calibrated FP8/FP4 mixture found by the post-ratification study in §9 (owner
+> re-affirmed with the §9 quality footnote in view). This section is preserved as
+> the Phase-B record; the FP8-only map remains available as a one-swap fallback
+> (`precision_map_fp8only_v1.json`).
+
 **All main-KV content channels → FP8. Rotary-position channels → BF16. Indexer →
 BF16** (i.e., we *decline* the official FP4 indexer path). Owner-ratified 2026-07-20
 (D-015).
@@ -194,9 +205,12 @@ stays flat while agreement sits below 100%.
 | 65k | actual storage | 87.4 s | 750 | 4.4 | 218 ms | 223.1 MiB | **0.511×** |
 
 (The simulation variant confirms 1.000× — simulation saves nothing, as designed.
-Benchmarked policy: the official QDQ policy; the ratified map differs only in
-keeping the indexer BF16. All comparisons are same-node, same-run; per-trial data
-in `artifacts/phase_b_gcp/benchmark_matrix.json`.)
+Benchmarked policy: the official QDQ policy, whose FP4 indexer keys make it the
+smallest configuration; the project's maps keep the indexer at BF16 — about 19%
+of all cache bytes — so their MEASURED footprints, taken later with real mapped
+storage (§9), are: FP8-only map **0.641–0.647×**, shipped ladder20 mixture
+**0.580–0.587×**. All comparisons are same-node, same-run; per-trial data in
+`artifacts/phase_b_gcp/benchmark_matrix.json`.)
 
 **How to read this if you're not an ML engineer:** the model's scratchpad now takes
 half the memory at every context length we tested, including scales and packing
@@ -220,16 +234,64 @@ entry encode ≈ 219 µs; FP4 full decode ≈ 65 µs.
 - Batch size 1, single process, eager attention, pipeline-sharded over 4 GPUs.
   Serving stacks with continuous batching will see different absolute numbers;
   the *ratio* (cache bytes) is layout-determined and transfers.
-- Quality evals are next-token-prediction (NLL/perplexity) on C4-style text + code
-  at 2k/8k/32k. No instruction-following, reasoning, or long-context retrieval
-  evals were run. The held-out sample is modest (a handful of long sequences), so
-  "≤0.1% perplexity change, sign flipping across lengths" is best read as "no
-  measurable impact at this statistical power," not as a precise bound.
+- Quality evals in THIS section are next-token-prediction (NLL/perplexity) on
+  C4-style text + code at 2k/8k/32k; the §9 study later extended evaluation to
+  65k/128k/192k and added long-context retrieval (which saturated — see §9).
+  Instruction-following and reasoning evals remain unrun. The Phase-B held-out
+  sample was modest, so "≤0.1% perplexity change, sign flipping across lengths"
+  is best read as "no measurable impact at that statistical power" — indeed §9's
+  longer-context data later resolved a small stable offset for the successor map.
 - The ~10% ITL overhead is the unfused read path, not the format.
 - Peak GPU allocation barely moves at these settings because weights dominate at
   batch 1 — the cache savings matter at scale, not in this microbenchmark's peak.
 
-## 9. Reproducibility
+## 9. Post-ratification: the FP8/FP4 mixture study (2026-07-20/21)
+
+After Phase B closed, a second measurement campaign asked: can parts of the cache
+go all the way down to 4-bit? Four results, in the order they mattered:
+
+**The mixture that won — "ladder20", now the project map (D-017).** All ~170
+quantizable cache regions were ranked by measured sensitivity, then a ladder of
+mixtures was tested: FP4 on the most-tolerant 20% / 40% / 60% / 80% / 100% of
+regions, FP8 on the rest. Only the first rung was free: at 20% — which lands
+almost entirely on the last twenty layers, whose errors have little room to
+compound — every quality instrument stayed flat, while deeper rungs paid real,
+monotone costs. The shipped map is therefore 139 regions FP8 + 34 regions FP4 +
+BF16 position channels and indexer: **0.58× cache bytes, measured on real packed
+storage** (a new `MappedStorageCache` was built for per-region mixed storage and
+bitwise-gated against the simulation, so these quality numbers transfer exactly).
+One honest footnote, found only when evaluation reached 128k–192k contexts:
+ladder20 carries a small **constant ≈ +0.2% perplexity offset at 65k+** versus
+the FP8-only map (stable, not compounding) — ratified with that number in view.
+
+**The FP4 indexer: declined, on a five-length evidence curve.** Quantizing the
+indexer's keys (as DeepSeek's own inference stack does) would shrink the cache
+further to 0.45×. But the indexer's selection agreement with an unquantized
+reference decays with context — 98.7% at 8k → 96.9% → 96.1% → 95.4% → **94.9% at
+192k** — monotone, still falling, no plateau, on a model built for 1M contexts of
+which only 20% was probed. Under the pre-registered rule ("adopt only if the
+curve plateaus"), the indexer stays BF16. Notably, this drift never once
+registered as measurable quality damage — the decision is precautionary, and the
+option remains open if longer-context tests show the curve flattening.
+
+**Quality gates were re-anchored along the way.** The Phase-B absolute gate
+("indexer overlap ≥ 0.9") turned out to be length-naive: overlap decays with
+context for EVERY variant — including all-FP8 — purely from near-tie density
+growth, with zero quality cost. The adopted replacement: primary gates are ΔNLL
+and retrieval parity; the diagnostic is overlap RELATIVE to the FP8 reference at
+the same length, which cleanly separates inherent drift (ladder20: flat ≥ 0.995
+at every length) from genuine format damage (FP4 indexer: compounding decline).
+
+**A robustness result worth publishing on its own: retrieval refuses to break.**
+Needle-in-a-haystack evals — including a hardened version with paraphrased
+queries, corrected/updated facts, and colliding names — scored **perfect for
+every variant at every length up to 128k, including the all-FP4 cache**. Three
+independent studies saturated at ceiling. Long-range verbatim recall through a
+quantized KV cache is, at least for this model and these tasks, remarkably
+robust; discriminating between cache formats requires subtler instruments than
+retrieval accuracy.
+
+## 10. Reproducibility
 
 Everything is pinned and committed: source revisions (`configs/source_pins.json`),
 environment (`artifacts/env/`), calibration token ids, all sweep records, all
@@ -241,14 +303,16 @@ before loading shards; never set `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:Tr
 on this stack; `kernels==0.15.2` is required for native-FP8 inference; run
 `tools/p2p_stress_check.py` before trusting any new multi-GPU host.
 
-## 10. Recommended next steps
+## 11. Recommended next steps
 
-1. **Long-context retrieval eval** (needle-in-haystack style) to pressure-test the
-   indexer decision beyond perplexity.
-2. **Stage-D fused dequant kernels** to reclaim the ~10% ITL and unlock the
-   optimized read path (dequantize only selected CSA entries).
-3. **Benchmark the ratified map itself** (the matrix above timed the official
-   policy; the map's profile differs only in the indexer).
-4. **Serving-shaped benchmarks**: batching, longer decodes, tensor/expert
+1. **Stage-D fused dequant kernels** to reclaim the ~10% ITL and unlock the
+   optimized read path (dequantize only selected CSA entries). The largest
+   remaining value: it applies to every deployed token regardless of map.
+2. **Serving-shaped benchmarks**: batching, longer decodes, tensor/expert
    parallelism (also restores the faster DeepGEMM weight path that multi-device
-   pipelines disable).
+   pipelines disable), plus a latency benchmark of the shipped ladder20 map.
+3. **Optional, if the 0.45× prize matters**: extend the indexer decay curve to
+   256k–512k; adopt FP4 indexer keys only if it flattens (§9 rule).
+   (Retrieval evals and the map's memory measurement — items on this list in the
+   Phase-B edition — were completed by the §9 study: retrieval saturates;
+   ladder20 measured at 0.58×.)
