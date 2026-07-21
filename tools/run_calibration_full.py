@@ -214,6 +214,7 @@ def main() -> int:
     ap.add_argument("--retrieval-lens", default="8192,32768,65536")
     ap.add_argument("--retrieval-seqs", type=int, default=2)
     ap.add_argument("--retrieval-needles", type=int, default=8)
+    ap.add_argument("--retrieval2-needles", type=int, default=16)
     ap.add_argument("--retrieval-seed", type=int, default=31)
     args = ap.parse_args()
     stages = [s.strip() for s in args.stages.split(",") if s.strip()]
@@ -233,7 +234,7 @@ def main() -> int:
         return 0
 
     model_stages = {"stats", "screening", "refine", "fp8spot", "indexer8k",
-                    "heldout", "heldout32k", "heldout65k", "retrieval"}
+                    "heldout", "heldout32k", "heldout65k", "retrieval", "retrieval2"}
     if model_stages & set(stages):
         _, model = load_model(args.model_path)
         config = model.config
@@ -384,34 +385,33 @@ def main() -> int:
         results = eval_cases(model, cases, eval_variants(out, args), args, offload=True)
         (out / "heldout65k_eval.json").write_text(json.dumps(results, indent=2) + "\n")
 
-    if "retrieval" in stages:
+    def run_retrieval(prefix: str, generator, n_needles: int, skip_offset: int) -> None:
         from v4_kv_quant.retrieval import (
             Needle,
             RetrievalSample,
             build_retrieval_sample,
-            make_needles_text,
             score_retrieval,
         )
 
-        rid_file = out / "retrieval_ids.json"
+        rid_file = out / f"{prefix}_ids.json"
         lens = [int(x) for x in args.retrieval_lens.split(",")]
         if rid_file.exists():
             rblob = json.loads(rid_file.read_text())
-            print(f"[retrieval] reusing {rid_file}")
+            print(f"[{prefix}] reusing {rid_file}")
         else:
             consumed = [max(data[k]["provenance"]["tokens_consumed_per_source"].values())
                         for k in ("calib_2k", "calib_8k", "held_2k", "held_8k")]
             # own stream region, far past all NLL held-out builds (which consume <2M)
-            skip_r = max(consumed[:2]) + max(consumed[2:]) + 5_000_000
+            skip_r = max(consumed[:2]) + max(consumed[2:]) + skip_offset
             rblob = {"samples": [], "skip_tokens_base": skip_r,
-                     "needles_per_sample": args.retrieval_needles}
+                     "needles_per_sample": n_needles}
             for li, seq_len in enumerate(lens):
                 fill = build_corpus_samples(tok, args.retrieval_seqs, seq_len,
                                             seed=args.retrieval_seed + li,
                                             skip_tokens=skip_r)
                 for si, window in enumerate(fill.token_ids()):
-                    needles = make_needles_text(
-                        tok, args.retrieval_needles,
+                    needles = generator(
+                        tok, n_needles,
                         seed=args.retrieval_seed * 1000 + li * 100 + si)
                     sample = build_retrieval_sample(window, needles, seq_len)
                     rblob["samples"].append({
@@ -420,7 +420,7 @@ def main() -> int:
                     })
                 skip_r += max(fill.provenance["tokens_consumed_per_source"].values())
             rid_file.write_text(json.dumps(rblob) + "\n")
-            print(f"[retrieval] built {len(rblob['samples'])} samples -> {rid_file}")
+            print(f"[{prefix}] built {len(rblob['samples'])} samples -> {rid_file}")
 
         variants = {"baseline": {}} | eval_variants(out, args)
         per_sample: dict = {}
@@ -436,6 +436,11 @@ def main() -> int:
                                          prefill_chunk=args.stats_prefill_chunk,
                                          logits_to_cpu=True, **kw)
                 sc = score_retrieval(run.logits, sample)
+                # per-kind breakdown (plain vs updated) for interference analysis
+                by_kind = {}
+                for rec, n_ in zip(sc["needles"], sample.needles):
+                    by_kind.setdefault(n_.kind, []).append(rec["token_acc"])
+                sc["token_acc_by_kind"] = {k: sum(v) / len(v) for k, v in by_kind.items()}
                 if vname == "baseline":
                     base_picks = run.indexer_picks
                 else:
@@ -443,10 +448,9 @@ def main() -> int:
                         base_picks, run.indexer_picks)
                 per_sample.setdefault(str(s["length"]), {}).setdefault(
                     vname, []).append(sc)
-                idx = sc.get("indexer_vs_baseline", {}) or {}
-                print(f"[retrieval {s['length']}/{vname}] acc={sc['token_acc']:.3f} "
+                print(f"[{prefix} {s['length']}/{vname}] acc={sc['token_acc']:.3f} "
                       f"exact={sc['exact_rate']:.3f} nll={sc['nll_mean']:.3f} "
-                      f"idx_overlap={idx.get('mean_overlap', '-')}", flush=True)
+                      f"by_kind={sc['token_acc_by_kind']}", flush=True)
                 del run
         summary = {}
         for length, rows in per_sample.items():
@@ -458,9 +462,22 @@ def main() -> int:
                     "nll_mean": sum(x["nll_mean"] for x in scs) / len(scs),
                     "n_samples": len(scs),
                 }
-        (out / "retrieval_eval.json").write_text(json.dumps(
+        (out / f"{prefix}_eval.json").write_text(json.dumps(
             {"summary": summary, "per_sample": per_sample}, indent=2) + "\n")
-        print("[retrieval] done -> retrieval_eval.json")
+        print(f"[{prefix}] done -> {prefix}_eval.json")
+
+    if "retrieval" in stages:
+        from v4_kv_quant.retrieval import make_needles_text
+
+        run_retrieval("retrieval", make_needles_text, args.retrieval_needles,
+                      skip_offset=5_000_000)
+
+    if "retrieval2" in stages:
+        from v4_kv_quant.retrieval import make_needles_text_v2
+
+        # v2 (D-016): paraphrased cues + fact updates + name collisions; own region
+        run_retrieval("retrieval2", make_needles_text_v2, args.retrieval2_needles,
+                      skip_offset=10_000_000)
 
     print(BANNER)
     return 0

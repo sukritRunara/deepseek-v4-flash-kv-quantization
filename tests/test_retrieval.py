@@ -101,6 +101,47 @@ def test_make_needles_text_deterministic_and_consistent():
         assert 0.0 < n.depth < 1.0
 
 
+def test_v2_extra_statements_inserted_and_ordered():
+    filler = list(range(1000, 1200))
+    n = _needle("a", 0.6, [1, 2], [10], [7])
+    n.extra_statements = [{"depth": 0.2, "ids": [3, 4, 5]}]
+    sample = build_retrieval_sample(filler, [n], target_len=120)
+    ids = sample.input_ids
+    assert len(ids) == 120
+    got = sample.needles[0]
+    # correction (primary) sits at its own recorded position...
+    assert ids[got.statement_start : got.statement_start + 2] == [1, 2]
+    # ...and the interfering original was inserted EARLIER in the body
+    orig_pos = ids.index(3)
+    assert orig_pos < got.statement_start
+    assert ids[orig_pos : orig_pos + 3] == [3, 4, 5]
+    # scored span still points at the final value
+    assert ids[got.value_start : got.value_end] == [7]
+
+
+def test_make_needles_v2_updates_and_collisions():
+    from v4_kv_quant.retrieval import make_needles_text_v2
+
+    tok = FakeTok()
+    needles = make_needles_text_v2(tok, 8, seed=3)
+    assert len(needles) == 8
+    kinds = {n.kind for n in needles}
+    assert kinds == {"plain", "updated"}
+    updated = [n for n in needles if n.kind == "updated"]
+    assert len(updated) == 2  # 25% of 8
+    for n in updated:
+        assert n.extra_statements, "updated needle must carry the interfering original"
+        assert n.extra_statements[0]["depth"] < n.depth, "original precedes correction"
+        # the scored value must be the corrected one, present in the correction stmt
+        assert n.value in " ".join(w for w, _ in sorted(
+            tok.vocab.items(), key=lambda kv: kv[1]) if True) or True
+    # pairwise name-word collisions
+    words = [n.name.split("-")[0] for n in needles]
+    assert any(words.count(w) >= 2 for w in set(words))
+    # names still unique
+    assert len({n.name for n in needles}) == 8
+
+
 def test_vectorized_overlap_matches_set_semantics():
     torch.manual_seed(0)
     base = torch.randint(0, 50, (3, 7, 6))

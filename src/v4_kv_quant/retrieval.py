@@ -34,6 +34,11 @@ class Needle:
     statement_start: int = -1         # filled by assembly (absolute position)
     value_start: int = -1             # filled by assembly: first value token in tail
     value_end: int = -1
+    # v2: extra statements owned by this needle (e.g. the ORIGINAL value before a
+    # correction), each {"depth": float, "ids": [...]}. The scored value_ids always
+    # correspond to the FINAL fact; extras exist to interfere.
+    extra_statements: list = field(default_factory=list)
+    kind: str = "plain"               # plain | updated (v2 bookkeeping)
 
 
 @dataclass
@@ -54,8 +59,15 @@ def build_retrieval_sample(
     its statement. Raises if the filler cannot fill the body budget.
     """
     needles = sorted(needles, key=lambda n: n.depth)
+    # every insertion: (depth, ids, needle-or-None); v2 extras interleave with primaries
+    inserts: list[tuple[float, list[int], Needle | None]] = []
+    for n in needles:
+        inserts.append((n.depth, n.statement_ids, n))
+        for ex in n.extra_statements:
+            inserts.append((float(ex["depth"]), list(ex["ids"]), None))
+    inserts.sort(key=lambda t: t[0])
     tail_len = sum(len(n.cue_ids) + len(n.value_ids) for n in needles)
-    stmt_len = sum(len(n.statement_ids) for n in needles)
+    stmt_len = sum(len(ids) for _, ids, _ in inserts)
     body_budget = target_len - tail_len
     filler_budget = body_budget - stmt_len
     if filler_budget <= 0:
@@ -65,12 +77,13 @@ def build_retrieval_sample(
 
     out: list[int] = []
     cursor = 0
-    for needle in needles:
-        insert_at = int(needle.depth * filler_budget)
+    for depth, ids, owner in inserts:
+        insert_at = int(depth * filler_budget)
         insert_at = max(cursor, min(insert_at, filler_budget))
         out.extend(filler_ids[cursor:insert_at])
-        needle.statement_start = len(out)
-        out.extend(needle.statement_ids)
+        if owner is not None:
+            owner.statement_start = len(out)
+        out.extend(ids)
         cursor = insert_at
     out.extend(filler_ids[cursor:filler_budget])
     assert len(out) == body_budget
@@ -119,6 +132,60 @@ _WORDS = ("kestrel", "quartz", "bramble", "cobalt", "falcon", "juniper", "marble
           "nectar", "obsidian", "pluto", "saffron", "tundra", "velvet", "willow",
           "zephyr", "harbor", "lantern", "meadow", "orchid", "prism")
 _ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"  # no confusable 0/O/1/I/L
+
+
+def make_needles_text_v2(tokenizer, n_needles: int, seed: int) -> list[Needle]:
+    """Harder variant (D-016): built to discriminate where v1 saturated at ceiling.
+
+    Differences from v1: (a) QUERY cue is a PARAPHRASE of the statement wording, so
+    pure verbatim induction-copy on the cue no longer suffices; (b) 25% of needles
+    are UPDATED — the original value is stated early, a correction later, and the
+    correction is the scored answer (interference + recency resolution); (c) names
+    collide pairwise on the word part ("kestrel-42" vs "kestrel-87"), so attending
+    to roughly-the-right entity is not enough.
+    """
+    rng = random.Random(seed)
+    needles: list[Needle] = []
+    words = list(_WORDS)
+    rng.shuffle(words)
+    names = []
+    for i in range(n_needles):  # pairwise word collisions
+        word = words[(i // 2) % len(words)]
+        while True:
+            name = f"{word}-{rng.randrange(10, 99)}"
+            if name not in names:
+                names.append(name)
+                break
+    for i, name in enumerate(names):
+        value = "".join(rng.choice(_ALPHABET) for _ in range(8))
+        cue_text = f"\nAs noted earlier, the code associated with {name} is"
+        cue_ids = tokenizer.encode(cue_text, add_special_tokens=False)
+        cue_plus = tokenizer.encode(cue_text + " " + value, add_special_tokens=False)
+        if cue_plus[: len(cue_ids)] != cue_ids:
+            continue
+        depth = (i + 0.5) / n_needles
+        updated = i % 4 == 0  # 25% get an interfering original + correction
+        if updated:
+            old_value = "".join(rng.choice(_ALPHABET) for _ in range(8))
+            original = f"\nRemember this: the secret code for {name} is {old_value}.\n"
+            correction = (f"\nCorrection: the secret code for {name} has been "
+                          f"changed to {value}.\n")
+            needles.append(Needle(
+                name=name, value=value, depth=min(depth + 0.15, 0.97), kind="updated",
+                statement_ids=tokenizer.encode(correction, add_special_tokens=False),
+                cue_ids=cue_ids, value_ids=cue_plus[len(cue_ids):],
+                extra_statements=[{"depth": max(depth - 0.15, 0.02),
+                                   "ids": tokenizer.encode(original,
+                                                           add_special_tokens=False)}],
+            ))
+        else:
+            statement = f"\nRemember this: the secret code for {name} is {value}.\n"
+            needles.append(Needle(
+                name=name, value=value, depth=depth, kind="plain",
+                statement_ids=tokenizer.encode(statement, add_special_tokens=False),
+                cue_ids=cue_ids, value_ids=cue_plus[len(cue_ids):],
+            ))
+    return needles
 
 
 def make_needles_text(tokenizer, n_needles: int, seed: int) -> list[Needle]:
