@@ -1,5 +1,43 @@
 # Worklog
 
+## 2026-07-20/21 (Overnight #2, D-016: retrieval-v2, bytes truth, MappedStorageCache, gate proposal)
+
+Owner-approved scope executed in full; stop conditions honored (nothing ratified,
+no gate adopted). Four deliverables, each committed as it landed:
+
+1. **Retrieval-v2** (paraphrased cues, 25% fact-updates, name-collision
+   distractors, 16 needles/sample, 8k/32k/65k): STILL saturates — every variant
+   ≥ 0.9948 token-acc at every length (the single 8k miss hit baseline and
+   all-FP4 identically = task noise). Now twice-replicated: retrieval through
+   quantized caches is robust up to 65k for every tested format, and
+   retrieval-parity gates do not discriminate candidates. Only whisper of
+   signal: all-FP4's needle-token NLL 0.0080 vs ~0.0052 @65k.
+2. **Cache-bytes ground truth.** Analytic calculator
+   (`tools/compute_map_bytes.py`) validated −2.2% vs both measured B7 anchors;
+   then MEASURED on the real model via the new storage path (below):
+   ratified map **0.641×/0.647×** (8k/32k), ladder20 **0.580×/0.587×** —
+   analytic within ~1% of measured everywhere. KEY CORRECTION to prior
+   assumptions: the ratified map is ~0.65×, NOT ~0.57×; the BF16 indexer
+   (~19% of cache bytes) is what separates it from official's 0.511×;
+   hypothetical ladder20+FP4-indexer = 0.453×. The indexer decision, not
+   main-KV FP4, dominates the memory axis.
+3. **MappedStorageCache** (`src/v4_kv_quant/mapped_storage_cache.py`): Stage-C
+   storage for per-group maps via channel-segmented stores. Bitwise gate
+   (storage == mapped-QDQ, logits AND picks) PASSED on the tiny model (suite
+   113) and on the real 4-GPU checkpoint for both the ratified map and ladder20
+   (`tools/mapped_storage_gate.py`, natural + random prompts). Every mapped
+   Stage-B quality number now transfers to real storage, and maps are
+   deploy-measurable.
+4. **Gate re-anchor DRAFT** (FUTURE_WORK, not adopted): FP8-relative overlap
+   separates inherent near-tie drift (ladder20: ≥ 0.996, length-invariant) from
+   genuine format damage (official FP4 indexer: 0.987 → 0.961, compounding).
+   Proposal: primary gates = dNLL + retrieval-v2 parity; diagnostic =
+   FP8-relative overlap ≥ 0.99 at longest length. Notes that D-015's indexer
+   basis (absolute 0.886 < 0.9) conflated drift with damage — owner to decide.
+
+One fix en route: new stages added to the tool's model-load gate. All eval
+JSONs in `artifacts/phase_b_gcp/ladder/`.
+
 ## 2026-07-20 (Future work: FP4 ladder Runs A+B — results in, hard stop for owner)
 
 Owner-approved continuation (FUTURE_WORK.md): long-context eval plumbing built

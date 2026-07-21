@@ -1,0 +1,26 @@
+{
+  "maps": {
+    "precision_map": {
+      "path": "results/calibration_full/precision_map.json",
+      "gate_natural": true,
+      "gate_random-512": true,
+      "measured_bytes_8192": 40094559,
+      "ratio_vs_baseline_8192": 0.6411469260428606,
+      "measured_bytes_32768": 149936991,
+      "ratio_vs_baseline_32768": 0.6473444571972126
+    },
+    "precision_map_ladder20": {
+      "path": "results/calibration_full/precision_map_ladder20.json",
+      "gate_natural": true,
+      "gate_random-512": true,
+      "measured_bytes_8192": 36250208,
+      "ratio_vs_baseline_8192": 0.5796724046176519,
+      "measured_bytes_32768": 136071776,
+      "ratio_vs_baseline_32768": 0.5874821775940581
+    }
+  },
+  "baseline_bytes": {
+    "8192": 62535680,
+    "32768": 231618560
+  }
+}
