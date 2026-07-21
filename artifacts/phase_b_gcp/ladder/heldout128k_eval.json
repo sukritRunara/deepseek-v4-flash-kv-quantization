@@ -1,0 +1,158 @@
+{
+  "held_128k_a": {
+    "official": {
+      "max_abs_logit_err": 126.75,
+      "mean_abs_logit_err": 0.31989422336207207,
+      "rms_logit_err": 0.49622531126162844,
+      "kl_mean": 0.016580126859402265,
+      "kl_max": 3.673436164855957,
+      "top1_agreement": 0.942657470703125,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 2.208445972846271,
+      "nll_quantized": 2.2106803768720917,
+      "nll_delta": 0.0022344040258208686,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.8655676854162421,
+        "min_overlap": 0.03125,
+        "exact_match_rate": 0.01567622143044249
+      }
+    },
+    "precision_map": {
+      "max_abs_logit_err": 151.875,
+      "mean_abs_logit_err": 0.3725960552589024,
+      "rms_logit_err": 0.5569444302992463,
+      "kl_mean": 0.019411560878606335,
+      "kl_max": 4.432068347930908,
+      "top1_agreement": 0.9368972778320312,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 2.208445972846271,
+      "nll_quantized": 2.208028771608786,
+      "nll_delta": -0.0004172012374850098,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.9083780856668462,
+        "min_overlap": 0.021484375,
+        "exact_match_rate": 0.015795024721620636
+      }
+    },
+    "precision_map_fp8only_v1": {
+      "max_abs_logit_err": 175.75,
+      "mean_abs_logit_err": 0.3182233141085687,
+      "rms_logit_err": 0.4979242481616742,
+      "kl_mean": 0.01642828550657015,
+      "kl_max": 4.038713455200195,
+      "top1_agreement": 0.9430465698242188,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 2.208445972846271,
+      "nll_quantized": 2.207608579406033,
+      "nll_delta": -0.0008373934402379213,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.9127520966612369,
+        "min_overlap": 0.01953125,
+        "exact_match_rate": 0.015804834167681216
+      }
+    },
+    "precision_map_l20fp4idx": {
+      "max_abs_logit_err": 147.75,
+      "mean_abs_logit_err": 0.37305412498065943,
+      "rms_logit_err": 0.562072228329999,
+      "kl_mean": 0.019445077378482944,
+      "kl_max": 3.3187525272369385,
+      "top1_agreement": 0.938140869140625,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 2.208445972846271,
+      "nll_quantized": 2.2087875994742054,
+      "nll_delta": 0.000341626627934577,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.8610790634199762,
+        "min_overlap": 0.013671875,
+        "exact_match_rate": 0.015671861676637786
+      }
+    }
+  },
+  "held_128k_b": {
+    "official": {
+      "max_abs_logit_err": 136.625,
+      "mean_abs_logit_err": 0.6116149496690579,
+      "rms_logit_err": 0.8607486315627914,
+      "kl_mean": 0.015624603436682457,
+      "kl_max": 6.82851505279541,
+      "top1_agreement": 0.9811935424804688,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 0.32104360749210553,
+      "nll_quantized": 0.32029861234059526,
+      "nll_delta": -0.0007449951515102748,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.8557040319480034,
+        "min_overlap": 0.009765625,
+        "exact_match_rate": 0.01566168891776015
+      }
+    },
+    "precision_map": {
+      "max_abs_logit_err": 190.625,
+      "mean_abs_logit_err": 0.7338535237732005,
+      "rms_logit_err": 1.0136346563395666,
+      "kl_mean": 0.019563080545081213,
+      "kl_max": 8.31389331817627,
+      "top1_agreement": 0.9789505004882812,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 0.32104360749210553,
+      "nll_quantized": 0.3260412504007413,
+      "nll_delta": 0.0049976429086357466,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.8869831899303584,
+        "min_overlap": 0.00390625,
+        "exact_match_rate": 0.01581210042402239
+      }
+    },
+    "precision_map_fp8only_v1": {
+      "max_abs_logit_err": 190.125,
+      "mean_abs_logit_err": 0.6129400418337597,
+      "rms_logit_err": 0.8628479744224998,
+      "kl_mean": 0.015578885329278386,
+      "kl_max": 5.859168529510498,
+      "top1_agreement": 0.9817047119140625,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 0.32104360749210553,
+      "nll_quantized": 0.32223180847138466,
+      "nll_delta": 0.0011882009792791304,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.8909328948397409,
+        "min_overlap": 0.0078125,
+        "exact_match_rate": 0.015810647172754155
+      }
+    },
+    "precision_map_l20fp4idx": {
+      "max_abs_logit_err": 133.0,
+      "mean_abs_logit_err": 0.7341873283043925,
+      "rms_logit_err": 1.0153058181672712,
+      "kl_mean": 0.01996082706016806,
+      "kl_max": 12.595876693725586,
+      "top1_agreement": 0.9790802001953125,
+      "nan_count": 0,
+      "inf_count": 0,
+      "nll_baseline": 0.32104360749210553,
+      "nll_quantized": 0.3268354098382894,
+      "nll_delta": 0.005791802346183872,
+      "indexer": {
+        "positions": 2752449,
+        "mean_overlap": 0.8515378820086675,
+        "min_overlap": 0.0078125,
+        "exact_match_rate": 0.01566168891776015
+      }
+    }
+  }
+}

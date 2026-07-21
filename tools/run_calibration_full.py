@@ -216,6 +216,9 @@ def main() -> int:
     ap.add_argument("--n-32k", type=int, default=2)
     ap.add_argument("--n-65k", type=int, default=2)
     ap.add_argument("--n-128k", type=int, default=2)
+    ap.add_argument("--custom-len", type=int, default=196608)
+    ap.add_argument("--custom-chunk", type=int, default=1024)
+    ap.add_argument("--n-custom", type=int, default=2)
     ap.add_argument("--retrieval-prefix", default="",
                     help="override the ids/eval file prefix (new lengths -> new files)")
     ap.add_argument("--retrieval-skip-offset", type=int, default=0,
@@ -244,7 +247,7 @@ def main() -> int:
 
     model_stages = {"stats", "screening", "refine", "fp8spot", "indexer8k",
                     "heldout", "heldout32k", "heldout65k", "heldout128k",
-                    "retrieval", "retrieval2"}
+                    "heldoutcustom", "retrieval", "retrieval2"}
     if model_stages & set(stages):
         _, model = load_model(args.model_path)
         config = model.config
@@ -359,7 +362,7 @@ def main() -> int:
         results = eval_cases(model, cases, eval_variants(out, args), args)
         (out / "heldout_eval.json").write_text(json.dumps(results, indent=2) + "\n")
 
-    if {"heldout32k", "heldout65k", "heldout128k"} & set(stages):
+    if {"heldout32k", "heldout65k", "heldout128k", "heldoutcustom"} & set(stages):
         # Long-sequence held-out ids: chained disjoint stream regions (D-012).
         consumed = [max(data[k]["provenance"]["tokens_consumed_per_source"].values())
                     for k in ("calib_2k", "calib_8k", "held_2k", "held_8k")]
@@ -487,6 +490,17 @@ def main() -> int:
         (out / f"{prefix}_eval.json").write_text(json.dumps(
             {"summary": summary, "per_sample": per_sample}, indent=2) + "\n")
         print(f"[{prefix}] done -> {prefix}_eval.json")
+
+    if "heldoutcustom" in stages:
+        L, chunk = args.custom_len, args.custom_chunk
+        skip_c = skip32 + 8_000_000  # own region, past every prior long build
+        idsC = long_ids(out / f"token_ids_{L}.json", args.n_custom, L,
+                        args.heldout_seed + 5, skip_c)
+        cases = {f"held_{L}_{'abcd'[i]}": torch.tensor([w], dtype=torch.long).to("cuda")
+                 for i, w in enumerate(idsC["ids"][: args.n_custom])}
+        results = eval_cases(model, cases, eval_variants(out, args), args,
+                             offload=True, chunk=chunk)
+        (out / f"heldout{L}_eval.json").write_text(json.dumps(results, indent=2) + "\n")
 
     if "retrieval" in stages:
         from v4_kv_quant.retrieval import make_needles_text
