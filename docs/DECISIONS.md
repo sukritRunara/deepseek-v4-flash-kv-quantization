@@ -160,6 +160,35 @@ logical bytes on the fp32 tiny model; Stage-B exactly 1.000x).
 explicitly re-run the Stage-B quality suite.
 **Follow-up:** revalidate the contract on CUDA/BF16 pipelines during RunPod bring-up.
 
+### D-016 — Ladder verdict endorsed: keep ratified map, instrument-first follow-ups; second overnight delegation
+
+**Date:** 2026-07-20
+**Status:** accepted (owner: "I like your plan" + overnight continuation)
+**Context:** FP4 ladder complete (FUTURE_WORK "LADDER RESULTS"): ladder20 measured
+within noise of the ratified map at every length (a true 34×FP4/139×FP8 mixture,
+FP4 on late layers 22–42); rungs ≥40 pay real monotone costs; retrieval v1
+saturated at ceiling for all variants; the absolute 0.9 overlap gate shown
+length-naive (ratified map itself: 0.969@8k → 0.906@65k with zero dNLL).
+**Decision:** (1) The ratified FP8 map REMAINS the project's map — ladder20 is a
+validated candidate, not adopted (modest ~7% prize, weak instruments, gate under
+revision). (2) Rungs ≥40 closed out. (3) Follow-up order: measure ACTUAL cache
+bytes for ratified + ladder20; build a discriminating retrieval task (v2:
+paraphrased cues, fact updates, name-collision distractors); re-anchor the
+overlap gate (proposal: gate on dNLL + retrieval; overlap as diagnostic RELATIVE
+to the FP8 map at the same length); only then re-judge ladder20. (4) Stage-D
+fused kernels acknowledged as the highest-value next engineering phase; NOT an
+overnight task.
+**Overnight scope (delegated):** analytic bytes for all maps; a MappedStorageCache
+(Stage-C for per-group maps) IF AND ONLY IF it passes the D-009-style bitwise
+gate (mapped-storage == mapped-QDQ) on tiny and real models — else analytic
+numbers only; retrieval-v2 build + validation + run on baseline/ratified/
+ladder20/official/all-FP4; relative-overlap analysis draft. **Stop conditions:
+no map ratification, no gate-definition adoption — proposals and measurements
+only; morning report.**
+**Evidence:** `artifacts/phase_b_gcp/ladder/`, FUTURE_WORK.md tables, WORKLOG
+2026-07-20 ladder entry.
+**Follow-up:** owner morning review of measurements + gate proposal.
+
 ### D-015 — Owner delegates the B4 map decision for the overnight run (provisional)
 
 **Date:** 2026-07-20
